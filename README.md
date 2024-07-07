@@ -16,21 +16,61 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 
 - Cliques: Número total de cliques em cada link encurtado.
 - Filtros de Análise:
- - Por Horário: Quantidade de cliques por hora, dia, semana e mês.
- - Por Região: Distribuição geográfica dos cliques.
- - Por Dispositivo: Análise dos cliques com base no tipo de dispositivo, sistema operacional e navegador.
+  - Por Horário: Quantidade de cliques por hora, dia, semana e mês.
+  - Por Região: Distribuição geográfica dos cliques.
+  - Por Dispositivo: Análise dos cliques com base no tipo de dispositivo, sistema operacional e navegador.
 
 ## Funcionalidades dos Links
 
 - Links Expiráveis: Possibilidade de criar links que expiram após um determinado período.
 - Nível Gratuito:
- - Todos os links criados no nível gratuito terão uma validade de um ano a partir da data de criação.
- - Após um ano, os links expirarão automaticamente e não estarão mais acessíveis.
+  - Todos os links criados no nível gratuito terão uma validade de um ano a partir da data de criação.
+  - Após um ano, os links expirarão automaticamente e não estarão mais acessíveis.
 
 
 ## Tecnologias e Ferramentas Utilizadas
 
-- Backend: Ktor (Kotlin)
-- Banco de Dados: MongoDB (para armazenamento de dados)
+- Backend: **Ktor (Kotlin)**
+- Banco de Dados: **MongoDB** (para armazenamento de dados)
 - Geolocalização: API de Geolocalização (API Não escolhida ainda.)
 - Integrações: APIs para coleta de informações de IP (API Não escolhida ainda.)
+
+## Para instalação
+Para instalar o projeto para testes, utilizaremos o Docker.
+
+- Instale a última versão do **Docker** em sua máquina.
+- Instale o **Mongodb** (Verifique na página oficial, para instalar de maneira adequada)
+- Abra a pasta **"out"** do projeto, note que terá apenas 2 arquivos, o **Dockerfile**, e **snapurl.jar**.
+- Crie um arquivo **.env**, ou adicione um arquivo **.env** manualmente na construção da imagem docker.
+
+```.env
+#URL do banco de dados MONGODB
+SERVER_URL=mongodb://host.docker.internal:27017
+#Nome do banco de dados do MONGODB
+NAME_DATABASE=Snapurl
+
+#Audience do token, quem deve processar o token
+JWT_AUDIENCE=
+#Dominio do token, quem foi o emissor
+JWT_DOMAIN=
+#Secret Token do usuário
+USER_SECRET=
+#Secret Token do moderador
+MODERATOR_SECRET=
+```
+> *SERVER_URL*=mongodb://host.docker.internal:27017 - Esta configuração serve para que a aplicação se conecte ao Mongodb localizado no localhost da máquina.
+
+Execute o comando a seguir para construir a imagem Docker.
+
+    docker build -t snapurl:latest .
+
+Execute o comando a seguir para executar a imagem criada com o Docker.
+
+    docker run -p 9098:9098 snapurl:latest
+
+> As portas pré-definidas podem ser alteradas no arquivo *"aplication.conf"*, e devem ser refletidas na construção da imagem com o Docker.
+
+
+## Endpoints disponíveis
+No momento apenas alguns endpoints estão disponíveis, e estão hospedados na página de endpoints do Postman.
+[https://documenter.getpostman.com/view/29175154/2sA3e1BqN4](https://documenter.getpostman.com/view/29175154/2sA3e1BqN4)
