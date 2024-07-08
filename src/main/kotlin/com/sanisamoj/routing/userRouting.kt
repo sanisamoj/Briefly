@@ -2,15 +2,21 @@ package com.sanisamoj.routing
 
 import com.sanisamoj.data.models.dataclass.LoginRequest
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
+import com.sanisamoj.data.pages.confirmationPage
+import com.sanisamoj.data.pages.tokenExpiredPage
 import com.sanisamoj.errors.errorResponse
 import com.sanisamoj.services.user.UserAuthenticationService
 import com.sanisamoj.services.user.UserService
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.html.html
+import kotlinx.html.stream.appendHTML
 
 fun Route.userRouting() {
     route("/user") {
@@ -63,6 +69,57 @@ fun Route.userRouting() {
             } catch (e: Exception) {
                 val response = errorResponse(e.message!!)
                 return@post call.respond(response.first, message = response.second)
+            }
+        }
+
+        // Responsible for activate account by token email
+        get("/activate") {
+            val token = call.parameters["token"].toString()
+
+            try {
+                UserAuthenticationService().activateAccountByToken(token)
+                call.respondText(buildString {
+                    appendHTML().html { confirmationPage() }
+                }, ContentType.Text.Html)
+
+            } catch (e: Throwable) {
+                call.respondText(buildString {
+                    appendHTML().html { tokenExpiredPage() }
+                }, ContentType.Text.Html)
+            }
+        }
+
+        authenticate("user-jwt") {
+
+            // Responsible for session
+            post("/session") {
+                val principal = call.principal<JWTPrincipal>()!!
+                val accountId = principal.payload.getClaim("id").asString()
+
+                try {
+                    val userResponse = UserAuthenticationService().session(accountId)
+                    return@post call.respond(userResponse)
+
+                } catch (e: Exception) {
+                    val response = errorResponse(e.message!!)
+                    return@post call.respond(response.first, message = response.second)
+                }
+            }
+
+            // Responsible for sign out
+            delete("/session") {
+                val principal = call.principal<JWTPrincipal>()!!
+                val accountId = principal.payload.getClaim("id").asString()
+                val sessionId = principal.payload.getClaim("session").asString()
+
+                try {
+                    UserAuthenticationService().signOut(accountId, sessionId)
+                    return@delete call.respond(HttpStatusCode.OK)
+                }
+                catch (e: Exception) {
+                    val response = errorResponse(e.message!!)
+                    return@delete call.respond(response.first, message = response.second)
+                }
             }
         }
     }

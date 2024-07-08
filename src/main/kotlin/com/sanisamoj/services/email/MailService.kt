@@ -11,7 +11,7 @@ class MailService(
 ) {
     fun sendConfirmationTokenEmail(name: String, token: String, to: String) {
         val selfUrl = dotEnv("SELF_URL")
-        val activationLink = "$selfUrl/operator/activate?token=$token"
+        val activationLink = "$selfUrl/authentication/activate?token=$token"
 
         val text = MailContext.buildConfirmationTokenMail(name, activationLink)
         val topic = "Ative sua conta!"

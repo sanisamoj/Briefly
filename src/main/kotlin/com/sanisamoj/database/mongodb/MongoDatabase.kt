@@ -12,7 +12,7 @@ object MongoDatabase {
     private lateinit var client : MongoClient
 
     // Variável responsável por armazenar a url da conexão com o banco de dados
-    private val connectionString: String = dotEnv("SERVER_URL")
+    private val connectionString: String = dotEnv("MONGODB_SERVER_URL")
 
     // Variável responsável por armazenar o nome do banco de dados no MONGODB
     private val nameDatabase : String = dotEnv("NAME_DATABASE")

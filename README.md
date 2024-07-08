@@ -46,15 +46,22 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 Para instalar o projeto para testes, utilizaremos o Docker.
 
 - Instale a última versão do **Docker** em sua máquina.
-- Instale o **Mongodb** (Verifique na página oficial, para instalar de maneira adequada)
+- Instale o **Mongodb** (Verifique na página oficial, ou monte uma imagem com o Docker).
+- Instale o **Redis** na sua máquina (Verifique a página oficial, ou monte uma imagem com o Docker).
 - Abra a pasta **"out"** do projeto, note que terá apenas 2 arquivos, o **Dockerfile**, e **snapurl.jar**.
 - Crie um arquivo **.env**, ou adicione um arquivo **.env** manualmente na construção da imagem docker.
 
 ```.env
 #URL do banco de dados MONGODB
-SERVER_URL=mongodb://host.docker.internal:27017
+MONGODB_SERVER_URL=mongodb://host.docker.internal:27017
 #Nome do banco de dados do MONGODB
 NAME_DATABASE=Snapurl
+#URL do banco de dados do REDIS
+REDIS_SERVER_URL=host.docker.internal
+#Porta do banco de dados do REDIS
+REDIS_SERVER_PORT=6379
+#URl no qual a aplicação será instalada / Domain
+SELF_URL=http://localhost:9098
 
 #Audience do token, quem deve processar o token
 JWT_AUDIENCE=
@@ -80,8 +87,8 @@ EMAIL_SYSTEM=
 #Senha do email para autenticação do serviço de email
 EMAIL_PASSWORD=
 ```
-> *SERVER_URL*=mongodb://host.docker.internal:27017 - Esta configuração serve para que a aplicação se conecte ao Mongodb localizado no localhost da máquina.
-
+> *MONGODB_SERVER_URL*=mongodb://host.docker.internal:27017 - Esta configuração serve para que a aplicação se conecte ao Mongodb localizado no localhost da máquina.
+> *REDIS_SERVER_URL*=host.docker.internal - Esta configuração serve para que a aplicação se conecte ao Redis localizado no localhost da máquina.
 > Nas configurações de Email, foi adicionado uma pré-configuração para utilizar os serviços do Gmail. Para a Senha do Email, é necessário gerar uma senha para aplicação em "Apps menos seguros" na sua conta do Gmail.
 
 #### Execute o comando a seguir para construir a imagem Docker.

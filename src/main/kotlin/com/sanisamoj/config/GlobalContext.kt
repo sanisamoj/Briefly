@@ -3,6 +3,7 @@ package com.sanisamoj.config
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.MailRepository
 import com.sanisamoj.data.models.interfaces.ServerContainer
+import com.sanisamoj.data.models.interfaces.SessionRepository
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
@@ -23,5 +24,6 @@ object GlobalContext {
     fun setMobileTargetVersion(mobileTargetVersion: String) { TODO() }
 
     fun getDatabaseRepository(): DatabaseRepository { return serverContainer.databaseRepository }
+    fun getSessionRepository(): SessionRepository { return serverContainer.sessionRepository }
     fun getMailRepository(): MailRepository { return serverContainer.mailRepository }
 }

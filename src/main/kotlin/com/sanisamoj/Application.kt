@@ -1,6 +1,7 @@
 package com.sanisamoj
 
 import com.sanisamoj.database.mongodb.MongoDatabase
+import com.sanisamoj.database.redis.Redis
 import com.sanisamoj.plugins.*
 import com.sanisamoj.utils.analyzers.dotEnv
 import io.ktor.server.application.*

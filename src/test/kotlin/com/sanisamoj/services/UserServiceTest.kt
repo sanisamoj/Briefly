@@ -1,7 +1,6 @@
 package com.sanisamoj.services
 
 import com.sanisamoj.TestContext
-import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.services.user.UserService
