@@ -88,7 +88,9 @@ EMAIL_SYSTEM=
 EMAIL_PASSWORD=
 ```
 > *MONGODB_SERVER_URL*=mongodb://host.docker.internal:27017 - Esta configuração serve para que a aplicação se conecte ao Mongodb localizado no localhost da máquina.
+
 > *REDIS_SERVER_URL*=host.docker.internal - Esta configuração serve para que a aplicação se conecte ao Redis localizado no localhost da máquina.
+
 > Nas configurações de Email, foi adicionado uma pré-configuração para utilizar os serviços do Gmail. Para a Senha do Email, é necessário gerar uma senha para aplicação em "Apps menos seguros" na sua conta do Gmail.
 
 #### Execute o comando a seguir para construir a imagem Docker.
