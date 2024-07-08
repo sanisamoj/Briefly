@@ -1,5 +1,6 @@
 package com.sanisamoj.routing
 
+import com.sanisamoj.data.models.dataclass.LoginRequest
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.errors.errorResponse
 import com.sanisamoj.services.user.UserAuthenticationService
@@ -30,6 +31,9 @@ fun Route.userRouting() {
                 }
             }
         }
+    }
+
+    route("/authentication") {
 
         rateLimit(RateLimitName("validation")) {
 
@@ -45,6 +49,20 @@ fun Route.userRouting() {
                     val response = errorResponse(e.message!!)
                     return@post call.respond(response.first, message = response.second)
                 }
+            }
+        }
+
+        // Responsible for login
+        post("/login") {
+            val loginRequest = call.receive<LoginRequest>()
+
+            try {
+                val userResponse = UserAuthenticationService().login(loginRequest)
+                return@post call.respond(userResponse)
+
+            } catch (e: Exception) {
+                val response = errorResponse(e.message!!)
+                return@post call.respond(response.first, message = response.second)
             }
         }
     }

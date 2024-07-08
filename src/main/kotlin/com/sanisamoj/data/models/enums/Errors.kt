@@ -5,7 +5,10 @@ enum class Errors(val description: String) {
     InternalServerError("Internal Server Error"),
     UserAlreadyExists("User already exists"),
     UnableToComplete("Unable to complete"),
+    InvalidLogin("Invalid email/password"),
     TooManyRequests("Too many requests"),
+    InactiveAccount("Inactive Account!"),
+    BlockedAccount("Blocked Account!"),
     UserNotFound("User Not Found"),
     DataIsMissing("Data is missing"),
 }
