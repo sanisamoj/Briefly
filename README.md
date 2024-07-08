@@ -57,14 +57,31 @@ JWT_DOMAIN=
 USER_SECRET=
 #Secret Token do moderador
 MODERATOR_SECRET=
+
+#Configuração para envios de email
+SMTP_HOST=smtp.gmail.com
+SMTP_STARTTLS_ENABLE=true
+SMTP_SSL_PROTOCOLS=TLSv1.2
+SMTP_SOCKETFACTORY_PORT=465
+SMTP_SOCKETFACTORY_CLASS=javax.net.ssl.SSLSocketFactory
+SMTP_AUTH=true
+SMTP_PORT=465
+SMTP_SSL_TRUST=*
+
+#Email que irá ser associado a aplicação para autenticação
+EMAIL_SYSTEM=
+#Senha
+EMAIL_PASSWORD=
 ```
 > *SERVER_URL*=mongodb://host.docker.internal:27017 - Esta configuração serve para que a aplicação se conecte ao Mongodb localizado no localhost da máquina.
 
-Execute o comando a seguir para construir a imagem Docker.
+> Nas configurações de Email, foi adicionado uma pré-configuração para utilizar os serviços do Gmail. Para a Senha do Email, é necessário gerar uma senha para aplicação em "Apps menos seguros" na sua conta do Gmail.
+
+#### Execute o comando a seguir para construir a imagem Docker.
 
     docker build -t snapurl:latest .
 
-Execute o comando a seguir para executar a imagem criada com o Docker.
+#### Execute o comando a seguir para executar a imagem criada com o Docker.
 
     docker run -p 9098:9098 snapurl:latest
 
