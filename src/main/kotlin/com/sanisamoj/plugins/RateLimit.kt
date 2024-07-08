@@ -10,5 +10,9 @@ fun Application.rateLimit() {
         register(RateLimitName("register")) {
             rateLimiter(limit = 2, refillPeriod = 1.hours)
         }
+
+        register(RateLimitName("validation")) {
+            rateLimiter(limit = 3, refillPeriod = 24.hours)
+        }
     }
 }

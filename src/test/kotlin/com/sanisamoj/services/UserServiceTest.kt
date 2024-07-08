@@ -1,5 +1,6 @@
 package com.sanisamoj.services
 
+import com.sanisamoj.TestContext
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
@@ -11,7 +12,7 @@ import kotlin.test.assertFails
 import kotlin.test.assertNotNull
 
 class UserServiceTest {
-    private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository()
+    private val databaseRepository: DatabaseRepository = TestContext.getDatabaseRepository()
     private val userCreateRequestTest = UserCreateRequest(
         username = "test",
         email = "test@gmail.com",

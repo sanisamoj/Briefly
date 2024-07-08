@@ -35,6 +35,13 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 - Geolocalização: API de Geolocalização (API Não escolhida ainda.)
 - Integrações: APIs para coleta de informações de IP (API Não escolhida ainda.)
 
+## Padrões de Design Utilizados
+
+- Factory
+     - O projeto utiliza a padrão factory, para auxiliar na criação dos objetos, para respostas de requisições ou para registro no banco de dados por exemplo.
+- Injeção de Dependência
+     - A Injeção de Dependência (DI) foi escolhida pois facilita os testes, podendo tanto trocar a implementações de registros, como também na expansão do projeto.
+
 ## Para instalação
 Para instalar o projeto para testes, utilizaremos o Docker.
 
@@ -68,9 +75,9 @@ SMTP_AUTH=true
 SMTP_PORT=465
 SMTP_SSL_TRUST=*
 
-#Email que irá ser associado a aplicação para autenticação
+#Email que irá ser associado a aplicação para autenticação do serviço de email
 EMAIL_SYSTEM=
-#Senha
+#Senha do email para autenticação do serviço de email
 EMAIL_PASSWORD=
 ```
 > *SERVER_URL*=mongodb://host.docker.internal:27017 - Esta configuração serve para que a aplicação se conecte ao Mongodb localizado no localhost da máquina.
