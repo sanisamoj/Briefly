@@ -27,7 +27,7 @@ class UserAuthenticationService(
     private val mailRepository: MailRepository = GlobalContext.getMailRepository()
 ) {
     suspend fun generateValidationEmailToken(email: String) {
-        val user = databaseRepository.getUserByEmail(email)
+        val user: User = databaseRepository.getUserByEmail(email)
             ?: throw NotFoundException(Errors.UserNotFound.description)
 
         if(user.accountStatus == AccountStatus.Active.name) {
@@ -41,7 +41,7 @@ class UserAuthenticationService(
             time = GlobalContext.EMAIL_TOKEN_EXPIRATION
         )
 
-        val token = TokenGenerator.user(tokenInfo)
+        val token: String = TokenGenerator.user(tokenInfo)
         CoroutineScope(Dispatchers.IO).launch {
             MailService(mailRepository).sendConfirmationTokenEmail(
                 name = user.username,
@@ -52,7 +52,7 @@ class UserAuthenticationService(
     }
 
     suspend fun activateAccountByToken(token: String) {
-        val secret = dotEnv("USER_SECRET")
+        val secret: String = dotEnv("USER_SECRET")
         val verifier = JWT.require(Algorithm.HMAC256(secret)).build()
         val decodedJWT = verifier.verify(token)
         val accountId = decodedJWT.getClaim("id").asString()
@@ -61,16 +61,16 @@ class UserAuthenticationService(
     }
 
     suspend fun login(login: LoginRequest): LoginResponse {
-        val user = databaseRepository.getUserByEmail(login.email)
+        val user: User = databaseRepository.getUserByEmail(login.email)
             ?: throw NotFoundException(Errors.InvalidLogin.description)
 
         verifyUserStatus(user)
 
-        val isPasswordCorrect = BCrypt.checkpw(login.password, user.password)
+        val isPasswordCorrect: Boolean = BCrypt.checkpw(login.password, user.password)
         if (!isPasswordCorrect) throw Exception(Errors.InvalidLogin.description)
 
-        val userResponse = UserFactory.userResponse(user)
-        val sessionId = ObjectId().toString()
+        val userResponse: UserResponse = UserFactory.userResponse(user)
+        val sessionId: String = ObjectId().toString()
         val tokenInfo = TokenInfo(
             id = userResponse.id,
             email = userResponse.email,
@@ -85,7 +85,7 @@ class UserAuthenticationService(
     }
 
     suspend fun session(accountId: String): UserResponse {
-        val user = databaseRepository.getUserById(accountId)
+        val user: User = databaseRepository.getUserById(accountId)
         verifyUserStatus(user)
 
         return UserFactory.userResponse(user)

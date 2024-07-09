@@ -1,4 +1,4 @@
-package com.sanisamoj.services
+package com.sanisamoj.services.user
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
@@ -8,8 +8,6 @@ import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.database.mongodb.Fields
 import com.sanisamoj.database.mongodb.OperationField
-import com.sanisamoj.services.user.UserAuthenticationService
-import com.sanisamoj.services.user.UserFactory
 import com.sanisamoj.utils.analyzers.dotEnv
 import io.ktor.client.request.*
 import io.ktor.http.*

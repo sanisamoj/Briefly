@@ -35,6 +35,10 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
             )
         }
 
+        Errors.ShortLinkNotFound.description -> {
+            HttpStatusCode.NotFound to ErrorResponse(Errors.ShortLinkNotFound.description)
+        }
+
         else -> {
             HttpStatusCode.InternalServerError to ErrorResponse(Errors.InternalServerError.description)
         }

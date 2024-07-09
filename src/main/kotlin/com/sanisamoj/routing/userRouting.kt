@@ -1,7 +1,6 @@
 package com.sanisamoj.routing
 
-import com.sanisamoj.data.models.dataclass.LoginRequest
-import com.sanisamoj.data.models.dataclass.UserCreateRequest
+import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.pages.confirmationPage
 import com.sanisamoj.data.pages.tokenExpiredPage
 import com.sanisamoj.errors.errorResponse
@@ -28,11 +27,11 @@ fun Route.userRouting() {
                 val user = call.receive<UserCreateRequest>()
 
                 try {
-                    val userResponse = UserService().createUser(user)
+                    val userResponse: UserResponse = UserService().createUser(user)
                     return@post call.respond(userResponse)
 
                 } catch (e: Exception) {
-                    val response = errorResponse(e.message!!)
+                    val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
                     return@post call.respond(response.first, message = response.second)
                 }
             }
@@ -52,23 +51,26 @@ fun Route.userRouting() {
                     return@post call.respond(HttpStatusCode.OK)
 
                 } catch (e: Exception) {
-                    val response = errorResponse(e.message!!)
+                    val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
                     return@post call.respond(response.first, message = response.second)
                 }
             }
         }
 
-        // Responsible for login
-        post("/login") {
-            val loginRequest = call.receive<LoginRequest>()
+        rateLimit(RateLimitName("login")) {
 
-            try {
-                val userResponse = UserAuthenticationService().login(loginRequest)
-                return@post call.respond(userResponse)
+            // Responsible for login
+            post("/login") {
+                val loginRequest = call.receive<LoginRequest>()
 
-            } catch (e: Exception) {
-                val response = errorResponse(e.message!!)
-                return@post call.respond(response.first, message = response.second)
+                try {
+                    val userResponse: LoginResponse = UserAuthenticationService().login(loginRequest)
+                    return@post call.respond(userResponse)
+
+                } catch (e: Exception) {
+                    val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
+                    return@post call.respond(response.first, message = response.second)
+                }
             }
         }
 
@@ -89,36 +91,39 @@ fun Route.userRouting() {
             }
         }
 
-        authenticate("user-jwt") {
+        rateLimit(RateLimitName("lightweight")) {
 
-            // Responsible for session
-            post("/session") {
-                val principal = call.principal<JWTPrincipal>()!!
-                val accountId = principal.payload.getClaim("id").asString()
+            authenticate("user-jwt") {
 
-                try {
-                    val userResponse = UserAuthenticationService().session(accountId)
-                    return@post call.respond(userResponse)
+                // Responsible for session
+                post("/session") {
+                    val principal = call.principal<JWTPrincipal>()!!
+                    val accountId = principal.payload.getClaim("id").asString()
 
-                } catch (e: Exception) {
-                    val response = errorResponse(e.message!!)
-                    return@post call.respond(response.first, message = response.second)
+                    try {
+                        val userResponse: UserResponse = UserAuthenticationService().session(accountId)
+                        return@post call.respond(userResponse)
+
+                    } catch (e: Exception) {
+                        val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
+                        return@post call.respond(response.first, message = response.second)
+                    }
                 }
-            }
 
-            // Responsible for sign out
-            delete("/session") {
-                val principal = call.principal<JWTPrincipal>()!!
-                val accountId = principal.payload.getClaim("id").asString()
-                val sessionId = principal.payload.getClaim("session").asString()
+                // Responsible for sign out
+                delete("/session") {
+                    val principal = call.principal<JWTPrincipal>()!!
+                    val accountId = principal.payload.getClaim("id").asString()
+                    val sessionId = principal.payload.getClaim("session").asString()
 
-                try {
-                    UserAuthenticationService().signOut(accountId, sessionId)
-                    return@delete call.respond(HttpStatusCode.OK)
-                }
-                catch (e: Exception) {
-                    val response = errorResponse(e.message!!)
-                    return@delete call.respond(response.first, message = response.second)
+                    try {
+                        UserAuthenticationService().signOut(accountId, sessionId)
+                        return@delete call.respond(HttpStatusCode.OK)
+                    }
+                    catch (e: Exception) {
+                        val response = errorResponse(e.message!!)
+                        return@delete call.respond(response.first, message = response.second)
+                    }
                 }
             }
         }

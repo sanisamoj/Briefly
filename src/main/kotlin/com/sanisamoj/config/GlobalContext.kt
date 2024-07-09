@@ -4,6 +4,7 @@ import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.MailRepository
 import com.sanisamoj.data.models.interfaces.ServerContainer
 import com.sanisamoj.data.models.interfaces.SessionRepository
+import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
@@ -12,9 +13,12 @@ object GlobalContext {
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
 
-    val USER_TOKEN_EXPIRATION = TimeUnit.DAYS.toMillis(15)
-    val EMAIL_TOKEN_EXPIRATION = TimeUnit.MINUTES.toMillis(5)
-    val MODERATOR_TOKEN_EXPIRATION = TimeUnit.DAYS.toMillis(1)
+    val USER_TOKEN_EXPIRATION: Long = TimeUnit.DAYS.toMillis(15)
+    val EMAIL_TOKEN_EXPIRATION: Long = TimeUnit.MINUTES.toMillis(5)
+    val MODERATOR_TOKEN_EXPIRATION: Long = TimeUnit.DAYS.toMillis(1)
+
+    var LINK_ENTRY_EXPIRES_IN: LocalDateTime = LocalDateTime.now().plusDays(365)
+        private set
 
     fun getMobileMinVersion(): String { return mobileMinVersion }
     fun getMobileTargetVersion(): String { return mobileTargetVersion }

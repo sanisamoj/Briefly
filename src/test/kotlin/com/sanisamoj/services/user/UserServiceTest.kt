@@ -1,9 +1,10 @@
-package com.sanisamoj.services
+package com.sanisamoj.services.user
 
 import com.sanisamoj.TestContext
+import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
+import com.sanisamoj.data.models.dataclass.UserResponse
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
-import com.sanisamoj.services.user.UserService
 import io.ktor.server.testing.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -23,8 +24,8 @@ class UserServiceTest {
     fun createUserTest() = testApplication {
         val userService = UserService(databaseRepository = databaseRepository)
 
-        val user = userService.createUser(userCreateRequestTest)
-        val userInDb = databaseRepository.getUserByEmail(user.email)
+        val user: UserResponse = userService.createUser(userCreateRequestTest)
+        val userInDb: User? = databaseRepository.getUserByEmail(user.email)
 
         assertNotNull(userInDb)
         assertEquals(user.username, userInDb.username)
@@ -51,7 +52,7 @@ class UserServiceTest {
     @Test
     fun createAlreadyExistsUser() = testApplication {
         val userService = UserService(databaseRepository = databaseRepository)
-        val user = userService.createUser(userCreateRequestTest)
+        val user: UserResponse = userService.createUser(userCreateRequestTest)
 
         assertFails {
             userService.createUser(userCreateRequestTest)

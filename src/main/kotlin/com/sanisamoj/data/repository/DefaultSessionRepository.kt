@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 class DefaultSessionRepository: SessionRepository {
     override suspend fun getSession(accountId: String): Sessions {
         val identificationRedis = DataIdentificationRedis(CollectionsInRedis.LiveSessions, accountId)
-        val sessions = Redis.getObject<Sessions>(identificationRedis) ?: createEmptySession(accountId)
+        val sessions: Sessions = Redis.getObject<Sessions>(identificationRedis) ?: createEmptySession(accountId)
         return sessions
     }
 
@@ -25,32 +25,32 @@ class DefaultSessionRepository: SessionRepository {
     }
 
     override suspend fun setSessionEntry(accountId: String, entry: SessionEntry) {
-        val session = getSession(accountId)
-        val liveSessions = session.liveSessions.toMutableList()
+        val session: Sessions = getSession(accountId)
+        val liveSessions: MutableList<SessionEntry> = session.liveSessions.toMutableList()
         liveSessions.add(entry)
-        val newSession = session.copy(liveSessions = liveSessions)
+        val newSession: Sessions = session.copy(liveSessions = liveSessions)
 
         val identificationRedis = DataIdentificationRedis(CollectionsInRedis.LiveSessions, session.accountId)
         Redis.setObject(identificationRedis, newSession)
     }
 
     override suspend fun getSessionEntry(accountId: String, sessionId: String): SessionEntry? {
-        val session = getSession(accountId)
+        val session: Sessions = getSession(accountId)
         return session.liveSessions.find { it.sessionId == sessionId }
     }
 
     override suspend fun revokeSession(accountId: String, sessionId: String) {
-        val session = getSession(accountId)
-        val liveSessions = session.liveSessions.toMutableList()
-        val revokedSessions = session.revokedSessions.toMutableList()
+        val session: Sessions = getSession(accountId)
+        val liveSessions: MutableList<SessionEntry> = session.liveSessions.toMutableList()
+        val revokedSessions: MutableList<SessionEntry> = session.revokedSessions.toMutableList()
 
-        val liveSessionIndex = liveSessions.indexOfFirst { it.sessionId == sessionId }
-        val revokedSession = liveSessions[liveSessionIndex]
+        val liveSessionIndex: Int = liveSessions.indexOfFirst { it.sessionId == sessionId }
+        val revokedSession: SessionEntry = liveSessions[liveSessionIndex]
 
         revokedSessions.add(revokedSession)
         liveSessions.removeAt(liveSessionIndex)
 
-        val newSession = session.copy(liveSessions = liveSessions, revokedSessions = revokedSessions)
+        val newSession: Sessions = session.copy(liveSessions = liveSessions, revokedSessions = revokedSessions)
         saveSession(newSession)
 
         val identificationRedisToRevokedSessions = DataIdentificationRedis(CollectionsInRedis.RevokedSessions, sessionId)
@@ -63,7 +63,7 @@ class DefaultSessionRepository: SessionRepository {
 
     override suspend fun sessionRevoked(accountId: String, sessionId: String): Boolean {
         val identificationRedis = DataIdentificationRedis(CollectionsInRedis.RevokedSessions, sessionId)
-        val sessionIdInRedis = Redis.get(identificationRedis)
+        val sessionIdInRedis: String? = Redis.get(identificationRedis)
         return sessionIdInRedis != null
     }
 

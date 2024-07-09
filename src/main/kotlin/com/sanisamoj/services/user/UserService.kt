@@ -11,7 +11,7 @@ class UserService(
 ) {
     suspend fun createUser(userCreateRequest: UserCreateRequest): UserResponse {
         verifyUserCreateRequest(userCreateRequest) // Check if there are any empty items
-        val userAlreadyExist = verifyIfUserAlreadyExists(userCreateRequest)
+        val userAlreadyExist: Boolean = verifyIfUserAlreadyExists(userCreateRequest)
         if(userAlreadyExist) throw Exception(Errors.UserAlreadyExists.description)
 
         val user = UserFactory.user(userCreateRequest)

@@ -3,7 +3,9 @@ package com.sanisamoj.data.models.enums
 enum class Errors(val description: String) {
     DatabaseConnectionError("Database connection error!"),
     InternalServerError("Internal Server Error!"),
+    InactiveRedirection("Inactive redirection!"),
     RedisNotResponding("Redis not responding!"),
+    ShortLinkNotFound("Short link not found!"),
     UserAlreadyExists("User already exists!"),
     UnableToComplete("Unable to complete!"),
     InvalidLogin("Invalid email/password!"),
