@@ -1,14 +1,14 @@
 package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.config.GlobalContext
-import com.sanisamoj.data.models.dataclass.LinkEntry
-import com.sanisamoj.data.models.dataclass.LinkEntryRequest
-import com.sanisamoj.data.models.dataclass.LinkEntryResponse
+import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
+import com.sanisamoj.utils.analyzers.dotEnv
 import com.sanisamoj.utils.analyzers.hasEmptyStringProperties
 import com.sanisamoj.utils.converters.converterStringToLocalDateTime
 import com.sanisamoj.utils.generators.CharactersGenerator
+import io.ktor.server.plugins.*
 import org.bson.types.ObjectId
 import java.time.LocalDateTime
 
@@ -50,6 +50,20 @@ class LinkEntryService(
         } while (shortLinkAlreadyExists)
 
         return shortLink
+    }
+
+    suspend fun redirectLink(redirectInfo: RedirectInfo): String {
+        val link: LinkEntry = databaseRepository.getLinkByShortLink(redirectInfo.shortLink)
+            ?: throw NotFoundException(Errors.ShortLinkNotFound.description)
+
+        val deviceType = redirectInfo.userAgent.deviceType
+        val subOperatingSystem = redirectInfo.userAgent.subOperatingSystem
+        val operatingSystem = "${redirectInfo.userAgent.operatingSystem} $subOperatingSystem"
+        val browser = redirectInfo.userAgent.browser
+        val deviceInfo = DeviceInfo(deviceType, operatingSystem, browser)
+
+
+        return link.originalLink
     }
 
     private suspend fun getLinkEntryByShortLink(shortLink: String): LinkEntryResponse {

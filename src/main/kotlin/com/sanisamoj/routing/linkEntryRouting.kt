@@ -1,14 +1,14 @@
 package com.sanisamoj.routing
 
-import com.sanisamoj.data.models.dataclass.ErrorResponse
-import com.sanisamoj.data.models.dataclass.LinkEntryRequest
-import com.sanisamoj.data.models.dataclass.LinkEntryResponse
+import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.errors.errorResponse
 import com.sanisamoj.services.linkEntry.LinkEntryService
+import com.sanisamoj.utils.generators.parseUserAgent
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -34,6 +34,32 @@ fun Route.linkEntryRouting() {
                     val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
                     return@post call.respond(response.first, message = response.second)
                 }
+            }
+        }
+    }
+
+    // Responsible for redirect user or redirect homepage
+    get("/{shortLink}") {
+        val shortLink: String? = call.parameters["shortLink"]
+
+        val ip: String = call.request.origin.remoteHost
+        val userAgent: String = call.request.headers["User-Agent"] ?: "Unknown"
+        val userAgentInfo: UserAgentInfo = parseUserAgent(userAgent)
+
+        // Redirect to homepage
+        if(shortLink == null) {
+            return@get call.respond(HttpStatusCode.BadRequest)
+
+        } else {
+            val redirectInfo = RedirectInfo(ip, shortLink, userAgentInfo)
+
+            try {
+                val redirectLink: String = LinkEntryService().redirectLink(redirectInfo)
+                return@get call.respondRedirect(redirectLink, permanent = false)
+
+            } catch (e: Throwable) {
+                val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
+                return@get call.respond(response.first, message = response.second)
             }
         }
     }

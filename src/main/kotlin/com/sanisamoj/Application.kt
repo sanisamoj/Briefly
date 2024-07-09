@@ -5,6 +5,7 @@ import com.sanisamoj.database.redis.Redis
 import com.sanisamoj.plugins.*
 import com.sanisamoj.utils.analyzers.dotEnv
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,6 +22,7 @@ fun Application.module() {
     configureSerialization()
     configureSockets()
     configureRouting()
+    clickersCount()
     startBackgroundTasks()
 }
 
