@@ -15,4 +15,5 @@ interface DatabaseRepository {
     suspend fun registerLink(link: LinkEntry): LinkEntry
     suspend fun getLinkById(id: String): LinkEntry
     suspend fun getLinkByShortLink(shortLink: String): LinkEntry?
+    suspend fun deleteLinkByShortLink(shortLink: String)
 }

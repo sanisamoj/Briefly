@@ -62,7 +62,6 @@ class LinkEntryService(
         val browser = redirectInfo.userAgent.browser
         val deviceInfo = DeviceInfo(deviceType, operatingSystem, browser)
 
-
         return link.originalLink
     }
 

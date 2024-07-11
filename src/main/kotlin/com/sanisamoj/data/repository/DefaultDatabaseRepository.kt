@@ -78,4 +78,11 @@ class DefaultDatabaseRepository: DatabaseRepository {
             filter = OperationField(Fields.ShortLink, shortLink)
         )
     }
+
+    override suspend fun deleteLinkByShortLink(shortLink: String) {
+        MongodbOperations().deleteItem<LinkEntry>(
+            collectionName = CollectionsInDb.LinkEntry,
+            filter = OperationField(Fields.ShortLink, shortLink)
+        )
+    }
 }

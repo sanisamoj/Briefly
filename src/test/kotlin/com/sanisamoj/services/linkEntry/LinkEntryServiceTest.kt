@@ -5,6 +5,7 @@ import com.sanisamoj.data.models.dataclass.LinkEntryRequest
 import com.sanisamoj.data.models.dataclass.LinkEntryResponse
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.enums.AccountStatus
+import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.utils.UserTest
 import io.ktor.server.testing.*
 import java.time.LocalDateTime
@@ -13,6 +14,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFails
 
 class LinkEntryServiceTest {
+    private val databaseRepository: DatabaseRepository by lazy { TestContext.getDatabaseRepository() }
 
     @Test
     fun registerLinkEntryTest() = testApplication {
@@ -34,6 +36,8 @@ class LinkEntryServiceTest {
         assertEquals(linkEntryRequest.link, linkEntryResponse.originalLink)
 
         userTest.deleteUserTest()
+        val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
+        databaseRepository.deleteLinkByShortLink(shortLink)
     }
 
     @Test
@@ -86,5 +90,11 @@ class LinkEntryServiceTest {
         assertEquals(expiresInTest.toString(), linkEntryResponseWithWithEarlyDateTest.expiresAt)
 
         userTest.deleteUserTest()
+        databaseRepository.deleteLinkByShortLink(
+            shortLink = linkEntryResponseWithExcessiveDateTest.shortLink.substringAfterLast("/")
+        )
+        databaseRepository.deleteLinkByShortLink(
+            shortLink = linkEntryResponseWithWithEarlyDateTest.shortLink.substringAfterLast("/")
+        )
     }
 }

@@ -88,4 +88,8 @@ object TestDatabaseRepository: DatabaseRepository {
     override suspend fun getLinkByShortLink(shortLink: String): LinkEntry? {
         return testLinks.firstOrNull { it.shortLink == shortLink }
     }
+
+    override suspend fun deleteLinkByShortLink(shortLink: String) {
+        TODO("Not yet implemented")
+    }
 }
