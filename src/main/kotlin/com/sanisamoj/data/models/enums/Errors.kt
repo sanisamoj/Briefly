@@ -4,6 +4,7 @@ enum class Errors(val description: String) {
     DatabaseConnectionError("Database connection error!"),
     InternalServerError("Internal Server Error!"),
     InactiveRedirection("Inactive redirection!"),
+    LinkIsNotActive("Link is not active"),
     RedisNotResponding("Redis not responding!"),
     ShortLinkNotFound("Short link not found!"),
     UserAlreadyExists("User already exists!"),

@@ -6,6 +6,5 @@ import kotlinx.serialization.Serializable
 data class ClickerResponse(
     val region: Region,
     val deviceInfo: DeviceInfo,
-    val clickCount: Int,
     val clickedAt: String
 )

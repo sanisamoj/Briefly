@@ -10,7 +10,6 @@ object LinkEntryFactory {
     fun linkEntryResponse(linkEntry: LinkEntry): LinkEntryResponse {
         val selfUrl: String = dotEnv("SELF_URL")
         val shortLink = "${selfUrl}/${linkEntry.shortLink}"
-        val uniqueClickersResponseList: List<ClickerResponse> = linkEntry.uniqueClickers.map { clickerResponse(it) }
         val totalVisitsResponseList: List<ClickerResponse> = linkEntry.totalVisits.map { clickerResponse(it) }
 
         return LinkEntryResponse(
@@ -19,7 +18,6 @@ object LinkEntryFactory {
             active = linkEntry.active,
             shortLink = shortLink,
             originalLink = linkEntry.originalLink,
-            uniqueClickers = uniqueClickersResponseList,
             totalVisits = totalVisitsResponseList,
             expiresAt = linkEntry.expiresAt,
         )
@@ -29,7 +27,6 @@ object LinkEntryFactory {
         return ClickerResponse(
             region = clicker.region,
             deviceInfo = clicker.deviceInfo,
-            clickCount = clicker.clickCount,
             clickedAt = clicker.clickedAt,
         )
     }

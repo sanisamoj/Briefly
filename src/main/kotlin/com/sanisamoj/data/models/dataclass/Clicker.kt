@@ -8,6 +8,5 @@ data class Clicker(
     val ip: String,
     val region: Region,
     val deviceInfo: DeviceInfo,
-    val clickCount: Int,
     val clickedAt: String = LocalDateTime.now().toString()
 )

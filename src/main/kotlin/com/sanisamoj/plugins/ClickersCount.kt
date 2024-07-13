@@ -10,6 +10,5 @@ fun Application.clickersCount() {
         val ip: String = call.request.origin.remoteHost
         val userAgent: String = call.request.headers["User-Agent"] ?: "Unknown"
         val userAgentInfo: UserAgentInfo = parseUserAgent(userAgent)
-        println(userAgentInfo)
     }
 }

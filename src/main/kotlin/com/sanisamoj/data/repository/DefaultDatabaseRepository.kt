@@ -1,5 +1,6 @@
 package com.sanisamoj.data.repository
 
+import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
@@ -76,6 +77,14 @@ class DefaultDatabaseRepository: DatabaseRepository {
         return MongodbOperations().findOne<LinkEntry>(
             collectionName = CollectionsInDb.LinkEntry,
             filter = OperationField(Fields.ShortLink, shortLink)
+        )
+    }
+
+    override suspend fun addClickerInShortLink(shortLink: String, clicker: Clicker) {
+        MongodbOperations().pushItem<LinkEntry>(
+            collectionName = CollectionsInDb.LinkEntry,
+            filter = OperationField(Fields.ShortLink, shortLink),
+            update = OperationField(Fields.TotalVisits, clicker)
         )
     }
 

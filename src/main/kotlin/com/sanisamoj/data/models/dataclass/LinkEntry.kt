@@ -11,7 +11,6 @@ data class LinkEntry(
     val active: Boolean = true,
     val shortLink: String,
     val originalLink: String,
-    val uniqueClickers: List<Clicker> = emptyList(),
     val totalVisits: List<Clicker> = emptyList(),
     val expiresAt: String = LocalDateTime.now().withYear(1).toString()
 )

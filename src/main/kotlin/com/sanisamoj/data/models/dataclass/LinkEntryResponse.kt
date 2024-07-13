@@ -9,7 +9,6 @@ data class LinkEntryResponse(
     val active: Boolean,
     val shortLink: String,
     val originalLink: String,
-    val uniqueClickers: List<ClickerResponse>,
     val totalVisits: List<ClickerResponse>,
     val expiresAt: String
 )

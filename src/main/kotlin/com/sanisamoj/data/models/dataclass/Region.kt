@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Region(
     val city: String,
-    val zipcode: String,
+    val country: String,
+    val zipcode: String
 )

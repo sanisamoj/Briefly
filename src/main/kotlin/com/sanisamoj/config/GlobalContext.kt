@@ -1,9 +1,6 @@
 package com.sanisamoj.config
 
-import com.sanisamoj.data.models.interfaces.DatabaseRepository
-import com.sanisamoj.data.models.interfaces.MailRepository
-import com.sanisamoj.data.models.interfaces.ServerContainer
-import com.sanisamoj.data.models.interfaces.SessionRepository
+import com.sanisamoj.data.models.interfaces.*
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
@@ -29,5 +26,6 @@ object GlobalContext {
 
     fun getDatabaseRepository(): DatabaseRepository { return serverContainer.databaseRepository }
     fun getSessionRepository(): SessionRepository { return serverContainer.sessionRepository }
+    fun getIpRepository(): IpRepository { return serverContainer.ipRepository }
     fun getMailRepository(): MailRepository { return serverContainer.mailRepository }
 }

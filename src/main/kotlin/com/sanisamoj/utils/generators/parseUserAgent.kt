@@ -4,40 +4,57 @@ import com.sanisamoj.data.models.dataclass.UserAgentInfo
 
 fun parseUserAgent(userAgent: String): UserAgentInfo {
     try {
-        // Remove whitespace, semicolons and commas
-        val cleanedAgent: String = userAgent.replace("[\\s;,]+".toRegex(), " ")
-            .replace("mobile", "", ignoreCase = true).trim()
-
         // Detect device type
         val deviceType: String = if (userAgent.contains("mobile", ignoreCase = true)) "mobile" else "desktop"
 
-        // Remove brackets
-        val agentWithoutBrackets: String = cleanedAgent.replace("[\\(\\)]".toRegex(), "")
-
-        // Split into parts
-        val parts: List<String> = agentWithoutBrackets.split(" ")
+        // Remove brackets and split into parts
+        val parts: List<String> = userAgent.replace("[\\(\\)]".toRegex(), "").split("[\\s;,]+".toRegex())
 
         // General info
         val generalInfo: String = parts[0]
 
         // Operating System
-        val osInfo: String = parts.subList(1, 4).joinToString(" ")
-        val osInfoSplit = osInfo.split(" ")
-        val operatingSystem = osInfoSplit[0]
-        val subOperatingSystem = "${osInfoSplit[1]} ${osInfoSplit[2]}"
+        val osInfoIndex = parts.indexOfFirst { it.contains("Windows") || it.contains("Linux") || it.contains("Mac") || it.contains("Android") }
+        val operatingSystem = parts[osInfoIndex]
+        val subOperatingSystem = if (osInfoIndex + 1 < parts.size) parts[osInfoIndex + 1] else ""
 
         // Operating System Details
-        val osDetails: List<String> = parts.subList(4, 6).map { it.trim() }
+        val osDetails: List<String> = mutableListOf<String>().apply {
+            var index = osInfoIndex + 1
+            while (index < parts.size && parts[index].contains(Regex("^[A-Za-z0-9.-]+$"))) {
+                add(parts[index])
+                index++
+            }
+        }
 
-        // Browser Engine
-        val browserEngineInfo: String = parts[6]
-
-        // Browser Engine Details
-        val browserEngineDetails: List<String> = parts.subList(7, parts.size - 1).map { it.trim() }
+        // Browser Engine and Details
+        val browserEngineIndex = parts.indexOfFirst { it.contains("WebKit") || it.contains("Gecko") || it.contains("Trident") || it.contains("Blink") }
+        val browserEngine = parts[browserEngineIndex]
+        val browserEngineDetails: List<String> = mutableListOf<String>().apply {
+            var index = browserEngineIndex + 1
+            while (index < parts.size && parts[index].contains(Regex("^[A-Za-z0-9./:-]+$"))) {
+                add(parts[index])
+                index++
+            }
+        }
 
         // Browser
-        val webKit: String = parts[parts.size - 1]
-        val browser: String = parts[parts.size - 2]
+        val browser = when {
+            userAgent.contains("OPR", ignoreCase = true) || userAgent.contains("Opera", ignoreCase = true) -> "Opera"
+            userAgent.contains("Vivaldi", ignoreCase = true) -> "Vivaldi"
+            userAgent.contains("Edg", ignoreCase = true) -> "Edge"
+            userAgent.contains("Chrome", ignoreCase = true) && !userAgent.contains("Edg") -> "Chrome"
+            userAgent.contains("Firefox", ignoreCase = true) || userAgent.contains("FxiOS", ignoreCase = true) -> "Firefox"
+            userAgent.contains("Safari", ignoreCase = true) && !userAgent.contains("Chrome") && !userAgent.contains("OPR") -> "Safari"
+            userAgent.contains("Trident", ignoreCase = true) || userAgent.contains("MSIE", ignoreCase = true) -> "Internet Explorer"
+            userAgent.contains("SamsungBrowser", ignoreCase = true) -> "Samsung Internet"
+            userAgent.contains("DuckDuckGo", ignoreCase = true) -> "DuckDuckGo"
+            userAgent.contains("TorBrowser", ignoreCase = true) -> "Tor"
+            else -> "unknown"
+        }
+
+        // WebKit
+        val webKit = parts.find { it.contains("Edg/") || it.contains("Chrome/") || it.contains("Safari/") } ?: "unknown"
 
         return UserAgentInfo(
             general = generalInfo,
@@ -45,7 +62,7 @@ fun parseUserAgent(userAgent: String): UserAgentInfo {
             operatingSystem = operatingSystem,
             subOperatingSystem = subOperatingSystem,
             operatingSystemDetails = osDetails,
-            browserEngine = browserEngineInfo,
+            browserEngine = browserEngine,
             browserEngineDetails = browserEngineDetails,
             webKit = webKit,
             browser = browser

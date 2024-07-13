@@ -1,5 +1,6 @@
 package com.sanisamoj.data.models.interfaces
 
+import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.database.mongodb.OperationField
@@ -15,5 +16,6 @@ interface DatabaseRepository {
     suspend fun registerLink(link: LinkEntry): LinkEntry
     suspend fun getLinkById(id: String): LinkEntry
     suspend fun getLinkByShortLink(shortLink: String): LinkEntry?
+    suspend fun addClickerInShortLink(shortLink: String, clicker: Clicker)
     suspend fun deleteLinkByShortLink(shortLink: String)
 }

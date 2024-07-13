@@ -199,7 +199,6 @@ class MongodbOperations {
             Document(filter.field.title, filter.value),
             Document("\$set", Document(update.field.title, update.value))
         )
-
     }
 
     // Push a value in the array of itens
@@ -215,24 +214,6 @@ class MongodbOperations {
             Document(filter.field.title, filter.value),
             Document("\$push", Document(update.field.title, update.value))
         )
-
-    }
-
-    // Pull a value in the array of itens
-    suspend inline fun <reified T : Any> pullItem(
-        collectionName: CollectionsInDb,
-        filter: OperationField,
-        subFilter: OperationField,
-        update: OperationField
-    ) {
-        val database = MongoDatabase.getDatabase()
-        val collection = database.getCollection<T>(collectionName.name)
-
-        collection.updateOne(
-            Document(filter.field.title, filter.value),
-            Document("\$pull", Document(subFilter.field.title, Document(update.field.title, update.value)))
-        )
-
     }
 
 }
