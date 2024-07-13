@@ -1,5 +1,6 @@
 package com.sanisamoj.data
 
+import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
@@ -87,6 +88,10 @@ object TestDatabaseRepository: DatabaseRepository {
 
     override suspend fun getLinkByShortLink(shortLink: String): LinkEntry? {
         return testLinks.firstOrNull { it.shortLink == shortLink }
+    }
+
+    override suspend fun addClickerInShortLink(shortLink: String, clicker: Clicker) {
+        TODO("Not yet implemented")
     }
 
     override suspend fun deleteLinkByShortLink(shortLink: String) {
