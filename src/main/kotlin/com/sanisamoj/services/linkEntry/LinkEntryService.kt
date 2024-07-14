@@ -1,11 +1,13 @@
 package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.config.GlobalContext
+import com.sanisamoj.config.GlobalContext.MAX_SHORT_LINK_BY_ACCOUNT
 import com.sanisamoj.config.GlobalContext.UNKNOWN_USER_ID
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.IpRepository
+import com.sanisamoj.services.user.UserService
 import com.sanisamoj.utils.analyzers.hasEmptyStringProperties
 import com.sanisamoj.utils.converters.converterStringToLocalDateTime
 import com.sanisamoj.utils.generators.CharactersGenerator
@@ -31,6 +33,10 @@ class LinkEntryService(
         if(validatedExpiresIn.isAfter(expiresIn) || validatedExpiresIn.isBefore(currentTime)) {
             validatedExpiresIn = expiresIn
         }
+
+        val userResponse: UserResponse = UserService().getUserById(linkEntryRequest.userId)
+        if(userResponse.linkEntryList.size > MAX_SHORT_LINK_BY_ACCOUNT)
+            throw Exception(Errors.MaximumShortLinksExceeded.description)
 
         val linkEntry = LinkEntry(
             id = ObjectId(),

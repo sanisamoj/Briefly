@@ -18,6 +18,7 @@ object GlobalContext {
         private set
 
     const val UNKNOWN_USER_ID = "Unknown"
+    const val MAX_SHORT_LINK_BY_ACCOUNT: Int = 25
 
     fun getMobileMinVersion(): String { return mobileMinVersion }
     fun getMobileTargetVersion(): String { return mobileTargetVersion }
