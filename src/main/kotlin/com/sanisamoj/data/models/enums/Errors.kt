@@ -2,6 +2,7 @@ package com.sanisamoj.data.models.enums
 
 enum class Errors(val description: String) {
     DatabaseConnectionError("Database connection error!"),
+    AccessProhibited("Access prohibited!"),
     InternalServerError("Internal Server Error!"),
     InactiveRedirection("Inactive redirection!"),
     LinkIsNotActive("Link is not active"),

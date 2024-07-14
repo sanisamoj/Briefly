@@ -1,9 +1,6 @@
 package com.sanisamoj.services.linkEntry
 
-import com.sanisamoj.data.models.dataclass.Clicker
-import com.sanisamoj.data.models.dataclass.ClickerResponse
-import com.sanisamoj.data.models.dataclass.LinkEntry
-import com.sanisamoj.data.models.dataclass.LinkEntryResponse
+import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.utils.analyzers.dotEnv
 
 object LinkEntryFactory {
@@ -20,6 +17,20 @@ object LinkEntryFactory {
             qrCodeLink = qrCodeLink,
             originalLink = linkEntry.originalLink,
             totalVisits = totalVisitsResponseList,
+            expiresAt = linkEntry.expiresAt,
+        )
+    }
+
+    fun midLinkEntryResponse(linkEntry: LinkEntry): MidLinkEntryResponse {
+        val selfUrl: String = dotEnv("SELF_URL")
+        val shortLink = "${selfUrl}/${linkEntry.shortLink}"
+        val qrCodeLink = "${selfUrl}/qrcode?code=${linkEntry.shortLink}"
+
+        return MidLinkEntryResponse(
+            active = linkEntry.active,
+            shortLink = shortLink,
+            qrCodeLink = qrCodeLink,
+            originalLink = linkEntry.originalLink,
             expiresAt = linkEntry.expiresAt,
         )
     }

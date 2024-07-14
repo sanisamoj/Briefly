@@ -24,7 +24,7 @@ object CharactersGenerator {
     fun generateWithNoSymbols(maxChat: Int = 5): String {
 
         // Caracteres permitidos
-        val chars = "abcdefghijklmnopqrstuvwxyz0123456789@$&?!"
+        val chars = "abcdefghijklmnopqrstuvwxyz0123456789@$"
 
         // Irá gerar um conjunto de caracteres
         val characters = (1..maxChat).map{ chars.random() }.joinToString("")

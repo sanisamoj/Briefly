@@ -17,6 +17,8 @@ object GlobalContext {
     var LINK_ENTRY_EXPIRES_IN: LocalDateTime = LocalDateTime.now().plusDays(365)
         private set
 
+    const val UNKNOWN_USER_ID = "Unknown"
+
     fun getMobileMinVersion(): String { return mobileMinVersion }
     fun getMobileTargetVersion(): String { return mobileTargetVersion }
 

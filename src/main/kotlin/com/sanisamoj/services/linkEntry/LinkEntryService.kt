@@ -1,11 +1,11 @@
 package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.config.GlobalContext
+import com.sanisamoj.config.GlobalContext.UNKNOWN_USER_ID
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.IpRepository
-import com.sanisamoj.utils.analyzers.dotEnv
 import com.sanisamoj.utils.analyzers.hasEmptyStringProperties
 import com.sanisamoj.utils.converters.converterStringToLocalDateTime
 import com.sanisamoj.utils.generators.CharactersGenerator
@@ -63,8 +63,10 @@ class LinkEntryService(
 
         if(!link.active) throw Exception(Errors.LinkIsNotActive.description)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            addClickerInLinkEntry(redirectInfo)
+        if(link.userId !== UNKNOWN_USER_ID) {
+            CoroutineScope(Dispatchers.IO).launch {
+                addClickerInLinkEntry(redirectInfo)
+            }
         }
 
         return link.originalLink
@@ -100,6 +102,15 @@ class LinkEntryService(
             ?: throw Exception(Errors.ShortLinkNotFound.description)
 
         return LinkEntryFactory.linkEntryResponse(linkEntry)
+    }
+
+    suspend fun getPublicLinkEntryByShortLink(shortLink: String): MidLinkEntryResponse {
+        val linkEntry: LinkEntry = databaseRepository.getLinkByShortLink(shortLink)
+            ?: throw Exception(Errors.ShortLinkNotFound.description)
+
+        if(linkEntry.userId != UNKNOWN_USER_ID) throw Exception(Errors.AccessProhibited.description)
+
+        return LinkEntryFactory.midLinkEntryResponse(linkEntry)
     }
 
     suspend fun getLinkEntryByShortLinkById(shortLinkId: String): LinkEntryResponse {

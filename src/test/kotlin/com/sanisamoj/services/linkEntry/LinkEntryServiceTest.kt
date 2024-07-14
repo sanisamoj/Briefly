@@ -1,6 +1,8 @@
 package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.TestContext
+import com.sanisamoj.config.GlobalContext
+import com.sanisamoj.config.GlobalContext.UNKNOWN_USER_ID
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
@@ -162,6 +164,31 @@ class LinkEntryServiceTest {
         assertEquals(TestContext.userAgentInfoTest.browser, linkEntry.totalVisits[0].deviceInfo.browser)
 
         userTest.deleteUserTest()
+        databaseRepository.deleteLinkByShortLink(shortLink)
+    }
+
+    @Test
+    fun registerPublicLinkEntryAndGetInfoTest() = testApplication {
+        val linkEntryRequest = LinkEntryRequest(
+            userId = UNKNOWN_USER_ID,
+            link = "linkTest",
+            active = true,
+            expiresIn = LocalDateTime.now().plusDays(5).toString()
+        )
+
+        val linkEntryService = LinkEntryService(databaseRepository = TestContext.getDatabaseRepository())
+        val linkEntryResponse: LinkEntryResponse = linkEntryService.register(linkEntryRequest)
+
+        assertEquals(UNKNOWN_USER_ID, linkEntryResponse.userId)
+        assertEquals(linkEntryRequest.active, linkEntryResponse.active)
+        assertEquals(linkEntryRequest.link, linkEntryResponse.originalLink)
+
+        val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
+        val midLinkEntryResponse: MidLinkEntryResponse = linkEntryService.getPublicLinkEntryByShortLink(shortLink)
+
+        assertEquals(linkEntryRequest.active, midLinkEntryResponse.active)
+        assertEquals(linkEntryRequest.link, midLinkEntryResponse.originalLink)
+
         databaseRepository.deleteLinkByShortLink(shortLink)
     }
 }

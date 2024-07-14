@@ -1,5 +1,6 @@
 package com.sanisamoj.data.repository
 
+import com.sanisamoj.config.GlobalContext.UNKNOWN_USER_ID
 import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
@@ -65,11 +66,13 @@ class DefaultDatabaseRepository: DatabaseRepository {
             item = link
         ).toString()
 
-        mongodbOperations.pushItem<LinkEntry>(
-            collectionName = CollectionsInDb.Users,
-            filter = OperationField(Fields.Id, ObjectId(link.userId)),
-            update = OperationField(Fields.ShortLinksId, linkId)
-        )
+        if(link.userId !== UNKNOWN_USER_ID) {
+            mongodbOperations.pushItem<LinkEntry>(
+                collectionName = CollectionsInDb.Users,
+                filter = OperationField(Fields.Id, ObjectId(link.userId)),
+                update = OperationField(Fields.ShortLinksId, linkId)
+            )
+        }
 
         return getLinkById(linkId)
     }
