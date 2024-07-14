@@ -8,6 +8,7 @@ data class LinkEntryResponse(
     val userId: String,
     val active: Boolean,
     val shortLink: String,
+    val qrCodeLink: String,
     val originalLink: String,
     val totalVisits: List<ClickerResponse>,
     val expiresAt: String

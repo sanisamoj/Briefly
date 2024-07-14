@@ -10,6 +10,7 @@ object LinkEntryFactory {
     fun linkEntryResponse(linkEntry: LinkEntry): LinkEntryResponse {
         val selfUrl: String = dotEnv("SELF_URL")
         val shortLink = "${selfUrl}/${linkEntry.shortLink}"
+        val qrCodeLink = "${selfUrl}/qrcode?code=${linkEntry.shortLink}"
         val totalVisitsResponseList: List<ClickerResponse> = linkEntry.totalVisits.map { clickerResponse(it) }
 
         return LinkEntryResponse(
@@ -17,6 +18,7 @@ object LinkEntryFactory {
             userId = linkEntry.userId,
             active = linkEntry.active,
             shortLink = shortLink,
+            qrCodeLink = qrCodeLink,
             originalLink = linkEntry.originalLink,
             totalVisits = totalVisitsResponseList,
             expiresAt = linkEntry.expiresAt,

@@ -95,7 +95,7 @@ class LinkEntryService(
         return DeviceInfo(deviceType, operatingSystem, browser)
     }
 
-    private suspend fun getLinkEntryByShortLink(shortLink: String): LinkEntryResponse {
+    suspend fun getLinkEntryByShortLink(shortLink: String): LinkEntryResponse {
         val linkEntry: LinkEntry = databaseRepository.getLinkByShortLink(shortLink)
             ?: throw Exception(Errors.ShortLinkNotFound.description)
 

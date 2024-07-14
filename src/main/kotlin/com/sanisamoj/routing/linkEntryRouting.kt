@@ -3,6 +3,7 @@ package com.sanisamoj.routing
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.errors.errorResponse
 import com.sanisamoj.services.linkEntry.LinkEntryService
+import com.sanisamoj.services.linkEntry.QrCode
 import com.sanisamoj.utils.generators.parseUserAgent
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -62,5 +63,20 @@ fun Route.linkEntryRouting() {
                 return@get call.respond(response.first, message = response.second)
             }
         }
+    }
+
+    get("/qrcode") {
+        val shortLink: String = call.request.queryParameters["code"].toString()
+
+        try {
+            val redirectLink: LinkEntryResponse = LinkEntryService().getLinkEntryByShortLink(shortLink)
+            val qrCode = QrCode.generate(redirectLink.originalLink, 200, 200)
+            call.respondBytes(qrCode, ContentType.Image.PNG)
+
+        } catch (e: Throwable) {
+            val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
+            return@get call.respond(response.first, message = response.second)
+        }
+
     }
 }

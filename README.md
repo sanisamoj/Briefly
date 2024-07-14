@@ -87,12 +87,17 @@ SMTP_SSL_TRUST=*
 EMAIL_SYSTEM=
 #Senha do email para autenticação do serviço de email
 EMAIL_PASSWORD=
+
+#IP-INFO | Token
+IP_INFO_TOKEN=
 ```
 > *MONGODB_SERVER_URL*=mongodb://host.docker.internal:27017 - Esta configuração serve para que a aplicação se conecte ao Mongodb localizado no localhost da máquina.
 
 > *REDIS_SERVER_URL*=host.docker.internal - Esta configuração serve para que a aplicação se conecte ao Redis localizado no localhost da máquina.
 
 > Nas configurações de Email, foi adicionado uma pré-configuração para utilizar os serviços do Gmail. Para a Senha do Email, é necessário gerar uma senha para aplicação em "Apps menos seguros" na sua conta do Gmail.
+
+> Para coleta de dados como região dos IPs, estou utilizando a API do IP Info https://ipinfo.io/
 
 #### Execute o comando a seguir para construir a imagem Docker.
 
