@@ -58,10 +58,17 @@ class DefaultDatabaseRepository: DatabaseRepository {
     }
 
     override suspend fun registerLink(link: LinkEntry): LinkEntry {
-        val linkId =  MongodbOperations().register(
+        val mongodbOperations = MongodbOperations()
+        val linkId =  mongodbOperations.register(
             collectionInDb = CollectionsInDb.LinkEntry,
             item = link
         ).toString()
+
+        mongodbOperations.pushItem<LinkEntry>(
+            collectionName = CollectionsInDb.Users,
+            filter = OperationField(Fields.Id, ObjectId(link.userId)),
+            update = OperationField(Fields.ShortLinksId, linkId)
+        )
 
         return getLinkById(linkId)
     }

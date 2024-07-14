@@ -17,7 +17,7 @@ object UserFactory {
         )
     }
 
-    // Transforma a requisição de criação de usuário, em USER
+    // Transforms the user creation request into USER
     fun user(userCreateRequest: UserCreateRequest): User {
         val hashedPassword = BCrypt.hashpw(userCreateRequest.password, BCrypt.gensalt())
         return User(
