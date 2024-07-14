@@ -14,20 +14,9 @@ class DefaultIpRepository(private val ipInfoApi: IpInfoApi = IpInfoApi) : IpRepo
         val service: IpInfoApiService = ipInfoApi.retrofitIpService
 
         return try {
-//            val ipInfo: IpInfo = service.getIpInfo("186.204.84.176", token)
-//            ipInfo
+            val ipInfo: IpInfo = service.getIpInfo(ip, token)
+            ipInfo
 
-            IpInfo(
-                ip = ip,
-                hostname = "unknown",
-                city = "unknown",
-                region = "unknown",
-                country = "unknown",
-                loc = "unknown",
-                org = "unknown",
-                postal = "unknown",
-                timezone = LocalDateTime.now().toString()
-            )
         } catch (e: Throwable) {
             IpInfo(
                 ip = ip,

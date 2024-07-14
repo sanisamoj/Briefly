@@ -36,6 +36,20 @@ fun Route.linkEntryRouting() {
                     return@post call.respond(response.first, message = response.second)
                 }
             }
+
+            // Responsible for return linkEntry
+            get {
+                val shortLink: String = call.request.queryParameters["short"].toString()
+
+                try {
+                    val linkEntryResponse = LinkEntryService().getLinkEntryByShortLink(shortLink)
+                    return@get call.respond(linkEntryResponse)
+
+                } catch (e: Exception) {
+                    val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
+                    return@get call.respond(response.first, message = response.second)
+                }
+            }
         }
     }
 

@@ -100,7 +100,7 @@ object Redis {
     fun flushAll() {
         try {
             jedisPool.resource.use { jedis -> jedis.flushAll() }
-            println("Todos os dados do Redis foram apagados.")
+            println("All Redis data has been deleted.")
 
         } catch (e: Throwable) {
             println(e.message)

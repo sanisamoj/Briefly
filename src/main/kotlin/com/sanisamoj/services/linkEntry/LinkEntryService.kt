@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 class LinkEntryService(
     private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository(),
     private val ipRepository: IpRepository = GlobalContext.getIpRepository(),
-    private val expiresIn: LocalDateTime = LocalDateTime.now().plusDays(365)
+    private val expiresIn: LocalDateTime = GlobalContext.LINK_ENTRY_EXPIRES_IN
 ) {
     suspend fun register(linkEntryRequest: LinkEntryRequest): LinkEntryResponse {
         hasEmptyStringProperties(linkEntryRequest)
