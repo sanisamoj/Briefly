@@ -90,6 +90,10 @@ object TestDatabaseRepository: DatabaseRepository {
         return testLinks.firstOrNull { it.shortLink == shortLink }
     }
 
+    override suspend fun updateLinkByShortLink(shortLink: String, update: OperationField): LinkEntry {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun addClickerInShortLink(shortLink: String, clicker: Clicker) {
         TODO("Not yet implemented")
     }

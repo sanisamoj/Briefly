@@ -1,14 +1,15 @@
 package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.TestContext
-import com.sanisamoj.data.models.dataclass.LinkEntryRequest
-import com.sanisamoj.data.models.dataclass.LinkEntryResponse
-import com.sanisamoj.data.models.dataclass.User
+import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.utils.UserTest
 import io.ktor.server.testing.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -96,5 +97,71 @@ class LinkEntryServiceTest {
         databaseRepository.deleteLinkByShortLink(
             shortLink = linkEntryResponseWithWithEarlyDateTest.shortLink.substringAfterLast("/")
         )
+    }
+
+    @Test
+    fun redirectInactiveLink() = testApplication {
+        val userTest = UserTest()
+        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
+
+        val linkEntryRequest = LinkEntryRequest(
+            userId = user.id.toString(),
+            link = "linkTest",
+            active = false,
+            expiresIn = LocalDateTime.now().plusDays(5).toString()
+        )
+
+        val linkEntryService = LinkEntryService(databaseRepository = TestContext.getDatabaseRepository())
+        val linkEntryResponse: LinkEntryResponse = linkEntryService.register(linkEntryRequest)
+
+        val redirectInfo = RedirectInfo(
+            ip = "186.204.44.176",
+            shortLink = "linkTest",
+            userAgent = TestContext.userAgentInfoTest
+        )
+
+        assertFails {
+            linkEntryService.redirectLink(redirectInfo)
+        }
+
+        userTest.deleteUserTest()
+        val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
+        databaseRepository.deleteLinkByShortLink(shortLink)
+    }
+
+    @Test
+    fun countClickerTest() = testApplication {
+        val userTest = UserTest()
+        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
+
+        val linkEntryRequest = LinkEntryRequest(
+            userId = user.id.toString(),
+            link = "linkTest",
+            active = true,
+            expiresIn = LocalDateTime.now().plusDays(5).toString()
+        )
+
+        val linkEntryService = LinkEntryService(databaseRepository = TestContext.getDatabaseRepository())
+        val linkEntryResponse: LinkEntryResponse = linkEntryService.register(linkEntryRequest)
+        val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
+
+        val redirectInfo = RedirectInfo(
+            ip = TestContext.ipTest,
+            shortLink = shortLink,
+            userAgent = TestContext.userAgentInfoTest
+        )
+
+        linkEntryService.redirectLink(redirectInfo)
+        // Wait for the coroutine scope to finish
+        delay(TimeUnit.SECONDS.toMillis(2))
+        val linkEntry = databaseRepository.getLinkByShortLink(shortLink)!!
+
+        assertEquals(1, linkEntry.totalVisits.size)
+        assertEquals(TestContext.ipTest, linkEntry.totalVisits[0].ip)
+        assertEquals(TestContext.userAgentInfoTest.deviceType, linkEntry.totalVisits[0].deviceInfo.deviceType)
+        assertEquals(TestContext.userAgentInfoTest.browser, linkEntry.totalVisits[0].deviceInfo.browser)
+
+        userTest.deleteUserTest()
+        databaseRepository.deleteLinkByShortLink(shortLink)
     }
 }

@@ -1,20 +1,45 @@
 package com.sanisamoj.data.repository
 
+import com.sanisamoj.api.IpInfoApi
+import com.sanisamoj.api.IpInfoApiService
 import com.sanisamoj.data.models.dataclass.IpInfo
 import com.sanisamoj.data.models.interfaces.IpRepository
+import com.sanisamoj.utils.analyzers.dotEnv
+import java.time.LocalDateTime
 
-class DefaultIpRepository : IpRepository {
+class DefaultIpRepository(private val ipInfoApi: IpInfoApi = IpInfoApi) : IpRepository {
+    private val token: String = dotEnv("IP_INFO_TOKEN")
+
     override suspend fun getInfoByIp(ip: String): IpInfo {
-        return IpInfo(
-            ip = "0.0.0.0",
-            hostname = "unknown",
-            city = "unknown",
-            region = "unknown",
-            country = "unknown",
-            loc = "0,0",
-            org = "unknown",
-            postal = "00000",
-            timezone = "UTC"
-        )
+        val service: IpInfoApiService = ipInfoApi.retrofitIpService
+
+        return try {
+//            val ipInfo: IpInfo = service.getIpInfo("186.204.84.176", token)
+//            ipInfo
+
+            IpInfo(
+                ip = ip,
+                hostname = "unknown",
+                city = "unknown",
+                region = "unknown",
+                country = "unknown",
+                loc = "unknown",
+                org = "unknown",
+                postal = "unknown",
+                timezone = LocalDateTime.now().toString()
+            )
+        } catch (e: Throwable) {
+            IpInfo(
+                ip = ip,
+                hostname = "unknown",
+                city = "unknown",
+                region = "unknown",
+                country = "unknown",
+                loc = "unknown",
+                org = "unknown",
+                postal = "unknown",
+                timezone = LocalDateTime.now().toString()
+            )
+        }
     }
 }

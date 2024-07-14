@@ -23,6 +23,7 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 ## Funcionalidades dos Links
 
 - Links Expiráveis: Possibilidade de criar links que expiram após um determinado período.
+- QR Code: Possibilidade de compartilhar um QR Code que contém o link encurtado.
 - Nível Gratuito:
   - Todos os links criados no nível gratuito terão uma validade de um ano a partir da data de criação.
   - Após um ano, os links expirarão automaticamente e não estarão mais acessíveis.

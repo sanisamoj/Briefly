@@ -3,6 +3,7 @@ package com.sanisamoj.data.repository
 import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
+import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.database.mongodb.CollectionsInDb
 import com.sanisamoj.database.mongodb.Fields
@@ -85,6 +86,14 @@ class DefaultDatabaseRepository: DatabaseRepository {
             collectionName = CollectionsInDb.LinkEntry,
             filter = OperationField(Fields.ShortLink, shortLink)
         )
+    }
+
+    override suspend fun updateLinkByShortLink(shortLink: String, update: OperationField): LinkEntry {
+        return MongodbOperations().updateAndReturnItem<LinkEntry>(
+            collectionName = CollectionsInDb.LinkEntry,
+            filter = OperationField(Fields.ShortLink, shortLink),
+            update = update
+        ) ?: throw NotFoundException(Errors.ShortLinkNotFound.description)
     }
 
     override suspend fun addClickerInShortLink(shortLink: String, clicker: Clicker) {
