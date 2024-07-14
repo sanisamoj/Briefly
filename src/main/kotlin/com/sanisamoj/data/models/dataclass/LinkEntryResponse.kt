@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LinkEntryResponse(
-    val id: String,
     val userId: String,
     val active: Boolean,
     val shortLink: String,

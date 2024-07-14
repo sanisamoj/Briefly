@@ -14,7 +14,6 @@ object LinkEntryFactory {
         val totalVisitsResponseList: List<ClickerResponse> = linkEntry.totalVisits.map { clickerResponse(it) }
 
         return LinkEntryResponse(
-            id = linkEntry.id.toString(),
             userId = linkEntry.userId,
             active = linkEntry.active,
             shortLink = shortLink,

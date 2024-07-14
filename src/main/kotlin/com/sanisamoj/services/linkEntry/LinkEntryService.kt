@@ -101,4 +101,9 @@ class LinkEntryService(
 
         return LinkEntryFactory.linkEntryResponse(linkEntry)
     }
+
+    suspend fun getLinkEntryByShortLinkById(shortLinkId: String): LinkEntryResponse {
+        val linkEntry: LinkEntry = databaseRepository.getLinkById(shortLinkId)
+        return LinkEntryFactory.linkEntryResponse(linkEntry)
+    }
 }

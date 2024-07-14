@@ -8,6 +8,6 @@ data class UserResponse(
     val username: String,
     val email: String,
     val phone: String,
-    val shortLinksId: List<String>,
+    val linkEntryList: List<LinkEntryResponse>,
     val createdAt: String
 )

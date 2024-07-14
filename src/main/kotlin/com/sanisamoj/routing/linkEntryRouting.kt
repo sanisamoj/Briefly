@@ -65,6 +65,7 @@ fun Route.linkEntryRouting() {
         }
     }
 
+    // Responsible for return qrcode
     get("/qrcode") {
         val shortLink: String = call.request.queryParameters["code"].toString()
 
