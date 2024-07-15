@@ -151,9 +151,6 @@ class MongodbOperations {
         val database = MongoDatabase.getDatabase()
         val collection = database.getCollection<T>(collectionName.name)
         collection.deleteMany(Document(filter.field.title, filter.value))
-        // Deve lançar um erro caso não apague nenhum item ?
-        //val result = collection.deleteMany(Document(filter.field.title, filter.value))
-        //if (result.deletedCount.toInt() == 0) throw Exception("No items were deleted")
         return
     }
 

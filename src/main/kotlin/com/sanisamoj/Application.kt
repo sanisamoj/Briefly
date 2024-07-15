@@ -1,5 +1,6 @@
 package com.sanisamoj
 
+import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.config.WebSocketManager
 import com.sanisamoj.database.mongodb.MongoDatabase
 import com.sanisamoj.database.redis.Redis
@@ -23,7 +24,7 @@ fun Application.module() {
     configureSerialization()
     configureSockets(WebSocketManager)
     configureRouting()
-    clickersCount()
+    clickersCount(GlobalContext.getDatabaseRepository())
     startBackgroundTasks()
 }
 

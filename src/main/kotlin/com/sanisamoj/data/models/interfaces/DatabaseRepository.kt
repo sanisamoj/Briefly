@@ -6,6 +6,8 @@ import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.database.mongodb.OperationField
 
 interface DatabaseRepository {
+    suspend fun applicationClicksInc(ip: String, route: String)
+    suspend fun getCountApplicationClicks(): Int
     suspend fun registerUser(user: User): User
     suspend fun getUserById(id: String): User
     suspend fun getUserByEmail(email: String): User?

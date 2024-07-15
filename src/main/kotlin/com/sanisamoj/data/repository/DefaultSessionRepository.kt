@@ -57,7 +57,7 @@ class DefaultSessionRepository: SessionRepository {
         Redis.setWithTimeToLive(
             identification = identificationRedisToRevokedSessions,
             value = sessionId,
-            time = TimeUnit.DAYS.toSeconds(30)
+            time = TimeUnit.DAYS.toMillis(30)
         )
     }
 

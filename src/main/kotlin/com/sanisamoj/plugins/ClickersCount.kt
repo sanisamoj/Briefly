@@ -1,14 +1,15 @@
 package com.sanisamoj.plugins
 
-import com.sanisamoj.data.models.dataclass.UserAgentInfo
-import com.sanisamoj.utils.generators.parseUserAgent
+import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
+import io.ktor.server.request.*
 
-fun Application.clickersCount() {
+fun Application.clickersCount(database: DatabaseRepository) {
     intercept(ApplicationCallPipeline.Monitoring) {
         val ip: String = call.request.origin.remoteHost
-        val userAgent: String = call.request.headers["User-Agent"] ?: "Unknown"
-        val userAgentInfo: UserAgentInfo = parseUserAgent(userAgent)
+        val route: String = call.request.uri
+
+        database.applicationClicksInc(ip, route)
     }
 }

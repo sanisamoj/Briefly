@@ -74,7 +74,7 @@ class LinkEntryService(
 
         if(!link.active) throw Exception(Errors.LinkIsNotActive.description)
 
-        if(link.userId !== UNKNOWN_USER_ID) {
+        if(link.userId != UNKNOWN_USER_ID) {
             CoroutineScope(Dispatchers.IO).launch {
                 addClickerInLinkEntry(redirectInfo)
                 webSocketManager.notifyAboutShortLink(link.userId, link.shortLink)

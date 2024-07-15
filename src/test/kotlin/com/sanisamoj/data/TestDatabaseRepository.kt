@@ -30,6 +30,14 @@ object TestDatabaseRepository: DatabaseRepository {
         )
     )
 
+    override suspend fun applicationClicksInc(ip: String, route: String) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getCountApplicationClicks(): Int {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun registerUser(user: User): User {
         testUsers.add(user)
         return user

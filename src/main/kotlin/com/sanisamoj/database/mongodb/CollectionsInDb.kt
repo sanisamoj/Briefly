@@ -1,5 +1,5 @@
 package com.sanisamoj.database.mongodb
 
 enum class CollectionsInDb {
-    Users, LinkEntry
+    Users, LinkEntry, ClickerCount
 }
