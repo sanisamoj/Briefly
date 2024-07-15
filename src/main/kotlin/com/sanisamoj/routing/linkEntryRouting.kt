@@ -42,9 +42,11 @@ fun Route.linkEntryRouting() {
             // Responsible for return linkEntry
             get {
                 val shortLink: String = call.request.queryParameters["short"].toString()
+                val principal = call.principal<JWTPrincipal>()!!
+                val accountId = principal.payload.getClaim("id").asString()
 
                 try {
-                    val linkEntryResponse = LinkEntryService().getLinkEntryByShortLink(shortLink)
+                    val linkEntryResponse = LinkEntryService().getLinkEntryByShortLinkWithUserId(accountId, shortLink)
                     return@get call.respond(linkEntryResponse)
 
                 } catch (e: Exception) {
