@@ -1,13 +1,18 @@
 package com.sanisamoj.plugins
 
+import com.sanisamoj.config.WebSocketManager
+import com.sanisamoj.data.models.dataclass.Connection
+import com.sanisamoj.data.models.dataclass.LinkEntryUpdatedMessage
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.serialization.json.Json
 import java.time.Duration
 
-fun Application.configureSockets() {
+fun Application.configureSockets(webSocketManager: WebSocketManager) {
     install(WebSockets) {
         pingPeriod = Duration.ofSeconds(15)
         timeout = Duration.ofSeconds(15)
@@ -16,14 +21,21 @@ fun Application.configureSockets() {
     }
 
     routing {
-        webSocket("/ws") { // websocketSession
-            for (frame in incoming) {
-                if (frame is Frame.Text) {
-                    val text = frame.readText()
-                    outgoing.send(Frame.Text("YOU SAID: $text"))
-                    if (text.equals("bye", ignoreCase = true)) {
-                        close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
+        authenticate("user-jwt") {
+            webSocket("/server") {
+                val userId = call.parameters["id"].toString()
+                val thisConnection = Connection(this, userId)
+                webSocketManager.addConnection(thisConnection)
+
+                try {
+                    for (frame in incoming) {
+                        if (frame is Frame.Close) {
+                            webSocketManager.removeConnection(thisConnection)
+                            break
+                        }
                     }
+                } finally {
+                    webSocketManager.removeConnection(thisConnection)
                 }
             }
         }

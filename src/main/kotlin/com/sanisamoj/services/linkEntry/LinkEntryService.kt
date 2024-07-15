@@ -3,6 +3,7 @@ package com.sanisamoj.services.linkEntry
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.config.GlobalContext.MAX_SHORT_LINK_BY_ACCOUNT
 import com.sanisamoj.config.GlobalContext.UNKNOWN_USER_ID
+import com.sanisamoj.config.WebSocketManager
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
@@ -21,7 +22,9 @@ import java.time.LocalDateTime
 class LinkEntryService(
     private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository(),
     private val ipRepository: IpRepository = GlobalContext.getIpRepository(),
-    private val expiresIn: LocalDateTime = GlobalContext.LINK_ENTRY_EXPIRES_IN
+    private val webSocketManager: WebSocketManager = WebSocketManager,
+    private val expiresIn: LocalDateTime = GlobalContext.LINK_ENTRY_EXPIRES_IN,
+    private val maxShortLinksAllowed: Int = MAX_SHORT_LINK_BY_ACCOUNT
 ) {
     suspend fun register(linkEntryRequest: LinkEntryRequest): LinkEntryResponse {
         hasEmptyStringProperties(linkEntryRequest)
@@ -35,7 +38,7 @@ class LinkEntryService(
         }
 
         val userResponse: UserResponse = UserService().getUserById(linkEntryRequest.userId)
-        if(userResponse.linkEntryList.size > MAX_SHORT_LINK_BY_ACCOUNT)
+        if(userResponse.linkEntryList.size > maxShortLinksAllowed)
             throw Exception(Errors.MaximumShortLinksExceeded.description)
 
         val linkEntry = LinkEntry(
@@ -72,6 +75,7 @@ class LinkEntryService(
         if(link.userId !== UNKNOWN_USER_ID) {
             CoroutineScope(Dispatchers.IO).launch {
                 addClickerInLinkEntry(redirectInfo)
+                webSocketManager.notifyAboutShortLink(link.userId, link.shortLink)
             }
         }
 
