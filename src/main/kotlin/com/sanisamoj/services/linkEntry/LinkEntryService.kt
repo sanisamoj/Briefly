@@ -37,9 +37,11 @@ class LinkEntryService(
             validatedExpiresIn = expiresIn
         }
 
-        val userResponse: UserResponse = UserService().getUserById(linkEntryRequest.userId)
-        if(userResponse.linkEntryList.size > maxShortLinksAllowed)
-            throw Exception(Errors.MaximumShortLinksExceeded.description)
+        if(linkEntryRequest.userId != UNKNOWN_USER_ID) {
+            val userResponse: UserResponse = UserService().getUserById(linkEntryRequest.userId)
+            if(userResponse.linkEntryList.size >= maxShortLinksAllowed)
+                throw Exception(Errors.MaximumShortLinksExceeded.description)
+        }
 
         val linkEntry = LinkEntry(
             id = ObjectId(),

@@ -44,6 +44,30 @@ class LinkEntryServiceTest {
     }
 
     @Test
+    fun registerLinkEntryWithMaxExceededTest() = testApplication {
+        val userTest = UserTest()
+        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
+
+        val linkEntryRequest = LinkEntryRequest(
+            userId = user.id.toString(),
+            link = "linkTest",
+            active = true,
+            expiresIn = LocalDateTime.now().plusDays(5).toString()
+        )
+
+        val linkEntryService = LinkEntryService(
+            databaseRepository = TestContext.getDatabaseRepository(),
+            maxShortLinksAllowed = 0
+        )
+
+        assertFails {
+            linkEntryService.register(linkEntryRequest)
+        }
+
+        userTest.deleteUserTest()
+    }
+
+    @Test
     fun registerLinkWithEmptyEntryTest() = testApplication {
         val userTest = UserTest()
         val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
