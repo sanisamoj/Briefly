@@ -110,7 +110,7 @@ fun Route.linkEntryRouting() {
 
         // Responsible for returning information from a link
         get("/info") {
-            val shortLink = call.request.queryParameters["link"].toString()
+            val shortLink = call.request.queryParameters["short"].toString()
 
             try {
                 val linkEntryResponse: MidLinkEntryResponse = LinkEntryService().getPublicLinkEntryByShortLink(shortLink)
@@ -124,7 +124,7 @@ fun Route.linkEntryRouting() {
 
         // Responsible for return qrcode
         get("/qrcode") {
-            val shortLink: String = call.request.queryParameters["code"].toString()
+            val shortLink: String = call.request.queryParameters["short"].toString()
 
             try {
                 val redirectLink: LinkEntryResponse = LinkEntryService().getLinkEntryByShortLink(shortLink)

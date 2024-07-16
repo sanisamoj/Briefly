@@ -4,6 +4,7 @@ import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.pages.confirmationPage
 import com.sanisamoj.data.pages.tokenExpiredPage
 import com.sanisamoj.errors.errorResponse
+import com.sanisamoj.services.linkEntry.LinkEntryManager
 import com.sanisamoj.services.user.UserAuthenticationService
 import com.sanisamoj.services.user.UserService
 import io.ktor.http.*
@@ -34,6 +35,45 @@ fun Route.userRouting() {
                     val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
                     return@post call.respond(response.first, message = response.second)
                 }
+            }
+        }
+
+        rateLimit(RateLimitName("lightweight")) {
+
+            authenticate("user-jwt") {
+
+                // Responsible for deleting a user's LinkEntry
+                delete("/link") {
+                    val shortLink = call.parameters["short"].toString()
+                    val principal: JWTPrincipal = call.principal<JWTPrincipal>()!!
+                    val userId: String = principal.payload.getClaim("id").asString()
+
+                    try {
+                        LinkEntryManager().deleteShortLinkFromUser(userId, shortLink)
+                        return@delete call.respond(HttpStatusCode.OK)
+
+                    } catch (e: Exception) {
+                        val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
+                        return@delete call.respond(response.first, message = response.second)
+                    }
+                }
+
+                put("/link") {
+                    val shortLink: String = call.parameters["short"].toString()
+                    val active: Boolean = call.parameters["active"].toString() == "true"
+                    val principal: JWTPrincipal = call.principal<JWTPrincipal>()!!
+                    val userId: String = principal.payload.getClaim("id").asString()
+
+                    try {
+                        LinkEntryManager().updateLinkEntryStatusFromUser(userId, shortLink, active)
+                        return@put call.respond(HttpStatusCode.OK)
+
+                    } catch (e: Exception) {
+                        val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
+                        return@put call.respond(response.first, message = response.second)
+                    }
+                }
+
             }
         }
     }
@@ -119,8 +159,7 @@ fun Route.userRouting() {
                     try {
                         UserAuthenticationService().signOut(accountId, sessionId)
                         return@delete call.respond(HttpStatusCode.OK)
-                    }
-                    catch (e: Exception) {
+                    } catch (e: Exception) {
                         val response = errorResponse(e.message!!)
                         return@delete call.respond(response.first, message = response.second)
                     }

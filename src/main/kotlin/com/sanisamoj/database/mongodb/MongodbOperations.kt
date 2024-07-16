@@ -1,11 +1,13 @@
 package com.sanisamoj.database.mongodb
 
+import com.mongodb.client.model.Filters
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import org.bson.Document
 import org.bson.types.ObjectId
+import java.time.LocalDateTime
 
 class MongodbOperations {
 
@@ -211,6 +213,21 @@ class MongodbOperations {
             Document(filter.field.title, filter.value),
             Document("\$push", Document(update.field.title, update.value))
         )
+    }
+
+    // Deletes expired items from the database
+    suspend inline fun <reified T : Any> deleteExpiredItems(collectionName: CollectionsInDb, fieldName: String, dateTime: LocalDateTime) {
+        val database = MongoDatabase.getDatabase()
+        val collection = database.getCollection<T>(collectionName.name)
+
+        // Current date-time in ISO format
+        val currentDateTime = dateTime.toString()
+
+        // Create filter to match documents where 'expiresAt' is less than or equal to the current date-time
+        val filter = Filters.lte(fieldName, currentDateTime)
+
+        // Delete matching documents
+        collection.deleteMany(filter)
     }
 
 }

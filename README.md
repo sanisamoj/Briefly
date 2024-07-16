@@ -28,6 +28,12 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
   - Todos os links criados no nível gratuito terão uma validade de um ano a partir da data de criação.
   - Após um ano, os links expirarão automaticamente e não estarão mais acessíveis.
 
+## Funcionalidades do Sistema
+
+- Possibilidade de encurtar links (Estando ou não logado).
+- Possibilidade de acompanhar informações coletadas de clicks dos links.
+- Gerenciar links como atualizar status ou removê-lo.
+- Uma parte para um moderador gerenciar o estado da aplicação.
 
 ## Tecnologias e Ferramentas Utilizadas
 
@@ -42,6 +48,10 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
      - O projeto utiliza a padrão factory, para auxiliar na criação dos objetos, para respostas de requisições ou para registro no banco de dados por exemplo.
 - Injeção de Dependência
      - A Injeção de Dependência (DI) foi escolhida pois facilita os testes, podendo tanto trocar a implementações de registros, como também na expansão do projeto.
+
+## Testes Utilizados
+
+- Testes unitários na maior parte das funções dos Serviços, e nas rotas.
 
 ## Para instalação
 Para instalar o projeto para testes, utilizaremos o Docker.

@@ -6,6 +6,7 @@ enum class Fields(val title: String) {
     Name(title = "name"),
     Phone(title = "phone"),
     Status(title = "status"),
+    Active(title = "active"),
     Password(title = "password"),
     ShortLink(title = "shortLink"),
     ShortLinksId(title = "shortLinksId"),
