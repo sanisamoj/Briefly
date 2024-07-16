@@ -9,7 +9,10 @@ import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.utils.UserTest
 import io.ktor.server.testing.*
+import kotlinx.coroutines.delay
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -79,6 +82,44 @@ class LinkEntryManagerTest {
 
         val linkEntry: LinkEntry = databaseRepository.getLinkByShortLink(shortLink)!!
         assertEquals(false, linkEntry.active)
+
+        userTest.deleteUserTest()
+        databaseRepository.deleteLinkByShortLink(shortLink)
+    }
+
+    @Test
+    fun updateActiveStatusFromExpiredLinkEntryTest() = testApplication {
+        val userTest = UserTest()
+        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
+
+        val linkEntryRequest = LinkEntryRequest(
+            userId = user.id.toString(),
+            link = "linkTest",
+            active = true,
+            expiresIn = LocalDateTime.now().toString()
+        )
+
+        val linkEntryService = LinkEntryService(
+            databaseRepository = TestContext.getDatabaseRepository(),
+            expiresIn = LocalDateTime.now().minusYears(2)
+        )
+
+        val linkEntryResponse: LinkEntryResponse = linkEntryService.register(linkEntryRequest)
+
+        val linkEntryManger = LinkEntryManager(databaseRepository)
+        val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
+
+        assertFails {
+            linkEntryManger.updateLinkEntryStatusFromUser(
+                userId = user.id.toString(),
+                shortLink = shortLink,
+                status = false
+            )
+        }
+
+
+        val linkEntry: LinkEntry = databaseRepository.getLinkByShortLink(shortLink)!!
+        assertEquals(true, linkEntry.active)
 
         userTest.deleteUserTest()
         databaseRepository.deleteLinkByShortLink(shortLink)

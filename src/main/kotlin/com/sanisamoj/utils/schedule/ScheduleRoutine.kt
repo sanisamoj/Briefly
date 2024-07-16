@@ -25,11 +25,16 @@ class ScheduleRoutine {
             .withIdentity(startRoutineData.name, startRoutineData.group.name)
             .startNow()
 
-        val scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
-            .withIntervalInMilliseconds(startRoutineData.interval)
-
-        if (startRoutineData.repeatForever) {
-            scheduleBuilder.repeatForever()
+        val scheduleBuilder = if (startRoutineData.cronExpression != null) {
+            CronScheduleBuilder.cronSchedule(startRoutineData.cronExpression)
+        } else {
+            SimpleScheduleBuilder.simpleSchedule()
+                .withIntervalInMilliseconds(startRoutineData.interval)
+                .apply {
+                    if (startRoutineData.repeatForever) {
+                        this.repeatForever()
+                    }
+                }
         }
 
         val trigger = triggerBuilder.withSchedule(scheduleBuilder).build()

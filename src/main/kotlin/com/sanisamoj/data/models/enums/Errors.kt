@@ -18,4 +18,5 @@ enum class Errors(val description: String) {
     ExpiredSession("Expired session!"),
     UserNotFound("User Not Found!"),
     DataIsMissing("Data is missing"),
+    ExpiredLink("Expired link!")
 }

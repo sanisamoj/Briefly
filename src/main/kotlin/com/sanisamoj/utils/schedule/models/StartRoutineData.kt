@@ -5,5 +5,6 @@ data class StartRoutineData(
     val description: String? = null,
     val group: RoutineGroups,
     val interval: Long,
-    val repeatForever: Boolean = true
+    val repeatForever: Boolean = true,
+    val cronExpression: String? = null
 )

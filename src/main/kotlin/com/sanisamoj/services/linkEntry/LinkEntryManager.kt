@@ -6,7 +6,9 @@ import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.database.mongodb.Fields
 import com.sanisamoj.database.mongodb.OperationField
+import com.sanisamoj.utils.converters.converterStringToLocalDateTime
 import io.ktor.server.plugins.*
+import java.time.LocalDateTime
 
 class LinkEntryManager(
     private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository()
@@ -34,6 +36,10 @@ class LinkEntryManager(
             ?: throw NotFoundException(Errors.ShortLinkNotFound.description)
 
         if(userId != linkEntry.userId) throw Exception(Errors.AccessProhibited.description)
+
+        val expiresAt: LocalDateTime = converterStringToLocalDateTime(linkEntry.expiresAt)
+        val currentTime: LocalDateTime = LocalDateTime.now()
+        if(expiresAt.isBefore(currentTime)) throw Exception(Errors.ExpiredLink.description)
 
         val update = OperationField(Fields.Active, status)
         databaseRepository.updateLinkByShortLink(shortLink, update)

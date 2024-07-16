@@ -51,6 +51,14 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
             )
         }
 
+        Errors.ExpiredLink.description -> {
+            HttpStatusCode.Forbidden to ErrorResponse(Errors.ExpiredLink.description)
+        }
+
+        Errors.InactiveRedirection.description -> {
+            HttpStatusCode.Forbidden to ErrorResponse(Errors.InactiveRedirection.description)
+        }
+
         else -> {
             HttpStatusCode.InternalServerError to ErrorResponse(Errors.InternalServerError.description)
         }

@@ -216,14 +216,14 @@ class MongodbOperations {
     }
 
     // Deletes expired items from the database
-    suspend inline fun <reified T : Any> deleteExpiredItems(collectionName: CollectionsInDb, fieldName: String, dateTime: LocalDateTime) {
+    suspend inline fun <reified T : Any> deleteExpiredItems(collectionName: CollectionsInDb, fieldName: String, lessOrEqual: LocalDateTime) {
         val database = MongoDatabase.getDatabase()
         val collection = database.getCollection<T>(collectionName.name)
 
         // Current date-time in ISO format
-        val currentDateTime = dateTime.toString()
+        val currentDateTime = lessOrEqual.toString()
 
-        // Create filter to match documents where 'expiresAt' is less than or equal to the current date-time
+        // Create filter to match documents where 'fieldName' is less than or equal to the date-time
         val filter = Filters.lte(fieldName, currentDateTime)
 
         // Delete matching documents
