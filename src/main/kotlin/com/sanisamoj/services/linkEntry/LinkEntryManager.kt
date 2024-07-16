@@ -18,11 +18,6 @@ class LinkEntryManager(
         databaseRepository.deleteLinkByShortLink(shortLink)
     }
 
-    private suspend fun updateLinkEntryStatus(shortLink: String, status: Boolean) {
-        val update = OperationField(Fields.Active, status)
-        databaseRepository.updateLinkByShortLink(shortLink, update)
-    }
-
     suspend fun deleteShortLinkFromUser(userId: String, shortLink: String) {
         val linkEntry: LinkEntry = databaseRepository.getLinkByShortLink(shortLink)
             ?: throw NotFoundException(Errors.ShortLinkNotFound.description)

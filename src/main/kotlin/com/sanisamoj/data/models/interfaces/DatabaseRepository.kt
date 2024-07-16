@@ -4,6 +4,7 @@ import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.database.mongodb.OperationField
+import java.time.LocalDateTime
 
 interface DatabaseRepository {
     suspend fun applicationClicksInc(ip: String, route: String)
@@ -21,4 +22,6 @@ interface DatabaseRepository {
     suspend fun updateLinkByShortLink(shortLink: String, update: OperationField): LinkEntry
     suspend fun addClickerInShortLink(shortLink: String, clicker: Clicker)
     suspend fun deleteLinkByShortLink(shortLink: String)
+    suspend fun deleteExpiredLinks(dateTime: LocalDateTime)
+    suspend fun filterExpiredLinks(dateTime: LocalDateTime): List<LinkEntry>
 }

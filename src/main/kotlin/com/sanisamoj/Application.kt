@@ -1,5 +1,6 @@
 package com.sanisamoj
 
+import com.sanisamoj.config.Config
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.config.WebSocketManager
 import com.sanisamoj.database.mongodb.MongoDatabase
@@ -30,6 +31,7 @@ fun Application.module() {
 
 private fun startBackgroundTasks() {
     CoroutineScope(Dispatchers.Default).launch {
-        MongoDatabase.initialize()
+        Config.databaseInitialize()
+        Config.updateExpiredLinksRoutine()
     }
 }

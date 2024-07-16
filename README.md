@@ -33,6 +33,7 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 - Possibilidade de encurtar links (Estando ou não logado).
 - Possibilidade de acompanhar informações coletadas de clicks dos links.
 - Gerenciar links como atualizar status ou removê-lo.
+- Há uma verificação pela madrugada de links expirados, e são desativados.
 - Uma parte para um moderador gerenciar o estado da aplicação.
 
 ## Tecnologias e Ferramentas Utilizadas

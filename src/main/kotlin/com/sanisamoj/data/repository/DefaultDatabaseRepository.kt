@@ -2,7 +2,6 @@ package com.sanisamoj.data.repository
 
 import com.sanisamoj.config.GlobalContext.UNKNOWN_USER_ID
 import com.sanisamoj.data.models.dataclass.Clicker
-import com.sanisamoj.data.models.dataclass.ClickerCount
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.enums.Errors
@@ -14,19 +13,11 @@ import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.database.redis.Redis
 import com.sanisamoj.database.redis.RedisKeys
 import io.ktor.server.plugins.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.bson.types.ObjectId
+import java.time.LocalDateTime
 
 class DefaultDatabaseRepository: DatabaseRepository {
     override suspend fun applicationClicksInc(ip: String, route: String) {
-        val clickerCount = ClickerCount(ip, route)
-        MongodbOperations().register(
-            collectionInDb = CollectionsInDb.ClickerCount,
-            item = clickerCount
-        )
-
         Redis.incrementItemCount(RedisKeys.ClickersCount.name)
     }
 
@@ -132,5 +123,36 @@ class DefaultDatabaseRepository: DatabaseRepository {
             collectionName = CollectionsInDb.LinkEntry,
             filter = OperationField(Fields.ShortLink, shortLink)
         )
+    }
+
+    override suspend fun deleteExpiredLinks(dateTime: LocalDateTime) {
+        val mongodbOperations = MongodbOperations()
+        val currentTime = LocalDateTime.now()
+
+        val expiredLinkEntryList: List<LinkEntry> = mongodbOperations.findItemsExpiringBeforeOrOn<LinkEntry>(
+            collectionName = CollectionsInDb.LinkEntry,
+            fieldName = Fields.ExpiresAt.title,
+            dateTime = currentTime
+        )
+
+        expiredLinkEntryList.forEach {
+            mongodbOperations.deleteItem<LinkEntry>(
+                collectionName = CollectionsInDb.LinkEntry,
+                filter = OperationField(Fields.Id, it.id)
+            )
+        }
+    }
+
+    override suspend fun filterExpiredLinks(dateTime: LocalDateTime): List<LinkEntry> {
+        val mongodbOperations = MongodbOperations()
+        val currentTime = LocalDateTime.now()
+
+        val expiredLinkEntryList: List<LinkEntry> = mongodbOperations.findItemsExpiringBeforeOrOn<LinkEntry>(
+            collectionName = CollectionsInDb.LinkEntry,
+            fieldName = Fields.ExpiresAt.title,
+            dateTime = currentTime
+        )
+
+        return expiredLinkEntryList
     }
 }

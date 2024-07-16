@@ -1,10 +1,7 @@
 package com.sanisamoj.plugins
 
 import com.sanisamoj.TestContext
-import com.sanisamoj.data.models.dataclass.ClickerCount
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
-import com.sanisamoj.database.mongodb.CollectionsInDb
-import com.sanisamoj.database.mongodb.MongodbOperations
 import com.sanisamoj.database.redis.Redis
 import io.ktor.server.testing.*
 import kotlin.test.Test
@@ -15,7 +12,6 @@ class ClickerCountTest {
 
     @Test
     fun clickerCountTest() = testApplication {
-        MongodbOperations().dropCollection<ClickerCount>(CollectionsInDb.ClickerCount)
         Redis.flushAll()
 
         val ip = "1.1.1.1.1"

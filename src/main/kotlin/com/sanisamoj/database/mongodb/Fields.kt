@@ -9,6 +9,7 @@ enum class Fields(val title: String) {
     Active(title = "active"),
     Password(title = "password"),
     ShortLink(title = "shortLink"),
+    ExpiresAt(title = "expiresAt"),
     ShortLinksId(title = "shortLinksId"),
     TotalVisits(title = "totalVisits"),
     AccountStatus(title = "accountStatus"),
