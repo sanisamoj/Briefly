@@ -172,7 +172,7 @@ class LinkEntryServiceTest {
         val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
 
         val redirectInfo = RedirectInfo(
-            ip = TestContext.ipTest,
+            ip = TestContext.IP_TEST,
             shortLink = shortLink,
             userAgent = TestContext.userAgentInfoTest
         )
@@ -183,7 +183,7 @@ class LinkEntryServiceTest {
         val linkEntry = databaseRepository.getLinkByShortLink(shortLink)!!
 
         assertEquals(1, linkEntry.totalVisits.size)
-        assertEquals(TestContext.ipTest, linkEntry.totalVisits[0].ip)
+        assertEquals(TestContext.IP_TEST, linkEntry.totalVisits[0].ip)
         assertEquals(TestContext.userAgentInfoTest.deviceType, linkEntry.totalVisits[0].deviceInfo.deviceType)
         assertEquals(TestContext.userAgentInfoTest.browser, linkEntry.totalVisits[0].deviceInfo.browser)
 

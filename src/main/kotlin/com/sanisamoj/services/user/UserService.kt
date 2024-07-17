@@ -4,18 +4,22 @@ import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.data.models.dataclass.UserResponse
+import com.sanisamoj.data.models.enums.AccountStatus
+import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
+import com.sanisamoj.database.mongodb.Fields
+import com.sanisamoj.database.mongodb.OperationField
 
 class UserService(
     private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository()
 ) {
-    suspend fun createUser(userCreateRequest: UserCreateRequest): UserResponse {
+    suspend fun createUser(userCreateRequest: UserCreateRequest, accountType: AccountType = AccountType.USER): UserResponse {
         verifyUserCreateRequest(userCreateRequest) // Check if there are any empty items
         val userAlreadyExist: Boolean = verifyIfUserAlreadyExists(userCreateRequest)
         if(userAlreadyExist) throw Exception(Errors.UserAlreadyExists.description)
 
-        val user = UserFactory.user(userCreateRequest)
+        val user = UserFactory.user(userCreateRequest, accountType)
         val userInDatabase = databaseRepository.registerUser(user)
         val userResponse = UserFactory.userResponse(userInDatabase)
         return userResponse

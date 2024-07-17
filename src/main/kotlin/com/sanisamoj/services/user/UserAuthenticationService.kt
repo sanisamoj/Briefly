@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountStatus
+import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.MailRepository
@@ -13,7 +14,7 @@ import com.sanisamoj.database.mongodb.Fields
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.services.email.MailService
 import com.sanisamoj.utils.analyzers.dotEnv
-import com.sanisamoj.utils.generators.TokenGenerator
+import com.sanisamoj.utils.generators.Token
 import io.ktor.server.plugins.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,19 +35,21 @@ class UserAuthenticationService(
             throw NotFoundException(Errors.UnableToComplete.description)
         }
 
+        val userAccountType: Boolean = user.type == AccountType.USER.name
         val tokenInfo = TokenInfo(
             id = user.id.toString(),
             email = user.email,
             sessionId = ObjectId().toString(),
+            secret = dotEnv("USER_SECRET"),
             time = GlobalContext.EMAIL_TOKEN_EXPIRATION
         )
 
-        val token: String = TokenGenerator.user(tokenInfo)
+        val token: String = Token.generate(tokenInfo)
         CoroutineScope(Dispatchers.IO).launch {
             MailService(mailRepository).sendConfirmationTokenEmail(
                 name = user.username,
                 token = token,
-                to = user.email
+                to = if(userAccountType) user.email else dotEnv("SUPERADMIN_EMAIL")
             )
         }
     }
@@ -71,13 +74,22 @@ class UserAuthenticationService(
 
         val userResponse: UserResponse = UserFactory.userResponse(user)
         val sessionId: String = ObjectId().toString()
+
+        val userAccountType: Boolean = user.type == AccountType.USER.name
+        val secret = if(userAccountType) {
+            dotEnv("USER_SECRET")
+        } else {
+            dotEnv("MODERATOR_SECRET")
+        }
+
         val tokenInfo = TokenInfo(
             id = userResponse.id,
             email = userResponse.email,
             sessionId = sessionId,
+            secret = secret,
             time = GlobalContext.USER_TOKEN_EXPIRATION
         )
-        val token = TokenGenerator.user(tokenInfo)
+        val token = Token.generate(tokenInfo)
 
         addSessionEntry(userResponse.id, sessionId)
 

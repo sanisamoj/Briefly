@@ -1,6 +1,7 @@
 package com.sanisamoj.services.user
 
 import com.sanisamoj.data.models.dataclass.*
+import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.services.linkEntry.LinkEntryFactory
 import com.sanisamoj.services.linkEntry.LinkEntryService
 import kotlinx.coroutines.runBlocking
@@ -29,13 +30,14 @@ object UserFactory {
     }
 
     // Transforms the user creation request into USER
-    fun user(userCreateRequest: UserCreateRequest): User {
+    fun user(userCreateRequest: UserCreateRequest, accountType: AccountType = AccountType.USER): User {
         val hashedPassword = BCrypt.hashpw(userCreateRequest.password, BCrypt.gensalt())
         return User(
             username = userCreateRequest.username,
             email = userCreateRequest.email,
             phone = userCreateRequest.phone,
-            password = hashedPassword
+            password = hashedPassword,
+            type = accountType.name
         )
     }
 }

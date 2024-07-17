@@ -92,7 +92,12 @@ class LinkEntryService(
     private suspend fun buildClicker(ip: String, userAgent: UserAgentInfo): Clicker {
         val ipInfo: IpInfo = ipRepository.getInfoByIp(ip)
         val deviceInfo: DeviceInfo = defineDeviceInfo(userAgent)
-        val region = Region(ipInfo.city, ipInfo.region, ipInfo.country, ipInfo.postal)
+        val region = Region(
+            city = ipInfo.city ?: "Unknown",
+            region = ipInfo.region ?: "Unknown",
+            country = ipInfo.country ?: "Unknown",
+            zipcode = ipInfo.postal ?: "Unknown"
+        )
 
         return Clicker(
             ip = ip,

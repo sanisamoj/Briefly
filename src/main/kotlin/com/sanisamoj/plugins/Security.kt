@@ -13,12 +13,31 @@ fun Application.configureSecurity() {
     val jwtAudience = dotEnv("JWT_AUDIENCE")
     val jwtDomain = dotEnv("JWT_DOMAIN")
     val userSecret = dotEnv("USER_SECRET")
+    val moderatorSecret = dotEnv("MODERATOR_SECRET")
 
     authentication {
         jwt("user-jwt") {
             verifier(
                 JWT
                     .require(Algorithm.HMAC256(userSecret))
+                    .withAudience(jwtAudience)
+                    .withIssuer(jwtDomain)
+                    .build()
+            )
+            validate { credential ->
+                val accountId = credential.payload.getClaim("id").asString()
+                val sessionId = credential.payload.getClaim("session").asString()
+                val sessionRepository = GlobalContext.getSessionRepository()
+                val sessionRevoked = sessionRepository.sessionRevoked(accountId, sessionId)
+                if (sessionRevoked) throw Exception(Errors.ExpiredSession.description)
+                if (credential.payload.audience.contains(jwtAudience)) JWTPrincipal(credential.payload) else null
+            }
+        }
+
+        jwt("moderator-jwt") {
+            verifier(
+                JWT
+                    .require(Algorithm.HMAC256(moderatorSecret))
                     .withAudience(jwtAudience)
                     .withIssuer(jwtDomain)
                     .build()

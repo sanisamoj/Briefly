@@ -48,6 +48,31 @@ class LinkEntryManagerTest {
     }
 
     @Test
+    fun deleteLinkEntryTest() = testApplication {
+        val userTest = UserTest()
+        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
+
+        val linkEntryRequest = LinkEntryRequest(
+            userId = user.id.toString(),
+            link = "linkTest",
+            active = true,
+            expiresIn = LocalDateTime.now().plusDays(5).toString()
+        )
+
+        val linkEntryService = LinkEntryService(databaseRepository = TestContext.getDatabaseRepository())
+        val linkEntryResponse: LinkEntryResponse = linkEntryService.register(linkEntryRequest)
+
+        val linkEntryManger = LinkEntryManager(databaseRepository)
+        val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
+        linkEntryManger.deleteShortLink(shortLink)
+
+        val shortLinkExist: LinkEntry? = databaseRepository.getLinkByShortLink(shortLink)
+        assertNull(shortLinkExist)
+
+        userTest.deleteUserTest()
+    }
+
+    @Test
     fun updateActiveStatusFromLinkEntryTest() = testApplication {
         val userTest = UserTest()
         val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)

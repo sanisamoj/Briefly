@@ -9,7 +9,8 @@ import com.sanisamoj.data.models.interfaces.SessionRepository
 
 object TestContext {
     private val testContainer: ServerContainer = ServerContainerTest()
-    val ipTest: String = "186.204.44.176"
+    const val IP_TEST: String = "186.204.44.176"
+    const val UNKNOWN_USER_ID = "Unknown"
 
     val userCreateRequest = UserCreateRequest(
         username = "test",

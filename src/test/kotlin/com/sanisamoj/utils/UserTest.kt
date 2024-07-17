@@ -3,6 +3,7 @@ package com.sanisamoj.utils
 import com.sanisamoj.TestContext
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountStatus
+import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.MailRepository
 import com.sanisamoj.database.mongodb.Fields
@@ -19,12 +20,13 @@ class UserTest(
     private var token: String? = null
 
     suspend fun createUserTest(
-        accountStatus: AccountStatus = AccountStatus.Inactive
+        accountStatus: AccountStatus = AccountStatus.Inactive,
+        accountType: AccountType = AccountType.USER
     ): User {
         val userService = UserService(databaseRepository = databaseRepository)
-        val userResponse: UserResponse = userService.createUser(userCreateTestRequest)
+        val userResponse: UserResponse = userService.createUser(userCreateTestRequest, accountType)
 
-        val accountStatusUpdate = OperationField(Fields.Status, accountStatus.name)
+        val accountStatusUpdate = OperationField(Fields.AccountStatus, accountStatus.name)
         val userInDb: User = databaseRepository.updateUser(userResponse.id, accountStatusUpdate)
         user = userInDb
         return userInDb

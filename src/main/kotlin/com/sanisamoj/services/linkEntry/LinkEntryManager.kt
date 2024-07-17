@@ -14,7 +14,7 @@ class LinkEntryManager(
     private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository()
 ) {
 
-    private suspend fun deleteShortLink(shortLink: String) {
+    suspend fun deleteShortLink(shortLink: String) {
         databaseRepository.deleteLinkByShortLink(shortLink)
     }
 

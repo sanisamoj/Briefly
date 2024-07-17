@@ -4,6 +4,7 @@ import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.database.mongodb.OperationField
+import jdk.internal.org.jline.terminal.Size
 import java.time.LocalDateTime
 
 interface DatabaseRepository {
@@ -15,6 +16,8 @@ interface DatabaseRepository {
     suspend fun getUserByPhone(phone: String): User?
     suspend fun updateUser(userId: String, update: OperationField): User
     suspend fun deleteUser(userId: String)
+    suspend fun usersCount(): Int
+    suspend fun getAllUserWithPagination(page: Int, size: Int): List<User>
 
     suspend fun registerLink(link: LinkEntry): LinkEntry
     suspend fun getLinkById(id: String): LinkEntry

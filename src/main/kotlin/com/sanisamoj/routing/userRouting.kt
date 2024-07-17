@@ -1,6 +1,7 @@
 package com.sanisamoj.routing
 
 import com.sanisamoj.data.models.dataclass.*
+import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.data.pages.confirmationPage
 import com.sanisamoj.data.pages.tokenExpiredPage
 import com.sanisamoj.errors.errorResponse
@@ -78,6 +79,25 @@ fun Route.userRouting() {
         }
     }
 
+    route("/moderator") {
+        rateLimit(RateLimitName("register")) {
+
+            // Route responsible for creating a user
+            post {
+                val user = call.receive<UserCreateRequest>()
+
+                try {
+                    val userResponse: UserResponse = UserService().createUser(user, AccountType.MODERATOR)
+                    return@post call.respond(userResponse)
+
+                } catch (e: Exception) {
+                    val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
+                    return@post call.respond(response.first, message = response.second)
+                }
+            }
+        }
+    }
+
     route("/authentication") {
 
         rateLimit(RateLimitName("validation")) {
@@ -133,7 +153,7 @@ fun Route.userRouting() {
 
         rateLimit(RateLimitName("lightweight")) {
 
-            authenticate("user-jwt") {
+            authenticate("user-jwt", "moderator-jwt") {
 
                 // Responsible for session
                 post("/session") {

@@ -38,7 +38,7 @@ class DefaultDatabaseRepository: DatabaseRepository {
         return MongodbOperations().findOne<User>(
             collectionName = CollectionsInDb.Users,
             filter = OperationField(Fields.Id, ObjectId(id))
-        ) ?: throw NotFoundException()
+        ) ?: throw NotFoundException(Errors.UserNotFound.description)
     }
 
     override suspend fun getUserByEmail(email: String): User? {
@@ -60,13 +60,25 @@ class DefaultDatabaseRepository: DatabaseRepository {
             collectionName = CollectionsInDb.Users,
             filter = OperationField(Fields.Id, ObjectId(userId)),
             update = update
-        ) ?: throw NotFoundException()
+        ) ?: throw NotFoundException(Errors.UserNotFound.description)
     }
 
     override suspend fun deleteUser(userId: String) {
         MongodbOperations().deleteItem<User>(
             collectionName = CollectionsInDb.Users,
             filter = OperationField(Fields.Id, ObjectId(userId)),
+        )
+    }
+
+    override suspend fun usersCount(): Int {
+        return MongodbOperations().countDocumentsWithoutFilter<User>(CollectionsInDb.Users)
+    }
+
+    override suspend fun getAllUserWithPagination(page: Int, size: Int): List<User> {
+        return MongodbOperations().findAllWithPaging(
+            collectionName = CollectionsInDb.Users,
+            pageNumber = page,
+            pageSize = size
         )
     }
 
@@ -92,7 +104,7 @@ class DefaultDatabaseRepository: DatabaseRepository {
         return MongodbOperations().findOne<LinkEntry>(
             collectionName = CollectionsInDb.LinkEntry,
             filter = OperationField(Fields.Id, ObjectId(id))
-        ) ?: throw NotFoundException()
+        ) ?: throw NotFoundException(Errors.ShortLinkNotFound.description)
     }
 
     override suspend fun getLinkByShortLink(shortLink: String): LinkEntry? {

@@ -7,6 +7,7 @@ import com.sanisamoj.data.models.enums.Errors
 import io.ktor.http.*
 
 fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
+    println(errorMessage)
     val response = when(errorMessage) {
         Errors.UserAlreadyExists.description -> {
             HttpStatusCode.Conflict to ErrorResponse(Errors.UserAlreadyExists.description)
@@ -17,7 +18,7 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
         }
 
         Errors.UserNotFound.description -> {
-            HttpStatusCode.Conflict to ErrorResponse(Errors.UserNotFound.description)
+            HttpStatusCode.NotFound to ErrorResponse(Errors.UserNotFound.description)
         }
 
         Errors.InvalidLogin.description -> {
