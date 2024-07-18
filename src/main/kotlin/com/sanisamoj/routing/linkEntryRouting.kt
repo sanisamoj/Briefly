@@ -10,13 +10,11 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import io.ktor.server.http.content.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.io.File
 
 fun Route.linkEntryRouting() {
 
@@ -70,7 +68,10 @@ fun Route.linkEntryRouting() {
             val userAgentInfo: UserAgentInfo = parseUserAgent(userAgent)
 
             // Redirect to homepage
-            if(shortLink != null) {
+            if(shortLink == null) {
+                return@get call.respond(HttpStatusCode.BadRequest)
+
+            } else {
                 val redirectInfo = RedirectInfo(ip, shortLink, userAgentInfo)
 
                 try {

@@ -24,7 +24,7 @@ fun Application.module() {
     configureHTTP()
     configureSerialization()
     configureSockets(WebSocketManager)
-    configureRouting(initialPage = true)
+    configureRouting()
     clickersCount(GlobalContext.getDatabaseRepository())
     startBackgroundTasks()
 }
