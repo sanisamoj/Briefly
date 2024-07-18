@@ -76,17 +76,18 @@ class LinkEntryService(
 
         if(link.userId != UNKNOWN_USER_ID) {
             CoroutineScope(Dispatchers.IO).launch {
-                addClickerInLinkEntry(redirectInfo)
-                webSocketManager.notifyAboutShortLink(link.userId, link.shortLink)
+                addClickerInLinkEntry(redirectInfo, link)
             }
         }
 
         return link.originalLink
     }
 
-    private suspend fun addClickerInLinkEntry(redirectInfo: RedirectInfo)  {
+    private suspend fun addClickerInLinkEntry(redirectInfo: RedirectInfo, linkEntry: LinkEntry)  {
         val clicker = buildClicker(redirectInfo.ip, redirectInfo.userAgent)
+        val clickerResponse: ClickerResponse = LinkEntryFactory.clickerResponse(clicker)
         databaseRepository.addClickerInShortLink(redirectInfo.shortLink, clicker)
+        webSocketManager.notifyAboutShortLink(linkEntry.userId, linkEntry.shortLink, clickerResponse)
     }
 
     private suspend fun buildClicker(ip: String, userAgent: UserAgentInfo): Clicker {

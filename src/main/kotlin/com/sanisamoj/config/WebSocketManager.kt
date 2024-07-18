@@ -1,5 +1,6 @@
 package com.sanisamoj.config
 
+import com.sanisamoj.data.models.dataclass.ClickerResponse
 import com.sanisamoj.data.models.dataclass.Connection
 import com.sanisamoj.data.models.dataclass.LinkEntryUpdatedMessage
 import io.ktor.websocket.*
@@ -18,9 +19,9 @@ object WebSocketManager {
         connections -= connection
     }
 
-    suspend fun notifyAboutShortLink(userId: String, shortLink: String) {
+    suspend fun notifyAboutShortLink(userId: String, shortLink: String, clickerResponse: ClickerResponse) {
         val allConnectionsFromUserId = connections.filter { it.userId == userId }
-        val linkEntryUpdatedMessage = LinkEntryUpdatedMessage(userId, shortLink)
+        val linkEntryUpdatedMessage = LinkEntryUpdatedMessage(userId, shortLink, clickerResponse)
         val linkEntryUpdatedMessageInString: String = Json.encodeToString(linkEntryUpdatedMessage)
 
         allConnectionsFromUserId.forEach {

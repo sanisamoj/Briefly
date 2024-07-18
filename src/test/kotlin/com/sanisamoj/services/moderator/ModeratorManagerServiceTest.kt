@@ -6,6 +6,8 @@ import com.sanisamoj.data.models.dataclass.UsersWithPaginationResponse
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.SessionRepository
+import com.sanisamoj.database.mongodb.MongoDatabase
+import com.sanisamoj.database.mongodb.MongodbOperations
 import com.sanisamoj.utils.UserTest
 import io.ktor.server.testing.*
 import kotlin.test.Test
@@ -15,6 +17,10 @@ import kotlin.test.assertFails
 class ModeratorManagerServiceTest {
     private val databaseRepository: DatabaseRepository by lazy { TestContext.getDatabaseRepository() }
     private val sessionRepository: SessionRepository by lazy { TestContext.getSessionRepository() }
+
+    init {
+        MongodbOperations()
+    }
 
     @Test
     fun blockUserById() = testApplication {
@@ -36,16 +42,18 @@ class ModeratorManagerServiceTest {
 
     @Test
     fun returnAllUserWithPagination() = testApplication {
-        val userTest = UserTest()
-        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
-
         val moderatorManagerService = ModeratorManagerService(
             databaseRepository = databaseRepository,
             sessionRepository = sessionRepository
         )
 
+        val usersSizeExpected: Int = moderatorManagerService.getAllUsersWithPagination(1, 10).users.size + 1
+
+        val userTest = UserTest()
+        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
+
         val usersResponse: UsersWithPaginationResponse = moderatorManagerService.getAllUsersWithPagination(1, 10)
-        assertEquals(1, usersResponse.users.size)
+        assertEquals(usersSizeExpected, usersResponse.users.size)
         assertEquals(1, usersResponse.paginationResponse.totalPages)
         assertEquals(0, usersResponse.paginationResponse.remainingPage)
 

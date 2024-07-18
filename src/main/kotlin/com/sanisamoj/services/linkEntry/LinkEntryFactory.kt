@@ -35,7 +35,7 @@ object LinkEntryFactory {
         )
     }
 
-    private fun clickerResponse(clicker: Clicker): ClickerResponse {
+    fun clickerResponse(clicker: Clicker): ClickerResponse {
         return ClickerResponse(
             region = clicker.region,
             deviceInfo = clicker.deviceInfo,

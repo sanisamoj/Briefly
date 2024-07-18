@@ -34,16 +34,6 @@ class MongodbOperations {
         return result
     }
 
-    // Returns all items
-    suspend inline fun <reified T : Any> findAll(collectionName: CollectionsInDb): List<T> {
-        val database = MongoDatabase.getDatabase()
-        val collection = database.getCollection<T>(collectionName.name)
-        val result: List<T> = collection.find<T>().toList()
-
-        return result
-    }
-
-
     // Returns all items with paging
     suspend inline fun <reified T : Any> findAllWithPaging(
         collectionName: CollectionsInDb,
@@ -58,74 +48,6 @@ class MongodbOperations {
             .skip(skip)
             .limit(pageSize)
             .toList()
-
-        return result
-    }
-
-    // Returns all items by filter with paging
-    suspend inline fun <reified T : Any> findAllByFilterWithPagingBySorting(
-        collectionName: CollectionsInDb,
-        filter: OperationField,
-        sortingFilter: OperationField,
-        additionalFilters: List<OperationField> = emptyList(),
-        pageSize: Int,
-        pageNumber: Int
-    ): List<T> {
-        val database = MongoDatabase.getDatabase()
-        val collection = database.getCollection<T>(collectionName.name)
-        val skip = (pageNumber - 1) * pageSize
-
-        val combinedFilters = mutableListOf((Document(filter.field.title, filter.value)))
-        for (additionalFilter in additionalFilters) {
-            combinedFilters.add(Document(additionalFilter.field.title, additionalFilter.value))
-        }
-        val finalFilter = Document("\$and", combinedFilters)
-
-        val result: List<T> = collection.find<T>(finalFilter)
-            .skip(skip)
-            .limit(pageSize)
-            .sort(Document(sortingFilter.field.title, sortingFilter.value))
-            .toList()
-
-        return result
-    }
-
-    // Returns all items by filter with paging
-    suspend inline fun <reified T : Any> findAllWithPagingBySorting(
-        collectionName: CollectionsInDb,
-        sortingFilter: OperationField,
-        pageSize: Int,
-        pageNumber: Int
-    ): List<T> {
-        val database = MongoDatabase.getDatabase()
-        val collection = database.getCollection<T>(collectionName.name)
-        val skip = (pageNumber - 1) * pageSize
-
-        val result: List<T> = collection.find<T>()
-            .skip(skip)
-            .limit(pageSize)
-            .sort(Document(sortingFilter.field.title, sortingFilter.value))
-            .toList()
-
-        return result
-    }
-
-    // Returns count of items
-    suspend inline fun <reified T : Any> countDocuments(
-        collectionName: CollectionsInDb,
-        filter: OperationField,
-        additionalFilters: List<OperationField> = emptyList()
-    ): Int {
-        val database = MongoDatabase.getDatabase()
-
-        val combinedFilters = mutableListOf((Document(filter.field.title, filter.value)))
-        for (additionalFilter in additionalFilters) {
-            combinedFilters.add(Document(additionalFilter.field.title, additionalFilter.value))
-        }
-        val finalFilter = Document("\$and", combinedFilters)
-
-        val collection = database.getCollection<T>(collectionName.name)
-        val result: Int = collection.find<T>(finalFilter).count()
 
         return result
     }
@@ -145,14 +67,6 @@ class MongodbOperations {
         val collection = database.getCollection<T>(collectionName.name)
         val result = collection.deleteOne(Document(filter.field.title, filter.value))
         if (result.deletedCount.toInt() == 0) throw Exception("No items were deleted")
-        return
-    }
-
-    // Deletes all items from the database
-    suspend inline fun <reified T : Any> deleteAllItems(collectionName: CollectionsInDb, filter: OperationField) {
-        val database = MongoDatabase.getDatabase()
-        val collection = database.getCollection<T>(collectionName.name)
-        collection.deleteMany(Document(filter.field.title, filter.value))
         return
     }
 
@@ -185,21 +99,6 @@ class MongodbOperations {
 
     }
 
-    // Updates a value in the item
-    suspend inline fun <reified T : Any> updateItem(
-        collectionName: CollectionsInDb,
-        filter: OperationField,
-        update: OperationField
-    ) {
-        val database = MongoDatabase.getDatabase()
-        val collection = database.getCollection<T>(collectionName.name)
-
-        collection.updateOne(
-            Document(filter.field.title, filter.value),
-            Document("\$set", Document(update.field.title, update.value))
-        )
-    }
-
     // Push a value in the array of itens
     suspend inline fun <reified T : Any> pushItem(
         collectionName: CollectionsInDb,
@@ -225,21 +124,6 @@ class MongodbOperations {
 
         // Create filter to match documents where 'fieldName' is less than or equal to the date-time
         val filter = Filters.lte(fieldName, currentDateTime)
-
-        // Find matching documents
-        return collection.find(filter).toList()
-    }
-
-    // Find items expiring after the specified date-time from the database
-    suspend inline fun <reified T : Any> findItemsExpiringAfter(collectionName: CollectionsInDb, fieldName: String, dateTime: LocalDateTime): List<T> {
-        val database = MongoDatabase.getDatabase()
-        val collection = database.getCollection<T>(collectionName.name)
-
-        // Current date-time in ISO format
-        val currentDateTime = dateTime.toString()
-
-        // Create filter to match documents where 'fieldName' is greater than the date-time
-        val filter = Filters.gt(fieldName, currentDateTime)
 
         // Find matching documents
         return collection.find(filter).toList()
