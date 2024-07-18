@@ -52,4 +52,8 @@ class ModeratorManagerService(
 
         return UserFactory.userResponse(user)
     }
+
+    suspend fun getClickInSystemCount(): Int {
+        return databaseRepository.getCountApplicationClicks()
+    }
 }

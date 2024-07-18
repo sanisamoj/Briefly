@@ -82,6 +82,15 @@ class DefaultDatabaseRepository: DatabaseRepository {
         )
     }
 
+    override suspend fun removeLinkEntryIdFromUser(userId: String, linkEntryId: String) {
+        val userInDb = getUserById(userId)
+        val shortLinkIdList = userInDb.shortLinksId.toMutableList()
+        val index = shortLinkIdList.indexOf(linkEntryId)
+        shortLinkIdList.removeAt(index)
+        val update = OperationField(Fields.ShortLinksId, shortLinkIdList)
+        updateUser(userId, update)
+    }
+
     override suspend fun registerLink(link: LinkEntry): LinkEntry {
         val mongodbOperations = MongodbOperations()
         val linkId =  mongodbOperations.register(

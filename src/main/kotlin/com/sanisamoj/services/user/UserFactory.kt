@@ -14,8 +14,10 @@ object UserFactory {
 
         runBlocking {
             user.shortLinksId.forEach {
-                val linkEntryResponse = linkEntryService.getLinkEntryByShortLinkById(it)
-                linkEntryResponseList.add(linkEntryResponse)
+                try {
+                    val linkEntryResponse = linkEntryService.getLinkEntryByShortLinkById(it)
+                    linkEntryResponseList.add(linkEntryResponse)
+                } catch (_: Throwable) {}
             }
         }
 

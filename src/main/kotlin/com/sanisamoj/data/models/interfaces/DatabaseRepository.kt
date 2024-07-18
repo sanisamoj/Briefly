@@ -18,6 +18,7 @@ interface DatabaseRepository {
     suspend fun deleteUser(userId: String)
     suspend fun usersCount(): Int
     suspend fun getAllUserWithPagination(page: Int, size: Int): List<User>
+    suspend fun removeLinkEntryIdFromUser(userId: String, linkEntryId: String)
 
     suspend fun registerLink(link: LinkEntry): LinkEntry
     suspend fun getLinkById(id: String): LinkEntry

@@ -69,6 +69,9 @@ class LinkEntryManagerTest {
         val shortLinkExist: LinkEntry? = databaseRepository.getLinkByShortLink(shortLink)
         assertNull(shortLinkExist)
 
+        val updatedUser: User = databaseRepository.getUserById(user.id.toString())
+        assertEquals(0, updatedUser.shortLinksId.size)
+
         userTest.deleteUserTest()
     }
 
