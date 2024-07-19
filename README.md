@@ -1,4 +1,4 @@
-# Snapurl
+# Briefly
 Este é um servidor de encurtador de links desenvolvido em Kotlin utilizando o Ktor. O servidor permite criar URLs curtas que redirecionam para URLs longas, 
 oferecendo funcionalidades adicionais como contagem de cliques únicos e gerenciamento de links.
 
@@ -60,14 +60,14 @@ Para instalar o projeto para testes, utilizaremos o Docker.
 - Instale a última versão do **Docker** em sua máquina.
 - Instale o **Mongodb** (Verifique na página oficial, ou monte uma imagem com o Docker).
 - Instale o **Redis** na sua máquina (Verifique a página oficial, ou monte uma imagem com o Docker).
-- Abra a pasta **"out"** do projeto, note que terá apenas 2 arquivos, o **Dockerfile**, e **snapurl.jar**.
+- Abra a pasta **"out"** do projeto, note que terá apenas 2 arquivos, o **Dockerfile**, e **briefly.jar**.
 - Crie um arquivo **.env**, ou adicione um arquivo **.env** manualmente na construção da imagem docker.
 
 ```.env
 #URL do banco de dados MONGODB
 MONGODB_SERVER_URL=mongodb://host.docker.internal:27017
 #Nome do banco de dados do MONGODB
-NAME_DATABASE=Snapurl
+NAME_DATABASE=Briefly
 #URL do banco de dados do REDIS
 REDIS_SERVER_URL=host.docker.internal
 #Porta do banco de dados do REDIS

@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sanisamoj</groupId>
-    <artifactId>snapurl</artifactId>
+    <artifactId>briefly</artifactId>
     <version>0.0.1</version>
-    <name>Snapurl</name>
-    <description>Snapurl</description>
+    <name>Briefly</name>
+    <description>Briefly</description>
     <properties>
         <ktor_version>2.3.12</ktor_version>
         <kotlin.code.style>official</kotlin.code.style>

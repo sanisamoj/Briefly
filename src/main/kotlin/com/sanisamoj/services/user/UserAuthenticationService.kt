@@ -3,6 +3,8 @@ package com.sanisamoj.services.user
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.sanisamoj.config.GlobalContext
+import com.sanisamoj.config.GlobalContext.MODERATOR_TOKEN_EXPIRATION
+import com.sanisamoj.config.GlobalContext.USER_TOKEN_EXPIRATION
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.enums.AccountType
@@ -76,6 +78,7 @@ class UserAuthenticationService(
         val sessionId: String = ObjectId().toString()
 
         val userAccountType: Boolean = user.type == AccountType.USER.name
+        val time = if(userAccountType) USER_TOKEN_EXPIRATION else MODERATOR_TOKEN_EXPIRATION
         val secret = if(userAccountType) {
             dotEnv("USER_SECRET")
         } else {
@@ -87,7 +90,7 @@ class UserAuthenticationService(
             email = userResponse.email,
             sessionId = sessionId,
             secret = secret,
-            time = GlobalContext.USER_TOKEN_EXPIRATION
+            time = time
         )
         val token = Token.generate(tokenInfo)
 

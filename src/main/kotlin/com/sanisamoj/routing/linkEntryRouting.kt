@@ -17,7 +17,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.linkEntryRouting() {
-
     route("/link") {
 
         authenticate("user-jwt") {
@@ -60,7 +59,7 @@ fun Route.linkEntryRouting() {
     rateLimit(RateLimitName("lightweight")) {
 
         // Responsible for redirect user or redirect homepage
-        get("/{shortLink}") {
+        get("/{shortLink?}") {
             val shortLink: String? = call.parameters["shortLink"]
 
             val ip: String = call.request.origin.remoteHost
@@ -68,8 +67,8 @@ fun Route.linkEntryRouting() {
             val userAgentInfo: UserAgentInfo = parseUserAgent(userAgent)
 
             // Redirect to homepage
-            if(shortLink == null) {
-                return@get call.respond(HttpStatusCode.BadRequest)
+            if(shortLink == null || shortLink == "favicon.ico") {
+                return@get call.respond(HttpStatusCode.OK)
 
             } else {
                 val redirectInfo = RedirectInfo(ip, shortLink, userAgentInfo)

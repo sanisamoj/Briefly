@@ -4,6 +4,7 @@ import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.data.models.dataclass.UserResponse
+import com.sanisamoj.data.models.dataclass.VersionResponse
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.data.models.enums.Errors
