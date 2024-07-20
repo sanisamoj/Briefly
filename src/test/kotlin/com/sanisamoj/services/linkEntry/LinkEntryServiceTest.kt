@@ -1,15 +1,14 @@
 package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.TestContext
-import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.config.GlobalContext.UNKNOWN_USER_ID
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.utils.UserTest
+import com.sanisamoj.utils.eraseAllDataToTests
 import io.ktor.server.testing.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
@@ -18,6 +17,10 @@ import kotlin.test.assertFails
 
 class LinkEntryServiceTest {
     private val databaseRepository: DatabaseRepository by lazy { TestContext.getDatabaseRepository() }
+
+    init {
+        eraseAllDataToTests()
+    }
 
     @Test
     fun registerLinkEntryTest() = testApplication {
@@ -201,7 +204,7 @@ class LinkEntryServiceTest {
         )
 
         val linkEntryService = LinkEntryService(databaseRepository = TestContext.getDatabaseRepository())
-        val linkEntryResponse: LinkEntryResponse = linkEntryService.register(linkEntryRequest)
+        val linkEntryResponse: LinkEntryResponse = linkEntryService.register(linkEntryRequest, public = true)
 
         assertEquals(UNKNOWN_USER_ID, linkEntryResponse.userId)
         assertEquals(linkEntryRequest.active, linkEntryResponse.active)

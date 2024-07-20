@@ -26,7 +26,7 @@ class LinkEntryService(
     private val expiresIn: LocalDateTime = GlobalContext.LINK_ENTRY_EXPIRES_IN,
     private val maxShortLinksAllowed: Int = MAX_SHORT_LINK_BY_ACCOUNT
 ) {
-    suspend fun register(linkEntryRequest: LinkEntryRequest): LinkEntryResponse {
+    suspend fun register(linkEntryRequest: LinkEntryRequest, public: Boolean = false): LinkEntryResponse {
         hasEmptyStringProperties(linkEntryRequest)
         val shortLink: String = generateShortLink()
 
@@ -37,7 +37,7 @@ class LinkEntryService(
             validatedExpiresIn = expiresIn
         }
 
-        if(linkEntryRequest.userId != UNKNOWN_USER_ID) {
+        if(!public) {
             val userResponse: UserResponse = UserService().getUserById(linkEntryRequest.userId)
             if(userResponse.linkEntryList.size >= maxShortLinksAllowed)
                 throw Exception(Errors.MaximumShortLinksExceeded.description)
@@ -48,6 +48,7 @@ class LinkEntryService(
             userId = linkEntryRequest.userId,
             active = linkEntryRequest.active,
             shortLink = shortLink,
+            public = public,
             originalLink = linkEntryRequest.link,
             expiresAt = validatedExpiresIn.toString()
         )
@@ -74,7 +75,7 @@ class LinkEntryService(
 
         if(!link.active) throw Exception(Errors.LinkIsNotActive.description)
 
-        if(link.userId != UNKNOWN_USER_ID) {
+        if(!link.public) {
             CoroutineScope(Dispatchers.IO).launch {
                 addClickerInLinkEntry(redirectInfo, link)
             }

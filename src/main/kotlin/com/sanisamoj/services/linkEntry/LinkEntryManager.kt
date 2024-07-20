@@ -31,7 +31,7 @@ class LinkEntryManager(
     private suspend fun removeShortLinkIdFromUser(shortLinkId: String) {
         val linkEntry: LinkEntry = databaseRepository.getLinkById(shortLinkId)
         val userId: String = linkEntry.userId
-        if(userId != GlobalContext.UNKNOWN_USER_ID) { databaseRepository.removeLinkEntryIdFromUser(userId, shortLinkId) }
+        databaseRepository.removeLinkEntryIdFromUser(userId, shortLinkId)
     }
 
     private suspend fun removeShortLinkIdFromUserByShortLink(shortLink: String) {
@@ -40,7 +40,7 @@ class LinkEntryManager(
 
         val userId: String = linkEntry.userId
         val linkEntryId: String = linkEntry.id.toString()
-        if(userId != GlobalContext.UNKNOWN_USER_ID) { databaseRepository.removeLinkEntryIdFromUser(userId, linkEntryId) }
+        databaseRepository.removeLinkEntryIdFromUser(userId, linkEntryId)
     }
 
     suspend fun updateLinkEntryStatusFromUser(userId: String, shortLink: String, status: Boolean) {

@@ -8,6 +8,7 @@ import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.utils.UserTest
+import com.sanisamoj.utils.eraseAllDataToTests
 import io.ktor.server.testing.*
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
@@ -20,6 +21,10 @@ import kotlin.test.assertNull
 
 class LinkEntryManagerTest {
     private val databaseRepository: DatabaseRepository by lazy { TestContext.getDatabaseRepository() }
+
+    init {
+        eraseAllDataToTests()
+    }
 
     @Test
     fun deleteLinkEntryFromUserTest() = testApplication {

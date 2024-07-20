@@ -7,6 +7,7 @@ import com.sanisamoj.data.models.dataclass.UserResponse
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
+import com.sanisamoj.utils.eraseAllDataToTests
 import io.ktor.server.testing.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,6 +22,10 @@ class UserServiceTest {
         password = "test",
         phone = "test"
     )
+
+    init {
+        eraseAllDataToTests()
+    }
 
     @Test
     fun createUserTest() = testApplication {

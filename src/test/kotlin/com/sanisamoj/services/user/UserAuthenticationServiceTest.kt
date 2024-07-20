@@ -9,6 +9,7 @@ import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.database.mongodb.Fields
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.utils.analyzers.dotEnv
+import com.sanisamoj.utils.eraseAllDataToTests
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
@@ -18,6 +19,10 @@ import kotlin.test.assertFails
 
 class UserAuthenticationServiceTest {
     private val databaseRepository: DatabaseRepository by lazy { TestContext.getDatabaseRepository() }
+
+    init {
+        eraseAllDataToTests()
+    }
 
     @Test
     fun generateEmailTokenWithNonExistentUser() = testApplication {

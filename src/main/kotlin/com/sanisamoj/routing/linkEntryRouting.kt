@@ -1,6 +1,5 @@
 package com.sanisamoj.routing
 
-import com.sanisamoj.config.GlobalContext.UNKNOWN_USER_ID
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.errors.errorResponse
 import com.sanisamoj.services.linkEntry.LinkEntryService
@@ -87,10 +86,11 @@ fun Route.linkEntryRouting() {
         // Responsible for generating a public shortened link
         post("/generate") {
             val originalLink = call.request.queryParameters["link"].toString()
+            val ip: String = call.request.origin.remoteHost
 
             try {
-                val linkEntryRequest = LinkEntryRequest(userId = UNKNOWN_USER_ID, link = originalLink)
-                val linkEntryResponse: LinkEntryResponse = LinkEntryService().register(linkEntryRequest)
+                val linkEntryRequest = LinkEntryRequest(userId = ip, link = originalLink)
+                val linkEntryResponse: LinkEntryResponse = LinkEntryService().register(linkEntryRequest, public = true)
 
                 val midLinkEntryResponse = MidLinkEntryResponse(
                     active = linkEntryResponse.active,

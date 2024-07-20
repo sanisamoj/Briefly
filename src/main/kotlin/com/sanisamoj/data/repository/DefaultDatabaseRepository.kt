@@ -1,6 +1,5 @@
 package com.sanisamoj.data.repository
 
-import com.sanisamoj.config.GlobalContext.UNKNOWN_USER_ID
 import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
@@ -86,9 +85,11 @@ class DefaultDatabaseRepository: DatabaseRepository {
         val userInDb = getUserById(userId)
         val shortLinkIdList = userInDb.shortLinksId.toMutableList()
         val index = shortLinkIdList.indexOf(linkEntryId)
-        shortLinkIdList.removeAt(index)
-        val update = OperationField(Fields.ShortLinksId, shortLinkIdList)
-        updateUser(userId, update)
+        if(index != -1) {
+            shortLinkIdList.removeAt(index)
+            val update = OperationField(Fields.ShortLinksId, shortLinkIdList)
+            updateUser(userId, update)
+        }
     }
 
     override suspend fun registerLink(link: LinkEntry): LinkEntry {
@@ -98,15 +99,22 @@ class DefaultDatabaseRepository: DatabaseRepository {
             item = link
         ).toString()
 
-        if(link.userId !== UNKNOWN_USER_ID) {
+        try {
+            getUserById(link.userId)
+            val shortLink = getLinkById(link.id.toString())
             mongodbOperations.pushItem<LinkEntry>(
                 collectionName = CollectionsInDb.Users,
                 filter = OperationField(Fields.Id, ObjectId(link.userId)),
                 update = OperationField(Fields.ShortLinksId, linkId)
             )
+
+            return shortLink
+
+        } catch (e: Throwable) {
+            val shortLink = getLinkById(link.id.toString())
+            return shortLink
         }
 
-        return getLinkById(linkId)
     }
 
     override suspend fun getLinkById(id: String): LinkEntry {

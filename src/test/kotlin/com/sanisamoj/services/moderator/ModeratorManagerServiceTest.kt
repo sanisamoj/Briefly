@@ -6,9 +6,8 @@ import com.sanisamoj.data.models.dataclass.UsersWithPaginationResponse
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.SessionRepository
-import com.sanisamoj.database.mongodb.MongoDatabase
-import com.sanisamoj.database.mongodb.MongodbOperations
 import com.sanisamoj.utils.UserTest
+import com.sanisamoj.utils.eraseAllDataToTests
 import io.ktor.server.testing.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -19,7 +18,7 @@ class ModeratorManagerServiceTest {
     private val sessionRepository: SessionRepository by lazy { TestContext.getSessionRepository() }
 
     init {
-        MongodbOperations()
+        eraseAllDataToTests()
     }
 
     @Test

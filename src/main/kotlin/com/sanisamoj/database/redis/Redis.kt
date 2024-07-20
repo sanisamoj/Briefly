@@ -58,18 +58,6 @@ object Redis {
         }
     }
 
-    fun setObjectWithTimeToLive(identification: DataIdentificationRedis, value: Any, time: Long) {
-        val key = identification.key
-        val collection = identification.collection.name
-        val valueInString = ObjectConverter().objectToString<Any>(value)
-
-        try {
-            jedisPool.resource.use { jedis -> jedis.setex("$key:${collection}", time, valueInString) }
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
-    }
-
     fun incrementItemCount(key: String) {
         try {
             jedisPool.resource.use { jedis ->
@@ -101,18 +89,6 @@ object Redis {
             stringInObject
 
         } catch (e: JedisConnectionException) {
-            throw Exception(Errors.RedisNotResponding.description)
-        }
-    }
-
-    fun delete(identification: DataIdentificationRedis) {
-        val key = identification.key
-        val collection = identification.collection.name
-
-        try {
-            jedisPool.resource.use { jedis -> jedis.del("$key:${collection}") }
-        } catch (e: Throwable) {
-            println(e.message)
             throw Exception(Errors.RedisNotResponding.description)
         }
     }

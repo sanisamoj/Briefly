@@ -9,6 +9,7 @@ data class LinkEntry(
     val id: ObjectId = ObjectId(),
     val userId: String,
     val active: Boolean = true,
+    val public: Boolean = false,
     val shortLink: String,
     val originalLink: String,
     val totalVisits: List<Clicker> = emptyList(),
