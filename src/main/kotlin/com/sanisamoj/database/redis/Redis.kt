@@ -58,6 +58,20 @@ object Redis {
         }
     }
 
+    inline fun <reified T> getObject(identification: DataIdentificationRedis): T? {
+        val key = identification.key
+        val collection = identification.collection.name
+
+        return try {
+            val valueInString = jedisPool.resource.use { jedis -> jedis["$key:${collection}"] } ?: return null
+            val stringInObject = ObjectConverter().stringToObject<T>(valueInString)
+            stringInObject
+
+        } catch (e: JedisConnectionException) {
+            throw Exception(Errors.RedisNotResponding.description)
+        }
+    }
+
     fun incrementItemCount(key: String) {
         try {
             jedisPool.resource.use { jedis ->
@@ -76,20 +90,6 @@ object Redis {
         } catch (e: JedisConnectionException) {
             e.printStackTrace()
             throw Exception("Failed to connect to Redis")
-        }
-    }
-
-    inline fun <reified T> getObject(identification: DataIdentificationRedis): T? {
-        val key = identification.key
-        val collection = identification.collection.name
-
-        return try {
-            val valueInString = jedisPool.resource.use { jedis -> jedis["$key:${collection}"] } ?: return null
-            val stringInObject = ObjectConverter().stringToObject<T>(valueInString)
-            stringInObject
-
-        } catch (e: JedisConnectionException) {
-            throw Exception(Errors.RedisNotResponding.description)
         }
     }
 

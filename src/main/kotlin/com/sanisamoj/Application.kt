@@ -18,19 +18,21 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    clickerCount()
+    accessGuardian()
     configureSecurity()
     rateLimit()
     statusPage()
     configureHTTP()
     configureSerialization()
-    configureSockets(WebSocketManager)
+    configureSockets()
     configureRouting()
-    clickersCount(GlobalContext.getDatabaseRepository())
     startBackgroundTasks()
 }
 
 private fun startBackgroundTasks() {
     CoroutineScope(Dispatchers.Default).launch {
+        Redis.flushAll()
         Config.databaseInitialize()
         Config.updateExpiredLinksRoutine()
     }

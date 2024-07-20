@@ -63,6 +63,24 @@ fun Route.linkEntryRouting() {
             }
         }
 
+        // Responsible for returning information from a link
+        get("/info") {
+            val shortLink = call.request.queryParameters["short"].toString()
+            val linkEntryResponse: MidLinkEntryResponse = LinkEntryService().getPublicLinkEntryByShortLink(shortLink)
+            return@get call.respond(linkEntryResponse)
+        }
+
+        // Responsible for return qrcode
+        get("/qrcode") {
+            val shortLink: String = call.request.queryParameters["short"].toString()
+            val redirectLink: LinkEntryResponse = LinkEntryService().getLinkEntryByShortLink(shortLink)
+            val qrCode = QrCode.generate(redirectLink.originalLink, 200, 200)
+            call.respondBytes(qrCode, ContentType.Image.PNG)
+        }
+    }
+
+    rateLimit(RateLimitName("publicLinkEntry")) {
+
         // Responsible for generating a public shortened link
         post("/generate") {
             val originalLink = call.request.queryParameters["link"].toString()
@@ -79,21 +97,6 @@ fun Route.linkEntryRouting() {
                 expiresAt = linkEntryResponse.expiresAt
             )
             return@post call.respond(midLinkEntryResponse)
-        }
-
-        // Responsible for returning information from a link
-        get("/info") {
-            val shortLink = call.request.queryParameters["short"].toString()
-            val linkEntryResponse: MidLinkEntryResponse = LinkEntryService().getPublicLinkEntryByShortLink(shortLink)
-            return@get call.respond(linkEntryResponse)
-        }
-
-        // Responsible for return qrcode
-        get("/qrcode") {
-            val shortLink: String = call.request.queryParameters["short"].toString()
-            val redirectLink: LinkEntryResponse = LinkEntryService().getLinkEntryByShortLink(shortLink)
-            val qrCode = QrCode.generate(redirectLink.originalLink, 200, 200)
-            call.respondBytes(qrCode, ContentType.Image.PNG)
         }
     }
 }

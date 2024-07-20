@@ -1,5 +1,5 @@
 package com.sanisamoj.database.redis
 
 enum class CollectionsInRedis {
-    RevokedSessions, LiveSessions
+    RevokedSessions, LiveSessions, BlockedIps
 }

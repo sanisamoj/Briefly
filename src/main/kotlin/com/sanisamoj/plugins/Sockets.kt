@@ -12,7 +12,9 @@ import io.ktor.websocket.*
 import kotlinx.serialization.json.Json
 import java.time.Duration
 
-fun Application.configureSockets(webSocketManager: WebSocketManager) {
+fun Application.configureSockets(
+    webSocketManager: WebSocketManager = WebSocketManager
+) {
     install(WebSockets) {
         pingPeriod = Duration.ofSeconds(15)
         timeout = Duration.ofSeconds(15)
