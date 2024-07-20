@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    val version: String = "0.10.0"
+    val version: String = "0.11.0"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
@@ -24,8 +24,8 @@ object GlobalContext {
     fun getMobileTargetVersion(): String { return mobileTargetVersion }
 
     // Validate so that a value lower than the current version is not assigned
-    fun setMobileMinVersion(mobileMinVersion: String) { TODO() }
-    fun setMobileTargetVersion(mobileTargetVersion: String) { TODO() }
+    fun setMinMobileVersion(version: String) { mobileMinVersion = version }
+    fun setTargetMobileVersion(version: String) { mobileTargetVersion = version }
 
     fun getDatabaseRepository(): DatabaseRepository { return serverContainer.databaseRepository }
     fun getSessionRepository(): SessionRepository { return serverContainer.sessionRepository }

@@ -140,9 +140,4 @@ fun Route.userRouting() {
             }
         }
     }
-
-    get("/version") {
-        val versionResponse: VersionResponse = ServerService().getVersion()
-        return@get call.respond(versionResponse)
-    }
 }
