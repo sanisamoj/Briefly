@@ -1,7 +1,6 @@
 package com.sanisamoj.routing
 
 import com.sanisamoj.data.models.dataclass.*
-import com.sanisamoj.errors.errorResponse
 import com.sanisamoj.services.linkEntry.LinkEntryService
 import com.sanisamoj.services.linkEntry.QrCode
 import com.sanisamoj.utils.generators.parseUserAgent
@@ -27,14 +26,8 @@ fun Route.linkEntryRouting() {
                 val accountId: String = principal.payload.getClaim("id").asString()
                 val updatedLinkEntryRequest: LinkEntryRequest = linkEntryRequest.copy(userId = accountId)
 
-                try {
-                    val linkEntryResponse: LinkEntryResponse = LinkEntryService().register(updatedLinkEntryRequest)
-                    return@post call.respond(HttpStatusCode.Created, linkEntryResponse)
-
-                } catch (e: Exception) {
-                    val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                    return@post call.respond(response.first, message = response.second)
-                }
+                val linkEntryResponse: LinkEntryResponse = LinkEntryService().register(updatedLinkEntryRequest)
+                return@post call.respond(HttpStatusCode.Created, linkEntryResponse)
             }
 
             // Responsible for return linkEntry
@@ -43,14 +36,8 @@ fun Route.linkEntryRouting() {
                 val principal = call.principal<JWTPrincipal>()!!
                 val accountId = principal.payload.getClaim("id").asString()
 
-                try {
-                    val linkEntryResponse = LinkEntryService().getLinkEntryByShortLinkWithUserId(accountId, shortLink)
-                    return@get call.respond(linkEntryResponse)
-
-                } catch (e: Exception) {
-                    val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                    return@get call.respond(response.first, message = response.second)
-                }
+                val linkEntryResponse = LinkEntryService().getLinkEntryByShortLinkWithUserId(accountId, shortLink)
+                return@get call.respond(linkEntryResponse)
             }
         }
     }
@@ -71,15 +58,8 @@ fun Route.linkEntryRouting() {
 
             } else {
                 val redirectInfo = RedirectInfo(ip, shortLink, userAgentInfo)
-
-                try {
-                    val redirectLink: String = LinkEntryService().redirectLink(redirectInfo)
-                    return@get call.respondRedirect(redirectLink, permanent = false)
-
-                } catch (e: Throwable) {
-                    val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                    return@get call.respond(response.first, message = response.second)
-                }
+                val redirectLink: String = LinkEntryService().redirectLink(redirectInfo)
+                return@get call.respondRedirect(redirectLink, permanent = false)
             }
         }
 
@@ -88,52 +68,32 @@ fun Route.linkEntryRouting() {
             val originalLink = call.request.queryParameters["link"].toString()
             val ip: String = call.request.origin.remoteHost
 
-            try {
-                val linkEntryRequest = LinkEntryRequest(userId = ip, link = originalLink)
-                val linkEntryResponse: LinkEntryResponse = LinkEntryService().register(linkEntryRequest, public = true)
+            val linkEntryRequest = LinkEntryRequest(userId = ip, link = originalLink)
+            val linkEntryResponse: LinkEntryResponse = LinkEntryService().register(linkEntryRequest, public = true)
 
-                val midLinkEntryResponse = MidLinkEntryResponse(
-                    active = linkEntryResponse.active,
-                    shortLink = linkEntryResponse.shortLink,
-                    qrCodeLink = linkEntryResponse.qrCodeLink,
-                    originalLink = linkEntryResponse.originalLink,
-                    expiresAt = linkEntryResponse.expiresAt
-                )
-                return@post call.respond(midLinkEntryResponse)
-
-            } catch (e: Exception) {
-                val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                return@post call.respond(response.first, message = response.second)
-            }
+            val midLinkEntryResponse = MidLinkEntryResponse(
+                active = linkEntryResponse.active,
+                shortLink = linkEntryResponse.shortLink,
+                qrCodeLink = linkEntryResponse.qrCodeLink,
+                originalLink = linkEntryResponse.originalLink,
+                expiresAt = linkEntryResponse.expiresAt
+            )
+            return@post call.respond(midLinkEntryResponse)
         }
 
         // Responsible for returning information from a link
         get("/info") {
             val shortLink = call.request.queryParameters["short"].toString()
-
-            try {
-                val linkEntryResponse: MidLinkEntryResponse = LinkEntryService().getPublicLinkEntryByShortLink(shortLink)
-                return@get call.respond(linkEntryResponse)
-
-            } catch (e: Exception) {
-                val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                return@get call.respond(response.first, message = response.second)
-            }
+            val linkEntryResponse: MidLinkEntryResponse = LinkEntryService().getPublicLinkEntryByShortLink(shortLink)
+            return@get call.respond(linkEntryResponse)
         }
 
         // Responsible for return qrcode
         get("/qrcode") {
             val shortLink: String = call.request.queryParameters["short"].toString()
-
-            try {
-                val redirectLink: LinkEntryResponse = LinkEntryService().getLinkEntryByShortLink(shortLink)
-                val qrCode = QrCode.generate(redirectLink.originalLink, 200, 200)
-                call.respondBytes(qrCode, ContentType.Image.PNG)
-
-            } catch (e: Throwable) {
-                val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                return@get call.respond(response.first, message = response.second)
-            }
+            val redirectLink: LinkEntryResponse = LinkEntryService().getLinkEntryByShortLink(shortLink)
+            val qrCode = QrCode.generate(redirectLink.originalLink, 200, 200)
+            call.respondBytes(qrCode, ContentType.Image.PNG)
         }
     }
 }

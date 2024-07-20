@@ -2,6 +2,7 @@ package com.sanisamoj.plugins
 
 import com.sanisamoj.data.models.dataclass.ErrorResponse
 import com.sanisamoj.data.models.enums.Errors
+import com.sanisamoj.errors.errorResponse
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.statuspages.*
@@ -10,9 +11,8 @@ import io.ktor.server.response.*
 fun Application.statusPage() {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
-            // Remove "cause" in production
-            val response = HttpStatusCode.InternalServerError to ErrorResponse(Errors.InternalServerError.description, "$cause")
-            call.respond(response.first, response.second)
+            val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(cause.message)
+            return@exception call.respond(response.first, message = response.second)
         }
 
         status(HttpStatusCode.TooManyRequests) { call, status ->

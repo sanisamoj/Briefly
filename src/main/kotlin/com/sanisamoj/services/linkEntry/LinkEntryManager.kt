@@ -2,6 +2,7 @@ package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.LinkEntry
+import com.sanisamoj.data.models.dataclass.LinkEntryResponse
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.database.mongodb.Fields
@@ -43,7 +44,7 @@ class LinkEntryManager(
         databaseRepository.removeLinkEntryIdFromUser(userId, linkEntryId)
     }
 
-    suspend fun updateLinkEntryStatusFromUser(userId: String, shortLink: String, status: Boolean) {
+    suspend fun updateLinkEntryStatusFromUser(userId: String, shortLink: String, status: Boolean): LinkEntryResponse {
         val linkEntry: LinkEntry = databaseRepository.getLinkByShortLink(shortLink)
             ?: throw NotFoundException(Errors.ShortLinkNotFound.description)
 
@@ -54,6 +55,7 @@ class LinkEntryManager(
         if(expiresAt.isBefore(currentTime)) throw Exception(Errors.ExpiredLink.description)
 
         val update = OperationField(Fields.Active, status)
-        databaseRepository.updateLinkByShortLink(shortLink, update)
+        val updatedLinkEntry: LinkEntry = databaseRepository.updateLinkByShortLink(shortLink, update)
+        return LinkEntryFactory.linkEntryResponse(updatedLinkEntry)
     }
 }

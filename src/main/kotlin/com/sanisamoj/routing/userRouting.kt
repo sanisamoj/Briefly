@@ -28,15 +28,8 @@ fun Route.userRouting() {
             // Route responsible for creating a user
             post {
                 val user = call.receive<UserCreateRequest>()
-
-                try {
-                    val userResponse: UserResponse = UserService().createUser(user)
-                    return@post call.respond(userResponse)
-
-                } catch (e: Exception) {
-                    val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                    return@post call.respond(response.first, message = response.second)
-                }
+                val userResponse: UserResponse = UserService().createUser(user)
+                return@post call.respond(userResponse)
             }
         }
 
@@ -49,15 +42,8 @@ fun Route.userRouting() {
                     val shortLink = call.parameters["short"].toString()
                     val principal: JWTPrincipal = call.principal<JWTPrincipal>()!!
                     val userId: String = principal.payload.getClaim("id").asString()
-
-                    try {
-                        LinkEntryManager().deleteShortLinkFromUser(userId, shortLink)
-                        return@delete call.respond(HttpStatusCode.OK)
-
-                    } catch (e: Exception) {
-                        val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                        return@delete call.respond(response.first, message = response.second)
-                    }
+                    LinkEntryManager().deleteShortLinkFromUser(userId, shortLink)
+                    return@delete call.respond(HttpStatusCode.OK)
                 }
 
                 put("/link") {
@@ -65,15 +51,8 @@ fun Route.userRouting() {
                     val active: Boolean = call.parameters["active"].toString() == "true"
                     val principal: JWTPrincipal = call.principal<JWTPrincipal>()!!
                     val userId: String = principal.payload.getClaim("id").asString()
-
-                    try {
-                        LinkEntryManager().updateLinkEntryStatusFromUser(userId, shortLink, active)
-                        return@put call.respond(HttpStatusCode.OK)
-
-                    } catch (e: Exception) {
-                        val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                        return@put call.respond(response.first, message = response.second)
-                    }
+                    LinkEntryManager().updateLinkEntryStatusFromUser(userId, shortLink, active)
+                    return@put call.respond(HttpStatusCode.OK)
                 }
 
             }
@@ -86,15 +65,8 @@ fun Route.userRouting() {
             // Route responsible for creating a user
             post {
                 val user = call.receive<UserCreateRequest>()
-
-                try {
-                    val userResponse: UserResponse = UserService().createUser(user, AccountType.MODERATOR)
-                    return@post call.respond(userResponse)
-
-                } catch (e: Exception) {
-                    val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                    return@post call.respond(response.first, message = response.second)
-                }
+                val userResponse: UserResponse = UserService().createUser(user, AccountType.MODERATOR)
+                return@post call.respond(userResponse)
             }
         }
     }
@@ -106,15 +78,8 @@ fun Route.userRouting() {
             // Responsible for generate email token
             post("/generate") {
                 val identification = call.request.queryParameters["identifier"].toString()
-
-                try {
-                    UserAuthenticationService().generateValidationEmailToken(identification)
-                    return@post call.respond(HttpStatusCode.OK)
-
-                } catch (e: Exception) {
-                    val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                    return@post call.respond(response.first, message = response.second)
-                }
+                UserAuthenticationService().generateValidationEmailToken(identification)
+                return@post call.respond(HttpStatusCode.OK)
             }
         }
 
@@ -160,15 +125,8 @@ fun Route.userRouting() {
                 post("/session") {
                     val principal = call.principal<JWTPrincipal>()!!
                     val accountId = principal.payload.getClaim("id").asString()
-
-                    try {
-                        val userResponse: UserResponse = UserAuthenticationService().session(accountId)
-                        return@post call.respond(userResponse)
-
-                    } catch (e: Exception) {
-                        val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-                        return@post call.respond(response.first, message = response.second)
-                    }
+                    val userResponse: UserResponse = UserAuthenticationService().session(accountId)
+                    return@post call.respond(userResponse)
                 }
 
                 // Responsible for sign out
@@ -176,28 +134,15 @@ fun Route.userRouting() {
                     val principal = call.principal<JWTPrincipal>()!!
                     val accountId = principal.payload.getClaim("id").asString()
                     val sessionId = principal.payload.getClaim("session").asString()
-
-                    try {
-                        UserAuthenticationService().signOut(accountId, sessionId)
-                        return@delete call.respond(HttpStatusCode.OK)
-                    } catch (e: Exception) {
-                        val response = errorResponse(e.message!!)
-                        return@delete call.respond(response.first, message = response.second)
-                    }
+                    UserAuthenticationService().signOut(accountId, sessionId)
+                    return@delete call.respond(HttpStatusCode.OK)
                 }
             }
         }
     }
 
     get("/version") {
-
-        try {
-            val versionResponse: VersionResponse = ServerService().getVersion()
-            return@get call.respond(versionResponse)
-
-        } catch (e: Exception) {
-            val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(e.message!!)
-            return@get call.respond(response.first, message = response.second)
-        }
+        val versionResponse: VersionResponse = ServerService().getVersion()
+        return@get call.respond(versionResponse)
     }
 }
