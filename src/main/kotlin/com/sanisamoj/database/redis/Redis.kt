@@ -58,6 +58,18 @@ object Redis {
         }
     }
 
+    fun setObjectWithTimeToLive(identification: DataIdentificationRedis, value: Any, time: Long) {
+        val key = identification.key
+        val collection = identification.collection.name
+        val valueInString = ObjectConverter().objectToString<Any>(value)
+
+        try {
+            jedisPool.resource.use { jedis -> jedis.setex("$key:${collection}", time, valueInString) }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
     inline fun <reified T> getObject(identification: DataIdentificationRedis): T? {
         val key = identification.key
         val collection = identification.collection.name

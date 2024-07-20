@@ -14,6 +14,8 @@ object GlobalContext {
     val EMAIL_TOKEN_EXPIRATION: Long = TimeUnit.MINUTES.toMillis(5)
     val MODERATOR_TOKEN_EXPIRATION: Long = TimeUnit.DAYS.toMillis(1)
 
+    val BLOCKED_IPS_TIME_TO_LIVE: Long = TimeUnit.HOURS.toMillis(1)
+
     var LINK_ENTRY_EXPIRES_IN: LocalDateTime = LocalDateTime.now().plusDays(365)
         private set
 
