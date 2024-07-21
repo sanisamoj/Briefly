@@ -34,6 +34,17 @@ class MongodbOperations {
         return result
     }
 
+    // Returns all items by filter
+    suspend inline fun <reified T : Any> findAllByFilter(collectionName: CollectionsInDb, filter: OperationField): List<T> {
+        val database = MongoDatabase.getDatabase()
+        val collection = database.getCollection<T>(collectionName.name)
+
+        val result: List<T> = collection.find<T>(Document(filter.field.title, filter.value))
+            .toList()
+
+        return result
+    }
+
     // Returns all items with paging
     suspend inline fun <reified T : Any> findAllWithPaging(
         collectionName: CollectionsInDb,
