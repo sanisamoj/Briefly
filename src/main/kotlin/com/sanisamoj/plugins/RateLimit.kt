@@ -6,7 +6,6 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.request.*
-import io.ktor.server.response.*
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -31,14 +30,14 @@ fun Application.rateLimit() {
         }
 
         register(RateLimitName("publicLinkEntry")) {
-            rateLimiter(limit = 20, refillPeriod = 1.minutes)
+            rateLimiter(limit = 5, refillPeriod = 1.minutes)
 
             modifyResponse { applicationCall, state ->
                 when (state) {
                     is RateLimiter.State.Exhausted -> {
                         val ip: String = applicationCall.request.origin.remoteHost
                         val route: String = applicationCall.request.uri
-                        AccessGuardianService.blockIp(ip, route)
+                        AccessGuardianService.markIpAsViolator(ip, route)
                         throw Exception(Errors.AccessProhibited.description)
                     }
                     is RateLimiter.State.Available -> {}

@@ -92,6 +92,13 @@ class DefaultDatabaseRepository: DatabaseRepository {
         }
     }
 
+    override suspend fun removeAllLinksEntriesFromUnknownUser(ip: String) {
+        MongodbOperations().deleteAllItems<LinkEntry>(
+            collectionName = CollectionsInDb.LinkEntry,
+            filter = OperationField(Fields.UserId, ip)
+        )
+    }
+
     override suspend fun registerLink(link: LinkEntry): LinkEntry {
         val mongodbOperations = MongodbOperations()
         val linkId =  mongodbOperations.register(

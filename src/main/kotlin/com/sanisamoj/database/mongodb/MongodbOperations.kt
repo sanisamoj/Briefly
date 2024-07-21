@@ -70,6 +70,14 @@ class MongodbOperations {
         return
     }
 
+    // Deletes a many items from the database
+    suspend inline fun <reified T : Any> deleteAllItems(collectionName: CollectionsInDb, filter: OperationField) {
+        val database = MongoDatabase.getDatabase()
+        val collection = database.getCollection<T>(collectionName.name)
+        collection.deleteMany(Document(filter.field.title, filter.value))
+        return
+    }
+
     // Drop collections
     suspend inline fun <reified T : Any> dropCollection(collectionName: CollectionsInDb) {
         val database = MongoDatabase.getDatabase()
@@ -99,7 +107,7 @@ class MongodbOperations {
 
     }
 
-    // Push a value in the array of itens
+    // Push a value in the array of items
     suspend inline fun <reified T : Any> pushItem(
         collectionName: CollectionsInDb,
         filter: OperationField,

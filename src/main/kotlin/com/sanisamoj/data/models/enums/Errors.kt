@@ -2,7 +2,6 @@ package com.sanisamoj.data.models.enums
 
 enum class Errors(val description: String) {
     MaximumShortLinksExceeded("maximum short links exceeded!"),
-    DatabaseConnectionError("Database connection error!"),
     InternalServerError("Internal Server Error!"),
     InactiveRedirection("Inactive redirection!"),
     RedisNotResponding("Redis not responding!"),

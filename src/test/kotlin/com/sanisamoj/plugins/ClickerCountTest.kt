@@ -2,7 +2,6 @@ package com.sanisamoj.plugins
 
 import com.sanisamoj.TestContext
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
-import com.sanisamoj.database.redis.Redis
 import com.sanisamoj.utils.eraseAllDataToTests
 import io.ktor.server.testing.*
 import kotlin.test.Test

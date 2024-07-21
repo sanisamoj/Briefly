@@ -6,7 +6,6 @@ import com.sanisamoj.data.pages.confirmationPage
 import com.sanisamoj.data.pages.tokenExpiredPage
 import com.sanisamoj.errors.errorResponse
 import com.sanisamoj.services.linkEntry.LinkEntryManager
-import com.sanisamoj.services.server.ServerService
 import com.sanisamoj.services.user.UserAuthenticationService
 import com.sanisamoj.services.user.UserService
 import io.ktor.http.*

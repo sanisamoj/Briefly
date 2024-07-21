@@ -1,8 +1,10 @@
 package com.sanisamoj.services.user
 
-import com.sanisamoj.data.models.dataclass.*
+import com.sanisamoj.data.models.dataclass.LinkEntryResponse
+import com.sanisamoj.data.models.dataclass.User
+import com.sanisamoj.data.models.dataclass.UserCreateRequest
+import com.sanisamoj.data.models.dataclass.UserResponse
 import com.sanisamoj.data.models.enums.AccountType
-import com.sanisamoj.services.linkEntry.LinkEntryFactory
 import com.sanisamoj.services.linkEntry.LinkEntryService
 import kotlinx.coroutines.runBlocking
 import org.mindrot.jbcrypt.BCrypt

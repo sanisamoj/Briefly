@@ -12,7 +12,7 @@ class ServerService(
 
     fun getVersion(): VersionResponse {
         return VersionResponse(
-            serverVersion = GlobalContext.version,
+            serverVersion = GlobalContext.VERSION,
             mobileMinVersion = GlobalContext.getMobileMinVersion(),
             mobileTargetVersion = GlobalContext.getMobileTargetVersion()
         )
@@ -22,11 +22,11 @@ class ServerService(
         return databaseRepository.getCountApplicationClicks()
     }
 
-    suspend fun updateMinMobileVersion(version: String) {
+    fun updateMinMobileVersion(version: String) {
         setMinMobileVersion(version)
     }
 
-    suspend fun updateTargetMobileVersion(version: String) {
+    fun updateTargetMobileVersion(version: String) {
         setTargetMobileVersion(version)
     }
 }

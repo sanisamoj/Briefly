@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    val version: String = "0.12.0"
+    const val VERSION: String = "0.13.0"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()

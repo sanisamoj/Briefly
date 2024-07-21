@@ -10,10 +10,7 @@ import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.utils.UserTest
 import com.sanisamoj.utils.eraseAllDataToTests
 import io.ktor.server.testing.*
-import kotlinx.coroutines.delay
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails

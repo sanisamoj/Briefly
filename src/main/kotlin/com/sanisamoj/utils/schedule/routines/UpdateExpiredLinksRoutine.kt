@@ -11,7 +11,7 @@ import org.quartz.Job
 import org.quartz.JobExecutionContext
 import java.time.LocalDateTime
 
-class UpdateExpiredLinksRoutine(): Job {
+class UpdateExpiredLinksRoutine: Job {
     override fun execute(p0: JobExecutionContext?) {
         runBlocking {
             Config.checkAndDeleteExpiredLinks()

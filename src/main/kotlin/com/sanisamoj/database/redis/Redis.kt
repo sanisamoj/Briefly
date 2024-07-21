@@ -96,7 +96,7 @@ object Redis {
 
     fun getItemCount(key: String): Int {
         return try {
-            Redis.jedisPool.resource.use { jedis ->
+            jedisPool.resource.use { jedis ->
                 jedis.get(key)?.toInt() ?: 0
             }
         } catch (e: JedisConnectionException) {

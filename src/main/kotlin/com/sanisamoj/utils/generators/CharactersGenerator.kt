@@ -3,30 +3,13 @@ package com.sanisamoj.utils.generators
 import kotlin.random.Random
 
 object CharactersGenerator {
-    fun codeValidationGenerate(): Int {
-        return Random.nextInt(100_000, 1_000_000)
-    }
-
-    fun randomCodeGenerate(length: Int): String {
-        val characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?"
-        val sb = StringBuilder(length)
-        val random = Random.Default
-
-        repeat(length) {
-            val index = random.nextInt(characters.length)
-            sb.append(characters[index])
-        }
-
-        return sb.toString()
-    }
-
-    // Gera um conjunto de caracteres , com caracteres aceitos como nomes
+    // Generates a character set, with characters accepted as names
     fun generateWithNoSymbols(maxChat: Int = 5): String {
 
-        // Caracteres permitidos
+        // Allowed characters
         val chars = "abcdefghijklmnopqrstuvwxyz0123456789@$"
 
-        // Irá gerar um conjunto de caracteres
+        // Will generate a set of characters
         val characters = (1..maxChat).map{ chars.random() }.joinToString("")
 
         return characters
