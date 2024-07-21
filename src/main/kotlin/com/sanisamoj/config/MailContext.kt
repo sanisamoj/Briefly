@@ -69,12 +69,6 @@ object MailContext {
                     }
                     a(href = activationLink, classes = "button") { +"Ativar Conta" }
                     p {
-                        +"Caso o link acima não funcione, copie e cole a URL no seu navegador:"
-                    }
-                    p {
-                        +"$activationLink"
-                    }
-                    p {
                         +"O código estará válido apenas por 5 minutos."
                     }
                     p {

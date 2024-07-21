@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    flex-direction: column; /* Alinha o título e o container verticalmente */
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -67,6 +67,11 @@ button:hover {
     color: #555;
 }
 
+#result img {
+    display: block;
+    margin: 10px auto;
+}
+
 a {
     color: #6c4f8b; /* Purple color for links */
     text-decoration: none;
@@ -75,4 +80,8 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+.terms {
+    margin-top: 20px;
 }

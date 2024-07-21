@@ -1,5 +1,6 @@
 package com.sanisamoj.routing
 
+import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.VersionResponse
 import com.sanisamoj.services.server.ServerService
 import io.ktor.server.application.*
@@ -10,5 +11,10 @@ fun Route.serverRouting() {
     get("/version") {
         val versionResponse: VersionResponse = ServerService().getVersion()
         return@get call.respond(versionResponse)
+    }
+
+    get("/terms") {
+        val redirectLink: String = GlobalContext.TERMS_OF_SERVICE_LINK
+        return@get call.respondRedirect(redirectLink, permanent = false)
     }
 }

@@ -58,6 +58,13 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
             HttpStatusCode.Forbidden to ErrorResponse(Errors.InactiveRedirection.description)
         }
 
+        Errors.TermsOfServiceNotFound.description -> {
+            HttpStatusCode.NotFound to ErrorResponse(
+                error = Errors.TermsOfServiceNotFound.description,
+                details = ActionsMessages.ContactSupport.description
+            )
+        }
+
         else -> {
             HttpStatusCode.InternalServerError to ErrorResponse(Errors.InternalServerError.description)
         }

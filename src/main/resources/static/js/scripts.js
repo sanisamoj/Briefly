@@ -5,7 +5,7 @@ document.getElementById('shortenButton').addEventListener('click', function() {
         return;
     }
 
-    const requestUrl = `http://217.196.60.110:9098/generate?link=${encodeURIComponent(originalLink)}`;
+    const requestUrl = `http://localhost:9098/generate?link=${encodeURIComponent(originalLink)}`;
 
     fetch(requestUrl, {
         method: 'POST',
@@ -16,8 +16,7 @@ document.getElementById('shortenButton').addEventListener('click', function() {
             document.getElementById('shortLink').href = data.shortLink;
             document.getElementById('shortLink').textContent = data.shortLink;
 
-            document.getElementById('qrCodeLink').href = data.qrCodeLink;
-            document.getElementById('qrCodeLink').textContent = data.qrCodeLink;
+            document.getElementById('qrCodeImage').src = data.qrCodeLink;
 
             document.getElementById('expiresAt').textContent = new Date(data.expiresAt).toLocaleString();
 
