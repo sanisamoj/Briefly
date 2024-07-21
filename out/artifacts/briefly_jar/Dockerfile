@@ -10,8 +10,7 @@ COPY ../../../.env .
 # Copie o arquivo .jar para o diretório de trabalho
 COPY briefly.jar .
 
-# Define a variável de ambiente para o Java
-#ENV JAVA_OPTS=""
+EXPOSE 9098
 
 # Comando para rodar a aplicação
 CMD ["sh", "-c", "java -jar briefly.jar"]

@@ -30,7 +30,7 @@ fun Application.rateLimit() {
         }
 
         register(RateLimitName("publicLinkEntry")) {
-            rateLimiter(limit = 5, refillPeriod = 1.minutes)
+            rateLimiter(limit = 20, refillPeriod = 1.minutes)
 
             modifyResponse { applicationCall, state ->
                 when (state) {
