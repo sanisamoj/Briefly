@@ -2,7 +2,6 @@ package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.config.GlobalContext.MAX_SHORT_LINK_BY_ACCOUNT
-import com.sanisamoj.config.GlobalContext.UNKNOWN_USER_ID
 import com.sanisamoj.config.WebSocketManager
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.Errors
@@ -110,9 +109,14 @@ class LinkEntryService(
 
     private fun defineDeviceInfo(userAgent: UserAgentInfo): DeviceInfo {
         val deviceType = userAgent.deviceType
-        val subOperatingSystem = userAgent.subOperatingSystem
-        val operatingSystem = "${userAgent.operatingSystem} $subOperatingSystem"
         val browser = userAgent.browser
+
+        val operatingSystem: String = if(deviceType == "desktop") {
+            "${userAgent.operatingSystem} ${userAgent.operatingSystemDetails[1]}"
+        } else {
+            "${userAgent.operatingSystemDetails[0]} ${userAgent.operatingSystemDetails[1]}"
+        }
+
         return DeviceInfo(deviceType, operatingSystem, browser)
     }
 
@@ -132,11 +136,9 @@ class LinkEntryService(
         return LinkEntryFactory.linkEntryResponse(linkEntry)
     }
 
-    suspend fun getPublicLinkEntryByShortLink(shortLink: String): MidLinkEntryResponse {
+    suspend fun getPublicLinkEntryInfoByShortLink(shortLink: String): MidLinkEntryResponse {
         val linkEntry: LinkEntry = databaseRepository.getLinkByShortLink(shortLink)
             ?: throw Exception(Errors.ShortLinkNotFound.description)
-
-        if(linkEntry.userId != UNKNOWN_USER_ID) throw Exception(Errors.AccessProhibited.description)
 
         return LinkEntryFactory.midLinkEntryResponse(linkEntry)
     }

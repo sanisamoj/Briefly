@@ -66,7 +66,7 @@ fun Route.linkEntryRouting() {
         // Responsible for returning information from a link
         get("/info") {
             val shortLink = call.request.queryParameters["short"].toString()
-            val linkEntryResponse: MidLinkEntryResponse = LinkEntryService().getPublicLinkEntryByShortLink(shortLink)
+            val linkEntryResponse: MidLinkEntryResponse = LinkEntryService().getPublicLinkEntryInfoByShortLink(shortLink)
             return@get call.respond(linkEntryResponse)
         }
 

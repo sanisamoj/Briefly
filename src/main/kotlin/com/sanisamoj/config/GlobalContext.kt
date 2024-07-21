@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    const val VERSION: String = "0.13.1"
+    const val VERSION: String = "0.13.2"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
@@ -19,7 +19,6 @@ object GlobalContext {
     var LINK_ENTRY_EXPIRES_IN: LocalDateTime = LocalDateTime.now().plusDays(365)
         private set
 
-    const val UNKNOWN_USER_ID = "Unknown"
     const val MAX_SHORT_LINK_BY_ACCOUNT: Int = 25
 
     fun getMobileMinVersion(): String { return mobileMinVersion }

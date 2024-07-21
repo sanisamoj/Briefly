@@ -1,7 +1,7 @@
 package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.TestContext
-import com.sanisamoj.config.GlobalContext.UNKNOWN_USER_ID
+import com.sanisamoj.TestContext.IP_TEST
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
@@ -181,12 +181,13 @@ class LinkEntryServiceTest {
         )
 
         linkEntryService.redirectLink(redirectInfo)
+        linkEntryService.redirectLink(redirectInfo)
         // Wait for the coroutine scope to finish
         delay(TimeUnit.SECONDS.toMillis(2))
         val linkEntry = databaseRepository.getLinkByShortLink(shortLink)!!
 
-        assertEquals(1, linkEntry.totalVisits.size)
-        assertEquals(TestContext.IP_TEST, linkEntry.totalVisits[0].ip)
+        assertEquals(2, linkEntry.totalVisits.size)
+        assertEquals(IP_TEST, linkEntry.totalVisits[0].ip)
         assertEquals(TestContext.userAgentInfoTest.deviceType, linkEntry.totalVisits[0].deviceInfo.deviceType)
         assertEquals(TestContext.userAgentInfoTest.browser, linkEntry.totalVisits[0].deviceInfo.browser)
 
@@ -197,7 +198,7 @@ class LinkEntryServiceTest {
     @Test
     fun registerPublicLinkEntryAndGetInfoTest() = testApplication {
         val linkEntryRequest = LinkEntryRequest(
-            userId = UNKNOWN_USER_ID,
+            userId = IP_TEST,
             link = "linkTest",
             active = true,
             expiresIn = LocalDateTime.now().plusDays(5).toString()
@@ -206,12 +207,12 @@ class LinkEntryServiceTest {
         val linkEntryService = LinkEntryService(databaseRepository = TestContext.getDatabaseRepository())
         val linkEntryResponse: LinkEntryResponse = linkEntryService.register(linkEntryRequest, public = true)
 
-        assertEquals(UNKNOWN_USER_ID, linkEntryResponse.userId)
+        assertEquals(IP_TEST, linkEntryResponse.userId)
         assertEquals(linkEntryRequest.active, linkEntryResponse.active)
         assertEquals(linkEntryRequest.link, linkEntryResponse.originalLink)
 
         val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
-        val midLinkEntryResponse: MidLinkEntryResponse = linkEntryService.getPublicLinkEntryByShortLink(shortLink)
+        val midLinkEntryResponse: MidLinkEntryResponse = linkEntryService.getPublicLinkEntryInfoByShortLink(shortLink)
 
         assertEquals(linkEntryRequest.active, midLinkEntryResponse.active)
         assertEquals(linkEntryRequest.link, midLinkEntryResponse.originalLink)
