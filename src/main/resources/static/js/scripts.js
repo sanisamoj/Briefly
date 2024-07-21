@@ -5,7 +5,7 @@ document.getElementById('shortenButton').addEventListener('click', function() {
         return;
     }
 
-    const requestUrl = `http://localhost:9098/generate?link=${encodeURIComponent(originalLink)}`;
+    const requestUrl = `https://www.sanisamojrepository.com/briefly/generate?link=${encodeURIComponent(originalLink)}`;
 
     fetch(requestUrl, {
         method: 'POST',

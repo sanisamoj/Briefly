@@ -1,6 +1,7 @@
 package com.sanisamoj.services.server
 
 import com.sanisamoj.config.GlobalContext
+import com.sanisamoj.data.models.dataclass.SystemClicksCountResponse
 import com.sanisamoj.data.models.dataclass.VersionResponse
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 
@@ -18,8 +19,8 @@ class ServerService(
         )
     }
 
-    suspend fun getClickInSystemCount(): Int {
-        return databaseRepository.getCountApplicationClicks()
+    suspend fun getClickInSystemCount(): SystemClicksCountResponse {
+        return SystemClicksCountResponse(databaseRepository.getCountApplicationClicks())
     }
 
     fun updateMinMobileVersion(version: String) {
