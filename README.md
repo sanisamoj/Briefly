@@ -39,8 +39,6 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 ## Tecnologias e Ferramentas Utilizadas
 
 - Backend: **Ktor (Kotlin)**
-- Frontend: **Native Kotlin for Android**
-    - Repositório do aplicativo - [BrieflyApp](https://github.com/sanisamoj/BrieflyApp).
 - Banco de Dados: 
     - **MongoDB** - Para armazenamento de dados sensíveis.
     - **Redis** - Para armazenamento de dados que precisam de acesso mais rápido.

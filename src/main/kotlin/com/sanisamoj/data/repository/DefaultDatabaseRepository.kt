@@ -1,5 +1,6 @@
 package com.sanisamoj.data.repository
 
+import com.sanisamoj.config.WebSocketManager
 import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
@@ -15,9 +16,16 @@ import io.ktor.server.plugins.*
 import org.bson.types.ObjectId
 import java.time.LocalDateTime
 
-class DefaultDatabaseRepository: DatabaseRepository {
+class DefaultDatabaseRepository(
+    private val webSocketSession: WebSocketManager = WebSocketManager
+): DatabaseRepository {
     override suspend fun applicationClicksInc(ip: String, route: String) {
         Redis.incrementItemCount(RedisKeys.ClickersCount.name)
+
+        if(webSocketSession.isAnyModeratorConnected()){
+            val count: Int = getCountApplicationClicks()
+            webSocketSession.notifyAboutClickCount(count)
+        }
     }
 
     override suspend fun getCountApplicationClicks(): Int {

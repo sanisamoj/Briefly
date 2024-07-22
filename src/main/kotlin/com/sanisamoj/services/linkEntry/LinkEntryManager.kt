@@ -44,10 +44,6 @@ class LinkEntryManager(
         databaseRepository.removeLinkEntryIdFromUser(userId, linkEntryId)
     }
 
-    suspend fun removeAllShortLinksFromUnknownUser(ip: String) {
-        databaseRepository.removeAllLinksEntriesFromUnknownUser(ip)
-    }
-
     suspend fun updateLinkEntryStatusFromUser(userId: String, shortLink: String, status: Boolean): LinkEntryResponse {
         val linkEntry: LinkEntry = databaseRepository.getLinkByShortLink(shortLink)
             ?: throw NotFoundException(Errors.ShortLinkNotFound.description)

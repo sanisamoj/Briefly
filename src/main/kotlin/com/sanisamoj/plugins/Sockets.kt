@@ -21,9 +21,28 @@ fun Application.configureSockets(
 
     routing {
         authenticate("user-jwt") {
-            webSocket("/server") {
+            webSocket("/links") {
                 val userId = call.parameters["id"].toString()
                 val thisConnection = Connection(this, userId)
+                webSocketManager.addConnection(thisConnection)
+
+                try {
+                    for (frame in incoming) {
+                        if (frame is Frame.Close) {
+                            webSocketManager.removeConnection(thisConnection)
+                            break
+                        }
+                    }
+                } finally {
+                    webSocketManager.removeConnection(thisConnection)
+                }
+            }
+        }
+
+        authenticate("moderator-jwt") {
+            webSocket("/server") {
+                val userId = call.parameters["id"].toString()
+                val thisConnection = Connection(this, userId, admin = true)
                 webSocketManager.addConnection(thisConnection)
 
                 try {
