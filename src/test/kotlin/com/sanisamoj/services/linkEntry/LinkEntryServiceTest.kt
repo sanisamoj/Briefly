@@ -175,7 +175,7 @@ class LinkEntryServiceTest {
         val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
 
         val redirectInfo = RedirectInfo(
-            ip = TestContext.IP_TEST,
+            ip = IP_TEST,
             shortLink = shortLink,
             userAgent = TestContext.userAgentInfoTest
         )

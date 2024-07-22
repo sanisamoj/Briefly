@@ -27,6 +27,6 @@ fun Application.module() {
 private fun startBackgroundTasks() {
     CoroutineScope(Dispatchers.Default).launch {
         Config.databaseInitialize()
-        Config.updateExpiredLinksRoutine()
+        Config.routinesInitialize()
     }
 }
