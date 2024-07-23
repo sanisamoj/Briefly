@@ -19,7 +19,9 @@ object UserFactory {
                 try {
                     val linkEntryResponse = linkEntryService.getLinkEntryByShortLinkById(it)
                     linkEntryResponseList.add(linkEntryResponse)
-                } catch (_: Throwable) {}
+                } catch (_: Throwable) {
+                    // Intentionally ignored
+                }
             }
         }
 

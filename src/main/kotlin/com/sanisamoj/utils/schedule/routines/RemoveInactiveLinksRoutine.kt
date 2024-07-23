@@ -1,6 +1,7 @@
 package com.sanisamoj.utils.schedule.routines
 
 import com.sanisamoj.config.GlobalContext
+import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.utils.converters.converterStringToLocalDateTime
 import com.sanisamoj.utils.schedule.routines.UpdateExpiredLinksRoutine.Companion.expiredLinks
@@ -25,6 +26,13 @@ class RemoveInactiveLinksRoutine: Job {
 
         for (link in linksToDelete) {
             databaseRepository.deleteLinkByShortLink(link.shortLink)
+
+            try {
+                val user: User = databaseRepository.getUserById(link.userId)
+                databaseRepository.removeLinkEntryIdFromUser(user.id.toString(), link.id.toString())
+            } catch (_: Throwable) {
+                // Intentionally ignored
+            }
         }
     }
 }
