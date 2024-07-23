@@ -117,11 +117,11 @@ IP_INFO_TOKEN=
 
 #### Execute o comando a seguir para construir a imagem Docker.
 
-    docker build -t snapurl:latest .
+    docker build -t briefly:latest .
 
 #### Execute o comando a seguir para executar a imagem criada com o Docker.
 
-    docker run -p 9098:9098 snapurl:latest
+    docker run -p 9098:9098 briefly:latest
 
 > As portas pré-definidas podem ser alteradas no arquivo *"aplication.conf"*, e devem ser refletidas na construção da imagem com o Docker.
 
