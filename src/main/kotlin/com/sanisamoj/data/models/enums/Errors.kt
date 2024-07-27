@@ -1,7 +1,6 @@
 package com.sanisamoj.data.models.enums
 
 enum class Errors(val description: String) {
-    MaximumShortLinksExceeded("maximum short links exceeded!"),
     TermsOfServiceNotFound("Terms of Service not found!"),
     InternalServerError("Internal Server Error!"),
     InactiveRedirection("Inactive redirection!"),

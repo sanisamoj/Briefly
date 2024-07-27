@@ -8,5 +8,7 @@ data class MidLinkEntryResponse(
     val shortLink: String,
     val qrCodeLink: String,
     val originalLink: String,
-    val expiresAt: String
+    val totalVisits: List<ClickerResponse>,
+    val expiresAt: String,
+    val createAt: String
 )

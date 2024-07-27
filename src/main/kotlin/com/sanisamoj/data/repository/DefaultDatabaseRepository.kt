@@ -154,6 +154,10 @@ class DefaultDatabaseRepository(
         )
     }
 
+    override suspend fun getAllLinkEntries(): List<LinkEntry> {
+        return MongodbOperations().findAll(CollectionsInDb.LinkEntry)
+    }
+
     override suspend fun updateLinkByShortLink(shortLink: String, update: OperationField): LinkEntry {
         return MongodbOperations().updateAndReturnItem<LinkEntry>(
             collectionName = CollectionsInDb.LinkEntry,
@@ -183,7 +187,7 @@ class DefaultDatabaseRepository(
 
         val expiredLinkEntryList: List<LinkEntry> = mongodbOperations.findItemsExpiringBeforeOrOn<LinkEntry>(
             collectionName = CollectionsInDb.LinkEntry,
-            fieldName = Fields.ExpiresAt.title,
+            dateFieldName = Fields.ExpiresAt.title,
             dateTime = currentTime
         )
 
@@ -201,8 +205,22 @@ class DefaultDatabaseRepository(
 
         val expiredLinkEntryList: List<LinkEntry> = mongodbOperations.findItemsExpiringBeforeOrOn<LinkEntry>(
             collectionName = CollectionsInDb.LinkEntry,
-            fieldName = Fields.ExpiresAt.title,
+            dateFieldName = Fields.ExpiresAt.title,
             dateTime = currentTime
+        )
+
+        return expiredLinkEntryList
+    }
+
+    override suspend fun filterActiveAndExpiredLinks(dateTime: LocalDateTime): List<LinkEntry> {
+        val mongodbOperations = MongodbOperations()
+        val currentTime = LocalDateTime.now()
+
+        val expiredLinkEntryList: List<LinkEntry> = mongodbOperations.findItemsWithFilterExpiringBeforeOrOn<LinkEntry>(
+            collectionName = CollectionsInDb.LinkEntry,
+            dateFieldName = Fields.ExpiresAt.title,
+            dateTime = currentTime,
+            filter = OperationField(Fields.Active, true)
         )
 
         return expiredLinkEntryList

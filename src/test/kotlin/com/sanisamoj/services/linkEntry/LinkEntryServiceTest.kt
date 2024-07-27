@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertNotEquals
 
 class LinkEntryServiceTest {
     private val databaseRepository: DatabaseRepository by lazy { TestContext.getDatabaseRepository() }
@@ -44,30 +45,6 @@ class LinkEntryServiceTest {
         userTest.deleteUserTest()
         val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
         databaseRepository.deleteLinkByShortLink(shortLink)
-    }
-
-    @Test
-    fun registerLinkEntryWithMaxExceededTest() = testApplication {
-        val userTest = UserTest()
-        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
-
-        val linkEntryRequest = LinkEntryRequest(
-            userId = user.id.toString(),
-            link = "linkTest",
-            active = true,
-            expiresIn = LocalDateTime.now().plusDays(5).toString()
-        )
-
-        val linkEntryService = LinkEntryService(
-            databaseRepository = TestContext.getDatabaseRepository(),
-            maxShortLinksAllowed = 0
-        )
-
-        assertFails {
-            linkEntryService.register(linkEntryRequest)
-        }
-
-        userTest.deleteUserTest()
     }
 
     @Test
@@ -112,19 +89,19 @@ class LinkEntryServiceTest {
         )
 
         val linkEntryResponseWithExcessiveDateTest: LinkEntryResponse = linkEntryService.register(linkEntryRequest)
-        val linkEntryResponseWithWithEarlyDateTest: LinkEntryResponse = linkEntryService.register(
+        val linkEntryResponseWithEarlyDateTest: LinkEntryResponse = linkEntryService.register(
             linkEntryRequest.copy(expiresIn = "2023-07-08T18:37:02.045716800")
         )
 
-        assertEquals(expiresInTest.toString(), linkEntryResponseWithExcessiveDateTest.expiresAt)
-        assertEquals(expiresInTest.toString(), linkEntryResponseWithWithEarlyDateTest.expiresAt)
+        assertNotEquals(expiresInTest.toString(), linkEntryResponseWithExcessiveDateTest.expiresAt)
+        assertEquals(expiresInTest.toString(), linkEntryResponseWithEarlyDateTest.expiresAt)
 
         userTest.deleteUserTest()
         databaseRepository.deleteLinkByShortLink(
             shortLink = linkEntryResponseWithExcessiveDateTest.shortLink.substringAfterLast("/")
         )
         databaseRepository.deleteLinkByShortLink(
-            shortLink = linkEntryResponseWithWithEarlyDateTest.shortLink.substringAfterLast("/")
+            shortLink = linkEntryResponseWithEarlyDateTest.shortLink.substringAfterLast("/")
         )
     }
 

@@ -1,6 +1,5 @@
 package com.sanisamoj.errors
 
-import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.ErrorResponse
 import com.sanisamoj.data.models.enums.ActionsMessages
 import com.sanisamoj.data.models.enums.Errors
@@ -41,13 +40,6 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
 
         Errors.AccessProhibited.description -> {
             HttpStatusCode.Forbidden to ErrorResponse(Errors.AccessProhibited.description)
-        }
-
-        Errors.MaximumShortLinksExceeded.description -> {
-            HttpStatusCode.Forbidden to ErrorResponse(
-                error = Errors.MaximumShortLinksExceeded.description,
-                details = "${ActionsMessages.MaxAllowedShortLinks} ${GlobalContext.MAX_SHORT_LINK_BY_ACCOUNT} short links."
-            )
         }
 
         Errors.ExpiredLink.description -> {

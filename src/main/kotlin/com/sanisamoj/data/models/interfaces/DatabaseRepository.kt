@@ -23,9 +23,11 @@ interface DatabaseRepository {
     suspend fun registerLink(link: LinkEntry): LinkEntry
     suspend fun getLinkById(id: String): LinkEntry
     suspend fun getLinkByShortLink(shortLink: String): LinkEntry?
+    suspend fun getAllLinkEntries(): List<LinkEntry>
     suspend fun updateLinkByShortLink(shortLink: String, update: OperationField): LinkEntry
     suspend fun addClickerInShortLink(shortLink: String, clicker: Clicker)
     suspend fun deleteLinkByShortLink(shortLink: String)
     suspend fun deleteExpiredLinks(dateTime: LocalDateTime)
     suspend fun filterExpiredLinks(dateTime: LocalDateTime): List<LinkEntry>
+    suspend fun filterActiveAndExpiredLinks(dateTime: LocalDateTime): List<LinkEntry>
 }

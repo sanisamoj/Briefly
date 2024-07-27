@@ -1,6 +1,7 @@
 package com.sanisamoj.routing
 
 import com.sanisamoj.data.models.dataclass.*
+import com.sanisamoj.services.linkEntry.LinkEntryFactory
 import com.sanisamoj.services.linkEntry.LinkEntryService
 import com.sanisamoj.services.linkEntry.QrCode
 import com.sanisamoj.utils.analyzers.dotEnv
@@ -85,20 +86,12 @@ fun Route.linkEntryRouting() {
 
         // Responsible for generating a public shortened link
         post("/generate") {
-            val originalLink = call.request.queryParameters["link"].toString()
+            val linkEntryRequestFromUser: LinkEntryRequest = call.receive<LinkEntryRequest>()
             val ip: String = call.request.origin.remoteHost
 
-            val linkEntryRequest = LinkEntryRequest(userId = ip, link = originalLink)
+            val linkEntryRequest: LinkEntryRequest = linkEntryRequestFromUser.copy(userId = ip, active = true)
             val linkEntryResponse: LinkEntryResponse = LinkEntryService().register(linkEntryRequest, public = true)
-
-            val midLinkEntryResponse = MidLinkEntryResponse(
-                active = linkEntryResponse.active,
-                shortLink = linkEntryResponse.shortLink,
-                qrCodeLink = linkEntryResponse.qrCodeLink,
-                originalLink = linkEntryResponse.originalLink,
-                expiresAt = linkEntryResponse.expiresAt
-            )
-            return@post call.respond(midLinkEntryResponse)
+            return@post call.respond(LinkEntryFactory.linkEntryResponseToMidLinkEntryResponse(linkEntryResponse))
         }
     }
 }

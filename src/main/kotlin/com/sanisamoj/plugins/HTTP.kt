@@ -10,6 +10,8 @@ fun Application.configureHTTP() {
         allowMethod(HttpMethod.Post)
         allowMethod(HttpMethod.Delete)
         allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.ContentType)
+        allowCredentials = true
         anyHost()
     }
 }

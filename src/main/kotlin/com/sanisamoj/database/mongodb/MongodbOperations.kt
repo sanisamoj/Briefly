@@ -34,6 +34,17 @@ class MongodbOperations {
         return result
     }
 
+    // Returns all items
+    suspend inline fun <reified T : Any> findAll(collectionName: CollectionsInDb): List<T> {
+        val database = MongoDatabase.getDatabase()
+        val collection = database.getCollection<T>(collectionName.name)
+
+        val result: List<T> = collection.find<T>()
+            .toList()
+
+        return result
+    }
+
     // Returns all items by filter
     suspend inline fun <reified T : Any> findAllByFilter(collectionName: CollectionsInDb, filter: OperationField): List<T> {
         val database = MongoDatabase.getDatabase()
@@ -134,7 +145,7 @@ class MongodbOperations {
     }
 
     // Find items expiring before or on the specified date-time from the database
-    suspend inline fun <reified T : Any> findItemsExpiringBeforeOrOn(collectionName: CollectionsInDb, fieldName: String, dateTime: LocalDateTime): List<T> {
+    suspend inline fun <reified T : Any> findItemsExpiringBeforeOrOn(collectionName: CollectionsInDb, dateFieldName: String, dateTime: LocalDateTime): List<T> {
         val database = MongoDatabase.getDatabase()
         val collection = database.getCollection<T>(collectionName.name)
 
@@ -142,9 +153,35 @@ class MongodbOperations {
         val currentDateTime = dateTime.toString()
 
         // Create filter to match documents where 'fieldName' is less than or equal to the date-time
-        val filter = Filters.lte(fieldName, currentDateTime)
+        val filter = Filters.lte(dateFieldName, currentDateTime)
 
         // Find matching documents
         return collection.find(filter).toList()
+    }
+
+    // Find items expiring before or on the specified date-time from the database with filter
+    suspend inline fun <reified T : Any> findItemsWithFilterExpiringBeforeOrOn(
+        collectionName: CollectionsInDb,
+        dateFieldName: String,
+        dateTime: LocalDateTime,
+        filter: OperationField
+    ): List<T> {
+        val database = MongoDatabase.getDatabase()
+        val collection = database.getCollection<T>(collectionName.name)
+
+        // Current date-time in ISO format
+        val currentDateTime = dateTime.toString()
+
+        // Create filter to match documents where 'dateFieldName' is less than or equal to the date-time
+        val dateFilter = Filters.lte(dateFieldName, currentDateTime)
+
+        // Create additional filter
+        val additionalFilter = Filters.eq(filter.field.title, filter.value)
+
+        // Combine the filters
+        val combinedFilter = Filters.and(dateFilter, additionalFilter)
+
+        // Find matching documents
+        return collection.find(combinedFilter).toList()
     }
 }

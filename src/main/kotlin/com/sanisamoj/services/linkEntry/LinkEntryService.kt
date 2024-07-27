@@ -1,13 +1,12 @@
 package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.config.GlobalContext
-import com.sanisamoj.config.GlobalContext.MAX_SHORT_LINK_BY_ACCOUNT
+import com.sanisamoj.config.GlobalContext.NO_EXPIRATION_TIME
 import com.sanisamoj.config.WebSocketManager
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.IpRepository
-import com.sanisamoj.services.user.UserService
 import com.sanisamoj.utils.analyzers.hasEmptyStringProperties
 import com.sanisamoj.utils.converters.converterStringToLocalDateTime
 import com.sanisamoj.utils.generators.CharactersGenerator
@@ -22,25 +21,11 @@ class LinkEntryService(
     private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository(),
     private val ipRepository: IpRepository = GlobalContext.getIpRepository(),
     private val webSocketManager: WebSocketManager = WebSocketManager,
-    private val expiresIn: LocalDateTime = GlobalContext.LINK_ENTRY_EXPIRES_IN,
-    private val maxShortLinksAllowed: Int = MAX_SHORT_LINK_BY_ACCOUNT
+    private val expiresIn: LocalDateTime = GlobalContext.LINK_ENTRY_EXPIRES_IN
 ) {
     suspend fun register(linkEntryRequest: LinkEntryRequest, public: Boolean = false): LinkEntryResponse {
-        hasEmptyStringProperties(linkEntryRequest)
+        hasEmptyStringProperties(linkEntryRequest, listOf("expiresIn"))
         val shortLink: String = generateShortLink()
-
-        var validatedExpiresIn: LocalDateTime = converterStringToLocalDateTime(linkEntryRequest.expiresIn)
-        val currentTime: LocalDateTime = LocalDateTime.now()
-
-        if(validatedExpiresIn.isAfter(expiresIn) || validatedExpiresIn.isBefore(currentTime)) {
-            validatedExpiresIn = expiresIn
-        }
-
-        if(!public) {
-            val userResponse: UserResponse = UserService().getUserById(linkEntryRequest.userId)
-            if(userResponse.linkEntryList.size >= maxShortLinksAllowed)
-                throw Exception(Errors.MaximumShortLinksExceeded.description)
-        }
 
         val linkEntry = LinkEntry(
             id = ObjectId(),
@@ -49,11 +34,25 @@ class LinkEntryService(
             shortLink = shortLink,
             public = public,
             originalLink = linkEntryRequest.link,
-            expiresAt = validatedExpiresIn.toString()
+            expiresAt = getCorrectExpirationValue(linkEntryRequest.expiresIn)
         )
 
         databaseRepository.registerLink(linkEntry)
         return LinkEntryFactory.linkEntryResponse(linkEntry)
+    }
+
+    // Checks the expiration date by assigning the correct value
+    private fun getCorrectExpirationValue(expires: String?): String {
+        return if(expires == "" || expires == null) {
+            NO_EXPIRATION_TIME
+        } else {
+            var validatedExpiresIn: LocalDateTime = converterStringToLocalDateTime(expires)
+            val currentTime: LocalDateTime = LocalDateTime.now()
+            if(validatedExpiresIn.isBefore(currentTime)) {
+                validatedExpiresIn = expiresIn
+            }
+            validatedExpiresIn.toString()
+        }
     }
 
     private suspend fun generateShortLink(): String {

@@ -10,5 +10,6 @@ data class LinkEntryResponse(
     val qrCodeLink: String,
     val originalLink: String,
     val totalVisits: List<ClickerResponse>,
-    val expiresAt: String
+    val expiresAt: String,
+    val createdAt: String
 )

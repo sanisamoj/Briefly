@@ -5,13 +5,16 @@ import com.sanisamoj.utils.schedule.ScheduleRoutine
 import com.sanisamoj.utils.schedule.models.JobIdentification
 import com.sanisamoj.utils.schedule.models.RoutineGroups
 import com.sanisamoj.utils.schedule.models.StartRoutineData
-import com.sanisamoj.utils.schedule.routines.RemoveInactiveLinksRoutine
+import com.sanisamoj.utils.schedule.routines.RemoveNonAccessedLinksRoutine
 import com.sanisamoj.utils.schedule.routines.UpdateExpiredLinksRoutine
 import org.quartz.JobKey
+import java.time.LocalDateTime
 
 object Config {
     private val jobsIdentificationList: MutableList<JobIdentification> = mutableListOf()
     private const val EVERY_DAY_AT_3PM_CRON: String = "0 0 3 * * ?"
+
+    val TWELVE_MONTHS_AGO: LocalDateTime = LocalDateTime.now().minusMonths(12)
 
     suspend fun databaseInitialize() {
         MongoDatabase.initialize()
@@ -44,7 +47,7 @@ object Config {
             cronExpression = EVERY_DAY_AT_3PM_CRON
         )
 
-        val jobKey: JobKey = ScheduleRoutine().startRoutine<RemoveInactiveLinksRoutine>(startRoutineData)
+        val jobKey: JobKey = ScheduleRoutine().startRoutine<RemoveNonAccessedLinksRoutine>(startRoutineData)
 
         val jobIdentification = JobIdentification(jobKey, routineName)
         jobsIdentificationList.add(jobIdentification)

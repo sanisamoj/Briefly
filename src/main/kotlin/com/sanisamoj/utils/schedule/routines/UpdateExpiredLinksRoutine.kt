@@ -20,7 +20,7 @@ class UpdateExpiredLinksRoutine : Job {
 
     override fun execute(p0: JobExecutionContext?) {
         runBlocking {
-            val expiredLinks: List<LinkEntry> = runBlocking { database.filterExpiredLinks(LocalDateTime.now()) }
+            val expiredLinks: List<LinkEntry> = runBlocking { database.filterActiveAndExpiredLinks(LocalDateTime.now()) }
 
             launch {
                 expiredLinks.forEach {

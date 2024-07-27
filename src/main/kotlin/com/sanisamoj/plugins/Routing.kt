@@ -7,6 +7,7 @@ import com.sanisamoj.routing.userRouting
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.routing.*
+import java.io.File
 
 fun Application.configureRouting() {
     routing {
@@ -15,7 +16,8 @@ fun Application.configureRouting() {
         linkEntryRouting()
         serverRouting()
 
-        staticResources("/", "static") {
+        staticFiles("/resources", File("files"))
+        staticResources("/", "files") {
             default("index.html")
             preCompressed(CompressedFileType.GZIP)
         }

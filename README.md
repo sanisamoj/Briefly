@@ -2,7 +2,7 @@
 Este é um servidor de encurtador de links desenvolvido em Kotlin utilizando o Ktor. O servidor permite criar URLs curtas que redirecionam para URLs longas, 
 oferecendo funcionalidades adicionais como contagem de cliques únicos e gerenciamento de links.
 
-Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá um nível gratuito onde todos os links gerados estarão disponíveis por um ano.
+Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá um nível gratuito onde todos os links gerados estarão disponíveis para acompanhamento.
 
 ## Informações Coletadas das Conexões
 
@@ -10,7 +10,7 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 - Geolocalização: Com base no endereço IP, a localização geográfica do usuário será determinada.
 - Horário: O timestamp de cada conexão será registrado.
 - Dispositivo: Informações sobre o dispositivo do usuário, incluindo tipo (desktop, mobile), sistema operacional (Windows, iOS, Android, etc.) e navegador (Chrome, Firefox, Safari, etc.).
-- URL de Referência: A URL da qual o usuário foi redirecionado para o link encurtado.
+- URL de origem: A URL de origem da qual o usuário foi redirecionado para o link encurtado.
 
 ## Informações dos Links
 
@@ -24,16 +24,16 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 
 - Links Expiráveis: Possibilidade de criar links que expiram após um determinado período.
 - QR Code: Possibilidade de compartilhar um QR Code que contém o link encurtado.
-- Nível Gratuito:
-  - Todos os links criados no nível gratuito terão uma validade de um ano a partir da data de criação.
-  - Após um ano, os links expirarão automaticamente e não estarão mais acessíveis.
+- Proteção de links: Os links terão a possibilidade de serem protegidos por senha.
+- O serviço é totalmente gratuíto.
 
 ## Funcionalidades do Sistema
 
 - Possibilidade de encurtar links (Estando ou não logado).
 - Possibilidade de acompanhar informações coletadas de clicks dos links.
+- Notificações via E-mail aos usuários cadastrados sobre seus links.
 - Gerenciar links como atualizar status ou removê-lo.
-- Há uma verificação pela madrugada de links expirados, e são desativados.
+- Há uma verificação periódica de links expirados, ou que não recebem mais acessos para serem desativados.
 - Uma parte para um moderador gerenciar o estado da aplicação.
 
 ## Tecnologias e Ferramentas Utilizadas
@@ -132,4 +132,4 @@ No momento apenas alguns endpoints estão disponíveis, e estão hospedados na p
 
 ## Protótipo
 No presente momento estou dispondo de uma página muito humilde para testes.
-https://www.sanisamojrepository.com/briefly/
+https://www.sanisamojrepository.com/
