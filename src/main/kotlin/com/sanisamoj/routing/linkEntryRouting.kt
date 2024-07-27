@@ -3,6 +3,7 @@ package com.sanisamoj.routing
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.services.linkEntry.LinkEntryService
 import com.sanisamoj.services.linkEntry.QrCode
+import com.sanisamoj.utils.analyzers.dotEnv
 import com.sanisamoj.utils.generators.parseUserAgent
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -53,13 +54,14 @@ fun Route.linkEntryRouting() {
             val userAgentInfo: UserAgentInfo = parseUserAgent(userAgent)
 
             // Redirect to homepage
-            if(shortLink == null || shortLink == "favicon.ico") {
-                return@get call.respond(HttpStatusCode.OK)
-
-            } else {
-                val redirectInfo = RedirectInfo(ip, shortLink, userAgentInfo)
+            try {
+                val redirectInfo = RedirectInfo(ip, shortLink.toString(), userAgentInfo)
                 val redirectLink: String = LinkEntryService().redirectLink(redirectInfo)
                 return@get call.respondRedirect(redirectLink, permanent = false)
+
+            } catch (_: Throwable) {
+                val notFoundLink = "${dotEnv("SELF_URL")}/notFound/"
+                return@get call.respondRedirect(notFoundLink, permanent = false)
             }
         }
 
