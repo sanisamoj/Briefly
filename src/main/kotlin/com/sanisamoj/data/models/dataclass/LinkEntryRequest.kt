@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class LinkEntryRequest(
     val userId: String = "",
     val link: String,
+    val personalizedCode: String? = null,
     val active: Boolean = true,
     val expiresIn: String? = null
 )

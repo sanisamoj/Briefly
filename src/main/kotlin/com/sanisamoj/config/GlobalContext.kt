@@ -6,12 +6,13 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    const val VERSION: String = "0.15.1"
+    const val VERSION: String = "0.15.2"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
 
-    val TERMS_OF_SERVICE_LINK: String = dotEnv("TERMS_OF_SERVICE_LINK")
+    var TERMS_OF_SERVICE_LINK: String = dotEnv("TERMS_OF_SERVICE_LINK")
+        private set
 
     val USER_TOKEN_EXPIRATION: Long = TimeUnit.DAYS.toMillis(15)
     val EMAIL_TOKEN_EXPIRATION: Long = TimeUnit.MINUTES.toMillis(5)
@@ -36,4 +37,8 @@ object GlobalContext {
     fun getSessionRepository(): SessionRepository { return serverContainer.sessionRepository }
     fun getIpRepository(): IpRepository { return serverContainer.ipRepository }
     fun getMailRepository(): MailRepository { return serverContainer.mailRepository }
+
+    fun updateTermsLink(link: String) {
+        TERMS_OF_SERVICE_LINK = link
+    }
 }

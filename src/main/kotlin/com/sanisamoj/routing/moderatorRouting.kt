@@ -1,5 +1,6 @@
 package com.sanisamoj.routing
 
+import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.LinkEntryResponse
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.data.models.dataclass.UserResponse
@@ -72,30 +73,6 @@ fun Route.moderatorRouting() {
                     val user = call.receive<UserCreateRequest>()
                     val userResponse: UserResponse = UserService().createUser(user, AccountType.MODERATOR)
                     return@post call.respond(userResponse)
-                }
-
-                // Responsible for update mobile version
-                put("/version") {
-                    val min: String? = call.parameters["min"]
-                    val target: String? = call.parameters["target"]
-                    val serverService = ServerService()
-
-                    // Update both versions if both parameters are present
-                    if (min != null && target != null) {
-                        serverService.updateMinMobileVersion(min)
-                        serverService.updateTargetMobileVersion(target)
-                    } else {
-                        // Update only the min version if the target is not present
-                        if (min != null) {
-                            serverService.updateMinMobileVersion(min)
-                        }
-                        // Update only the target version if the min is not present
-                        if (target != null) {
-                            serverService.updateTargetMobileVersion(target)
-                        }
-                    }
-
-                    return@put call.respond(serverService.getVersion())
                 }
             }
         }

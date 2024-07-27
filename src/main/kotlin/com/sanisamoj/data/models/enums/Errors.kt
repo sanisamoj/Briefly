@@ -1,6 +1,7 @@
 package com.sanisamoj.data.models.enums
 
 enum class Errors(val description: String) {
+    PersonalizedShortLinkAlreadyExist("Personalized short link already exist!"),
     TermsOfServiceNotFound("Terms of Service not found!"),
     InternalServerError("Internal Server Error!"),
     InactiveRedirection("Inactive redirection!"),

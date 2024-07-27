@@ -28,11 +28,16 @@ class LinkEntryService(
     suspend fun register(linkEntryRequest: LinkEntryRequest, public: Boolean = false): LinkEntryResponse {
         hasEmptyStringProperties(
             instance = linkEntryRequest,
-            propertiesToIgnore = listOf("expiresIn")
-
+            propertiesToIgnore = listOf("expiresIn", "personalizedCode")
         )
 
-        val shortLink: String = generateShortLink()
+        val shortLink: String = if(linkEntryRequest.personalizedCode != null) {
+            checkPersonalizedShortLink(linkEntryRequest.personalizedCode)
+            linkEntryRequest.personalizedCode
+        } else {
+            generateShortLink()
+        }
+
         val originalLink: String = completeAndBuildUrl(linkEntryRequest.link)
             ?: throw Error(Errors.InvalidLink.description)
 
@@ -74,6 +79,11 @@ class LinkEntryService(
         } while (shortLinkAlreadyExists)
 
         return shortLink
+    }
+
+    private suspend fun checkPersonalizedShortLink(shortLink: String) {
+        val linkEntry: LinkEntry? = databaseRepository.getLinkByShortLink(shortLink)
+        if(linkEntry != null) throw Error(Errors.PersonalizedShortLinkAlreadyExist.description)
     }
 
     suspend fun redirectLink(redirectInfo: RedirectInfo): String {
