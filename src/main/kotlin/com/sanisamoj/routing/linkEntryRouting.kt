@@ -1,6 +1,9 @@
 package com.sanisamoj.routing
 
+import com.sanisamoj.config.GlobalContext.INACTIVE_LINK_PAGE_ROUTE
+import com.sanisamoj.config.GlobalContext.NOT_FOUND_PAGE_ROUTE
 import com.sanisamoj.data.models.dataclass.*
+import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.services.linkEntry.LinkEntryFactory
 import com.sanisamoj.services.linkEntry.LinkEntryService
 import com.sanisamoj.services.linkEntry.QrCode
@@ -52,16 +55,21 @@ fun Route.linkEntryRouting() {
 
             val ip: String = call.request.origin.remoteHost
             val userAgent: String = call.request.headers["User-Agent"] ?: "Unknown"
+            val referer: String? = call.request.headers["Referer"]
             val userAgentInfo: UserAgentInfo = parseUserAgent(userAgent)
 
             // Redirect to homepage
             try {
-                val redirectInfo = RedirectInfo(ip, shortLink.toString(), userAgentInfo)
+                val redirectInfo = RedirectInfo(ip, shortLink.toString(), userAgentInfo, referer.toString())
                 val redirectLink: String = LinkEntryService().redirectLink(redirectInfo)
                 return@get call.respondRedirect(redirectLink, permanent = false)
 
-            } catch (_: Throwable) {
-                val notFoundLink = "${dotEnv("SELF_URL")}/notFound/"
+            } catch (e: Throwable) {
+                val notFoundLink = when(e.message) {
+                    Errors.LinkIsNotActive.description -> "${dotEnv("SELF_URL")}/${INACTIVE_LINK_PAGE_ROUTE}"
+                    else -> "${dotEnv("SELF_URL")}/${NOT_FOUND_PAGE_ROUTE}"
+                }
+
                 return@get call.respondRedirect(notFoundLink, permanent = false)
             }
         }

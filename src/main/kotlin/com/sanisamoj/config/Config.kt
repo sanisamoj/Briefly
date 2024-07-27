@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 
 object Config {
     private val jobsIdentificationList: MutableList<JobIdentification> = mutableListOf()
-    private const val EVERY_DAY_AT_3PM_CRON: String = "0 0 3 * * ?"
+    private const val EVERY_DAY_AT_3PM_CRON: String = "0 0 2 * * ?"
 
     val TWELVE_MONTHS_AGO: LocalDateTime = LocalDateTime.now().minusMonths(12)
 

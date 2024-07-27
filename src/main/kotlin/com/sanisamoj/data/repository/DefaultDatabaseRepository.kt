@@ -48,6 +48,13 @@ class DefaultDatabaseRepository(
         ) ?: throw NotFoundException(Errors.UserNotFound.description)
     }
 
+    override suspend fun getUserByIdOrNull(id: String): User? {
+        return MongodbOperations().findOne<User>(
+            collectionName = CollectionsInDb.Users,
+            filter = OperationField(Fields.Id, ObjectId(id))
+        )
+    }
+
     override suspend fun getUserByEmail(email: String): User? {
         return MongodbOperations().findOne<User>(
             collectionName = CollectionsInDb.Users,

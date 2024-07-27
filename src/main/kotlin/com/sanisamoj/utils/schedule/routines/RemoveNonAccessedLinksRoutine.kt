@@ -44,13 +44,9 @@ class RemoveNonAccessedLinksRoutine: Job {
         for (link in allLinksNonAccess) {
             databaseRepository.deleteLinkByShortLink(link.shortLink)
 
-            try {
-                val user: User = databaseRepository.getUserById(link.userId)
-                databaseRepository.removeLinkEntryIdFromUser(user.id.toString(), link.id.toString())
-                // Send an email warning that the link has not been accessed for 1 year, so it has been removed from the database
-            } catch (_: Throwable) {
-                // Intentionally ignored
-            }
+            val user: User? = databaseRepository.getUserByIdOrNull(link.userId)
+            if(user != null) databaseRepository.removeLinkEntryIdFromUser(user.id.toString(), link.id.toString())
+            // Send an email warning that the link has not been accessed for 1 year, so it has been removed from the database
         }
     }
 

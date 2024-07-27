@@ -2,6 +2,7 @@ package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.config.GlobalContext.NO_EXPIRATION_TIME
+import com.sanisamoj.config.GlobalContext.UNKNOWN
 import com.sanisamoj.config.WebSocketManager
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.Errors
@@ -10,6 +11,7 @@ import com.sanisamoj.data.models.interfaces.IpRepository
 import com.sanisamoj.utils.analyzers.hasEmptyStringProperties
 import com.sanisamoj.utils.converters.converterStringToLocalDateTime
 import com.sanisamoj.utils.generators.CharactersGenerator
+import com.sanisamoj.utils.generators.completeAndBuildUrl
 import io.ktor.server.plugins.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,8 +26,15 @@ class LinkEntryService(
     private val expiresIn: LocalDateTime = GlobalContext.LINK_ENTRY_EXPIRES_IN
 ) {
     suspend fun register(linkEntryRequest: LinkEntryRequest, public: Boolean = false): LinkEntryResponse {
-        hasEmptyStringProperties(linkEntryRequest, listOf("expiresIn"))
+        hasEmptyStringProperties(
+            instance = linkEntryRequest,
+            propertiesToIgnore = listOf("expiresIn")
+
+        )
+
         val shortLink: String = generateShortLink()
+        val originalLink: String = completeAndBuildUrl(linkEntryRequest.link)
+            ?: throw Error(Errors.InvalidLink.description)
 
         val linkEntry = LinkEntry(
             id = ObjectId(),
@@ -33,7 +42,7 @@ class LinkEntryService(
             active = linkEntryRequest.active,
             shortLink = shortLink,
             public = public,
-            originalLink = linkEntryRequest.link,
+            originalLink = originalLink,
             expiresAt = getCorrectExpirationValue(linkEntryRequest.expiresIn)
         )
 
@@ -73,36 +82,37 @@ class LinkEntryService(
 
         if(!link.active) throw Exception(Errors.LinkIsNotActive.description)
 
-        if(!link.public) {
-            CoroutineScope(Dispatchers.IO).launch {
-                addClickerInLinkEntry(redirectInfo, link)
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+            addClickerInLinkEntry(redirectInfo, link)
         }
 
         return link.originalLink
     }
 
     private suspend fun addClickerInLinkEntry(redirectInfo: RedirectInfo, linkEntry: LinkEntry)  {
-        val clicker = buildClicker(redirectInfo.ip, redirectInfo.userAgent)
+        val clicker: Clicker = buildClicker(redirectInfo.ip, redirectInfo)
         val clickerResponse: ClickerResponse = LinkEntryFactory.clickerResponse(clicker)
         databaseRepository.addClickerInShortLink(redirectInfo.shortLink, clicker)
-        webSocketManager.notifyAboutShortLink(linkEntry.userId, linkEntry.shortLink, clickerResponse)
+
+        val user: User? = databaseRepository.getUserByIdOrNull(linkEntry.userId)
+        if(user != null) webSocketManager.notifyAboutShortLink(user.id.toString(), linkEntry.shortLink, clickerResponse)
     }
 
-    private suspend fun buildClicker(ip: String, userAgent: UserAgentInfo): Clicker {
+    private suspend fun buildClicker(ip: String, redirectInfo: RedirectInfo): Clicker {
         val ipInfo: IpInfo = ipRepository.getInfoByIp(ip)
-        val deviceInfo: DeviceInfo = defineDeviceInfo(userAgent)
+        val deviceInfo: DeviceInfo = defineDeviceInfo(redirectInfo.userAgent)
         val region = Region(
-            city = ipInfo.city ?: "Unknown",
-            region = ipInfo.region ?: "Unknown",
-            country = ipInfo.country ?: "Unknown",
-            zipcode = ipInfo.postal ?: "Unknown"
+            city = ipInfo.city ?: UNKNOWN,
+            region = ipInfo.region ?: UNKNOWN,
+            country = ipInfo.country ?: UNKNOWN,
+            zipcode = ipInfo.postal ?: UNKNOWN
         )
 
         return Clicker(
             ip = ip,
             region = region,
-            deviceInfo = deviceInfo
+            deviceInfo = deviceInfo,
+            referer = redirectInfo.referer
         )
     }
 
@@ -110,11 +120,13 @@ class LinkEntryService(
         val deviceType = userAgent.deviceType
         val browser = userAgent.browser
 
-        val operatingSystem: String = if(deviceType == "desktop") {
-            "${userAgent.operatingSystem} ${userAgent.operatingSystemDetails[1]}"
-        } else {
-            "${userAgent.operatingSystemDetails[0]} ${userAgent.operatingSystemDetails[1]}"
-        }
+        val operatingSystem: String = try {
+            if(deviceType == "desktop") {
+                "${userAgent.operatingSystem} ${userAgent.operatingSystemDetails[1]}"
+            } else {
+                "${userAgent.operatingSystemDetails[0]} ${userAgent.operatingSystemDetails[1]}"
+            }
+        } catch (_: Throwable) { UNKNOWN }
 
         return DeviceInfo(deviceType, operatingSystem, browser)
     }

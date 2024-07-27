@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    const val VERSION: String = "0.15.0"
+    const val VERSION: String = "0.15.1"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
@@ -19,6 +19,9 @@ object GlobalContext {
 
     val BLOCKED_IPS_TIME_TO_LIVE: Long = TimeUnit.HOURS.toMillis(1)
     const val NO_EXPIRATION_TIME = "No expiration"
+    const val INACTIVE_LINK_PAGE_ROUTE = "inactive"
+    const val NOT_FOUND_PAGE_ROUTE = "404"
+    const val UNKNOWN = "Unknown"
 
     var LINK_ENTRY_EXPIRES_IN: LocalDateTime = LocalDateTime.now().plusDays(365)
         private set

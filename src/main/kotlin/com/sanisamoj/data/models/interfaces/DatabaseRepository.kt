@@ -11,6 +11,7 @@ interface DatabaseRepository {
     suspend fun getCountApplicationClicks(): Int
     suspend fun registerUser(user: User): User
     suspend fun getUserById(id: String): User
+    suspend fun getUserByIdOrNull(id: String): User?
     suspend fun getUserByEmail(email: String): User?
     suspend fun getUserByPhone(phone: String): User?
     suspend fun updateUser(userId: String, update: OperationField): User
