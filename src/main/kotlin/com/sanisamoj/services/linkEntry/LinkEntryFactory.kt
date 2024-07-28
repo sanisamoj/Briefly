@@ -1,11 +1,11 @@
 package com.sanisamoj.services.linkEntry
 
+import com.sanisamoj.config.GlobalContext.SELF_URL
 import com.sanisamoj.data.models.dataclass.*
-import com.sanisamoj.utils.analyzers.dotEnv
 
 object LinkEntryFactory {
     fun linkEntryResponse(linkEntry: LinkEntry): LinkEntryResponse {
-        val selfUrl: String = dotEnv("SELF_URL")
+        val selfUrl: String = SELF_URL
         val shortLink = "${selfUrl}/${linkEntry.shortLink}"
         val qrCodeLink = "${selfUrl}/qrcode?short=${linkEntry.shortLink}"
         val totalVisitsResponseList: List<ClickerResponse> = linkEntry.totalVisits.map { clickerResponse(it) }
@@ -23,7 +23,7 @@ object LinkEntryFactory {
     }
 
     fun midLinkEntryResponse(linkEntry: LinkEntry): MidLinkEntryResponse {
-        val selfUrl: String = dotEnv("SELF_URL")
+        val selfUrl: String = SELF_URL
         val shortLink = "${selfUrl}/${linkEntry.shortLink}"
         val qrCodeLink = "${selfUrl}/qrcode?short=${linkEntry.shortLink}"
         val totalVisitsResponseList: List<ClickerResponse> = linkEntry.totalVisits.map { clickerResponse(it) }

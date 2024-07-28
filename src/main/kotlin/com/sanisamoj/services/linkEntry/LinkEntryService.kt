@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bson.types.ObjectId
+import org.mindrot.jbcrypt.BCrypt
 import java.time.LocalDateTime
 
 class LinkEntryService(
@@ -41,11 +42,16 @@ class LinkEntryService(
         val originalLink: String = completeAndBuildUrl(linkEntryRequest.link)
             ?: throw Error(Errors.InvalidLink.description)
 
+        val hashedPassword: String? = if(linkEntryRequest.password != null) {
+            BCrypt.hashpw(linkEntryRequest.password, BCrypt.gensalt())
+        } else null
+
         val linkEntry = LinkEntry(
             id = ObjectId(),
             userId = linkEntryRequest.userId,
             active = linkEntryRequest.active,
             shortLink = shortLink,
+            password = hashedPassword,
             public = public,
             originalLink = originalLink,
             expiresAt = getCorrectExpirationValue(linkEntryRequest.expiresIn)
@@ -86,17 +92,28 @@ class LinkEntryService(
         if(linkEntry != null) throw Error(Errors.PersonalizedShortLinkAlreadyExist.description)
     }
 
-    suspend fun redirectLink(redirectInfo: RedirectInfo): String {
-        val link: LinkEntry = databaseRepository.getLinkByShortLink(redirectInfo.shortLink)
+    suspend fun redirectLink(redirectInfo: RedirectInfo, protected: ProtectedLinkEntryPass? = null): String {
+        val linkEntry: LinkEntry = databaseRepository.getLinkByShortLink(redirectInfo.shortLink)
             ?: throw NotFoundException(Errors.ShortLinkNotFound.description)
 
-        if(!link.active) throw Exception(Errors.LinkIsNotActive.description)
+        if(!linkEntry.active) throw Exception(Errors.LinkIsNotActive.description)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            addClickerInLinkEntry(redirectInfo, link)
+        when(protected) {
+            null -> {
+                if(linkEntry.password != null) throw Exception(Errors.ProtectedLink.description)
+            }
+
+            else -> {
+                val isPasswordCorrect: Boolean = BCrypt.checkpw(protected.password, linkEntry.password)
+                if(!isPasswordCorrect) throw Exception(Errors.InvalidPassword.description)
+            }
         }
 
-        return link.originalLink
+        CoroutineScope(Dispatchers.IO).launch {
+            addClickerInLinkEntry(redirectInfo, linkEntry)
+        }
+
+        return linkEntry.originalLink
     }
 
     private suspend fun addClickerInLinkEntry(redirectInfo: RedirectInfo, linkEntry: LinkEntry)  {
@@ -104,8 +121,10 @@ class LinkEntryService(
         val clickerResponse: ClickerResponse = LinkEntryFactory.clickerResponse(clicker)
         databaseRepository.addClickerInShortLink(redirectInfo.shortLink, clicker)
 
-        val user: User? = databaseRepository.getUserByIdOrNull(linkEntry.userId)
-        if(user != null) webSocketManager.notifyAboutShortLink(user.id.toString(), linkEntry.shortLink, clickerResponse)
+        if(!linkEntry.public) {
+            val user: User? = databaseRepository.getUserByIdOrNull(linkEntry.userId)
+            if(user != null) webSocketManager.notifyAboutShortLink(user.id.toString(), linkEntry.shortLink, clickerResponse)
+        }
     }
 
     private suspend fun buildClicker(ip: String, redirectInfo: RedirectInfo): Clicker {

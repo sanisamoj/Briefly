@@ -25,7 +25,6 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 - Links Expiráveis: Possibilidade de criar links que expiram após um determinado período.
 - QR Code: Possibilidade de compartilhar um QR Code que contém o link encurtado.
 - Proteção de links: Os links terão a possibilidade de serem protegidos por senha.
-- O serviço é totalmente gratuíto.
 
 ## Funcionalidades do Sistema
 
@@ -34,7 +33,7 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 - Notificações via E-mail aos usuários cadastrados sobre seus links.
 - Gerenciar links como atualizar status ou removê-lo.
 - Há uma verificação periódica de links expirados, ou que não recebem mais acessos para serem desativados.
-- Uma parte para um moderador gerenciar o estado da aplicação.
+- Funcionalidades para um moderador gerenciar o estado da aplicação.
 
 ## Tecnologias e Ferramentas Utilizadas
 

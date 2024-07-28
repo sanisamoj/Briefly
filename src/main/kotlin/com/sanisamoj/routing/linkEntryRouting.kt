@@ -2,12 +2,13 @@ package com.sanisamoj.routing
 
 import com.sanisamoj.config.GlobalContext.INACTIVE_LINK_PAGE_ROUTE
 import com.sanisamoj.config.GlobalContext.NOT_FOUND_PAGE_ROUTE
+import com.sanisamoj.config.GlobalContext.PROTECTED_LINK_ROUTE
+import com.sanisamoj.config.GlobalContext.SELF_URL
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.services.linkEntry.LinkEntryFactory
 import com.sanisamoj.services.linkEntry.LinkEntryService
 import com.sanisamoj.services.linkEntry.QrCode
-import com.sanisamoj.utils.analyzers.dotEnv
 import com.sanisamoj.utils.generators.parseUserAgent
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -66,12 +67,27 @@ fun Route.linkEntryRouting() {
 
             } catch (e: Throwable) {
                 val notFoundLink = when(e.message) {
-                    Errors.LinkIsNotActive.description -> "${dotEnv("SELF_URL")}/${INACTIVE_LINK_PAGE_ROUTE}"
-                    else -> "${dotEnv("SELF_URL")}/${NOT_FOUND_PAGE_ROUTE}"
+                    Errors.LinkIsNotActive.description -> INACTIVE_LINK_PAGE_ROUTE
+                    Errors.ProtectedLink.description -> PROTECTED_LINK_ROUTE
+                    else -> NOT_FOUND_PAGE_ROUTE
                 }
 
                 return@get call.respondRedirect(notFoundLink, permanent = false)
             }
+        }
+
+        // Responsible for redirect user or redirect homepage
+        post("/protected") {
+            val protectedLinkEntryPass: ProtectedLinkEntryPass = call.receive<ProtectedLinkEntryPass>()
+            val ip: String = call.request.origin.remoteHost
+            val userAgent: String = call.request.headers["User-Agent"] ?: "Unknown"
+            val referer: String? = call.request.headers["Referer"]
+            val userAgentInfo: UserAgentInfo = parseUserAgent(userAgent)
+
+            // Redirect to homepage
+            val redirectInfo = RedirectInfo(ip, protectedLinkEntryPass.shortLink, userAgentInfo, referer.toString())
+            val redirectLink: String = LinkEntryService().redirectLink(redirectInfo, protectedLinkEntryPass)
+            return@post call.respondRedirect(redirectLink, permanent = false)
         }
 
         // Responsible for returning information from a link
@@ -85,7 +101,8 @@ fun Route.linkEntryRouting() {
         get("/qrcode") {
             val shortLink: String = call.request.queryParameters["short"].toString()
             val redirectLink: LinkEntryResponse = LinkEntryService().getLinkEntryByShortLink(shortLink)
-            val qrCode = QrCode.generate(redirectLink.originalLink, 200, 200)
+            val httpShortLink = "${SELF_URL}/${redirectLink.shortLink}"
+            val qrCode = QrCode.generate(httpShortLink, 200, 200)
             call.respondBytes(qrCode, ContentType.Image.PNG)
         }
     }

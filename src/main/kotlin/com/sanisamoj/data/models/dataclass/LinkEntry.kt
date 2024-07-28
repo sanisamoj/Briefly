@@ -12,6 +12,7 @@ data class LinkEntry(
     val active: Boolean = true,
     val public: Boolean = false,
     val shortLink: String,
+    val password: String?,
     val originalLink: String,
     val totalVisits: List<Clicker> = emptyList(),
     val expiresAt: String = GlobalContext.NO_EXPIRATION_TIME,

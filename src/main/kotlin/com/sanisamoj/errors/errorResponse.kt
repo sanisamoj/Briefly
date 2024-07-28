@@ -6,6 +6,7 @@ import com.sanisamoj.data.models.enums.Errors
 import io.ktor.http.*
 
 fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
+    println(errorMessage)
     val response = when(errorMessage) {
         Errors.UserAlreadyExists.description -> {
             HttpStatusCode.Conflict to ErrorResponse(Errors.UserAlreadyExists.description)
@@ -40,6 +41,14 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
 
         Errors.AccessProhibited.description -> {
             HttpStatusCode.Forbidden to ErrorResponse(Errors.AccessProhibited.description)
+        }
+
+        Errors.ProtectedLink.description -> {
+            HttpStatusCode.Forbidden to ErrorResponse(Errors.ProtectedLink.description)
+        }
+
+        Errors.InvalidPassword.description -> {
+            HttpStatusCode.Unauthorized to ErrorResponse(Errors.InvalidPassword.description)
         }
 
         Errors.ExpiredLink.description -> {
