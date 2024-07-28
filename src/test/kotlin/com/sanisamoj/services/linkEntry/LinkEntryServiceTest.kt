@@ -123,7 +123,8 @@ class LinkEntryServiceTest {
         val redirectInfo = RedirectInfo(
             ip = "186.204.44.176",
             shortLink = "linkTest",
-            userAgent = TestContext.userAgentInfoTest
+            userAgent = TestContext.userAgentInfoTest,
+            referer = "Test"
         )
 
         assertFails {
@@ -154,7 +155,8 @@ class LinkEntryServiceTest {
         val redirectInfo = RedirectInfo(
             ip = IP_TEST,
             shortLink = shortLink,
-            userAgent = TestContext.userAgentInfoTest
+            userAgent = TestContext.userAgentInfoTest,
+            referer = "test"
         )
 
         linkEntryService.redirectLink(redirectInfo)
