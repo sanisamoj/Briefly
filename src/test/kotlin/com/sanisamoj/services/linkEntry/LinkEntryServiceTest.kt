@@ -40,7 +40,7 @@ class LinkEntryServiceTest {
 
         assertEquals(linkEntryRequest.userId, linkEntryResponse.userId)
         assertEquals(linkEntryRequest.active, linkEntryResponse.active)
-        assertEquals(linkEntryRequest.link, linkEntryResponse.originalLink)
+        assertEquals("https://linktest/", linkEntryResponse.originalLink)
 
         userTest.deleteUserTest()
         val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
@@ -188,13 +188,13 @@ class LinkEntryServiceTest {
 
         assertEquals(IP_TEST, linkEntryResponse.userId)
         assertEquals(linkEntryRequest.active, linkEntryResponse.active)
-        assertEquals(linkEntryRequest.link, linkEntryResponse.originalLink)
+        assertEquals("https://linktest/", linkEntryResponse.originalLink)
 
         val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
         val midLinkEntryResponse: MidLinkEntryResponse = linkEntryService.getPublicLinkEntryInfoByShortLink(shortLink)
 
         assertEquals(linkEntryRequest.active, midLinkEntryResponse.active)
-        assertEquals(linkEntryRequest.link, midLinkEntryResponse.originalLink)
+        assertEquals("https://linktest/", midLinkEntryResponse.originalLink)
 
         databaseRepository.deleteLinkByShortLink(shortLink)
     }
