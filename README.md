@@ -61,8 +61,7 @@ Para instalar o projeto para testes, utilizaremos o Docker.
 - Instale a última versão do **Docker** em sua máquina.
 - Instale o **Mongodb** (Verifique na página oficial, ou monte uma imagem com o Docker).
 - Instale o **Redis** na sua máquina (Verifique a página oficial, ou monte uma imagem com o Docker).
-- Abra a pasta **"out"** do projeto, note que terá apenas 2 arquivos, o **Dockerfile**, e **briefly.jar**.
-- Crie um arquivo **.env**, ou adicione um arquivo **.env** manualmente na construção da imagem docker.
+- Crie um arquivo **.env** na pasta raiz do projeto, ou adicione um arquivo **.env** manualmente na construção da imagem docker.
 
 ```.env
 #URL do banco de dados MONGODB
@@ -119,7 +118,7 @@ Você precisa baixar 2 bancos de dados disponíveis no site deles, que se chama 
 
 #### Execute o comando a seguir para executar a imagem criada com o Docker.
 
-    docker run -p 9098:9098 briefly:latest
+    docker run --name briefly -p 9098:9098 briefly:latest
 
 > As portas pré-definidas podem ser alteradas no arquivo *"aplication.conf"*, e devem ser refletidas na construção da imagem com o Docker.
 
