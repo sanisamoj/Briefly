@@ -1,6 +1,5 @@
 package com.sanisamoj.routing
 
-import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.LinkEntryResponse
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.data.models.dataclass.UserResponse
@@ -9,7 +8,6 @@ import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.services.linkEntry.LinkEntryManager
 import com.sanisamoj.services.linkEntry.LinkEntryService
 import com.sanisamoj.services.moderator.ModeratorManagerService
-import com.sanisamoj.services.server.ServerService
 import com.sanisamoj.services.user.UserService
 import io.ktor.http.*
 import io.ktor.server.application.*

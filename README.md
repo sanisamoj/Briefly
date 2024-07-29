@@ -42,7 +42,7 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
     - **MongoDB** - Para armazenamento de dados sensíveis.
     - **Redis** - Para armazenamento de dados que precisam de acesso mais rápido.
 - Geolocalização: API de Geolocalização (API Não escolhida ainda.)
-- Integrações: APIs para coleta de informações de IP (API Não escolhida ainda.)
+- Integrações: APIs para coleta de informações de IP (GeoIp)
 
 ## Padrões de Design Utilizados
 
@@ -103,8 +103,6 @@ EMAIL_PASSWORD=
 #Link dos termos de serviço
 TERMS_OF_SERVICE_LINK=
 
-#IP-INFO | Token
-IP_INFO_TOKEN=
 ```
 > *MONGODB_SERVER_URL*=mongodb://host.docker.internal:27017 - Esta configuração serve para que a aplicação se conecte ao Mongodb localizado no localhost da máquina.
 
@@ -112,7 +110,8 @@ IP_INFO_TOKEN=
 
 > Nas configurações de Email, foi adicionado uma pré-configuração para utilizar os serviços do Gmail. Para a Senha do Email, é necessário gerar uma senha para aplicação em "Apps menos seguros" na sua conta do Gmail.
 
-> Para coleta de dados como região dos IPs, estou utilizando a API do IP Info https://ipinfo.io/
+Para coleta de dados como região dos IPs, estou utilizando a API GeoIp https://www.maxmind.com/en/home.
+Você precisa baixar 2 bancos de dados disponíveis no site deles, que se chama **"GeoLite2 ASN"** e **"GeoLite2 City"**, copiar os arquivos **"GeoLite2-ASN.mmdb"** e **"GeoLite2-City.mmdb"** para a pasta **resources/geo/**.
 
 #### Execute o comando a seguir para construir a imagem Docker.
 

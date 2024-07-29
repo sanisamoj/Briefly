@@ -36,4 +36,4 @@ target/
 .vscode/
 .env
 
-files
+src/main/resources/geo

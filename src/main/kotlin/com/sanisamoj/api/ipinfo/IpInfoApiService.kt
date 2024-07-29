@@ -1,4 +1,4 @@
-package com.sanisamoj.api
+package com.sanisamoj.api.ipinfo
 
 import com.sanisamoj.data.models.dataclass.IpInfo
 import retrofit2.http.GET

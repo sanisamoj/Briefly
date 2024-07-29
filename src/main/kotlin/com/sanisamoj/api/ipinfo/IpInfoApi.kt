@@ -1,4 +1,4 @@
-package com.sanisamoj.api
+package com.sanisamoj.api.ipinfo
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
