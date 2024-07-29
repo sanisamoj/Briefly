@@ -132,9 +132,14 @@ class LinkEntryService(
         val deviceInfo: DeviceInfo = defineDeviceInfo(redirectInfo.userAgent)
         val region = Region(
             city = ipInfo.city ?: UNKNOWN,
-            region = ipInfo.region ?: UNKNOWN,
+            cityIsoCode = ipInfo.cityIsoCode ?: UNKNOWN,
             country = ipInfo.country ?: UNKNOWN,
-            zipcode = ipInfo.postal ?: UNKNOWN
+            countryIsoCode = ipInfo.country ?: UNKNOWN,
+            continent = ipInfo.continent ?: UNKNOWN,
+            latitude = ipInfo.latitude,
+            longitude = ipInfo.longitude,
+            postal = ipInfo.postal ?: UNKNOWN,
+            timezone = ipInfo.timezone ?: UNKNOWN
         )
 
         return Clicker(

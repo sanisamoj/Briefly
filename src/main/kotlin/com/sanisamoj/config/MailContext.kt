@@ -188,7 +188,7 @@ object MailContext {
                             tbody {
                                 linkEntry.totalVisits.forEach { clicker ->
                                     tr {
-                                        td { +"${clicker.region.city}, ${clicker.region.region}, ${clicker.region.country}, ${clicker.region.zipcode}" }
+                                        td { +"${clicker.region.country}, ${clicker.region.city}-${clicker.region.cityIsoCode}, ${clicker.region.timezone}" }
                                         td { +clicker.deviceInfo.deviceType }
                                         td { +clicker.deviceInfo.operatingSystem }
                                         td { +clicker.deviceInfo.browser }

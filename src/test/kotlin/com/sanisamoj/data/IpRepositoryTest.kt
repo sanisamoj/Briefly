@@ -9,10 +9,12 @@ class IpRepositoryTest: IpRepository {
             ip = ip,
             hostname = "bacc54b0.virtua.com.br",
             city = "São Paulo",
-            region = "São Paulo",
-            country = "BR",
-            loc = "-23.5475,-46.6361",
-            org = "AS28573 Claro NXT Telecomunicacoes Ltda",
+            cityIsoCode = "SP",
+            country = "Brasil",
+            countryIsoCode = "BR",
+            continent = "South America",
+            latitude = 213210.564564,
+            longitude = 213210.564564,
             postal = "01000-000 ",
             timezone = "America/Sao_Paulo"
         )
