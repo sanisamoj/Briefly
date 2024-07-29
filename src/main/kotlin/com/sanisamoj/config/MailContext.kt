@@ -1,7 +1,11 @@
 package com.sanisamoj.config
 
+import com.sanisamoj.config.GlobalContext.UNKNOWN
+import com.sanisamoj.data.models.dataclass.LinkEntry
 import kotlinx.html.*
 import kotlinx.html.stream.createHTML
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 object MailContext {
 
@@ -84,4 +88,122 @@ object MailContext {
         }
     }
 
+    fun buildLinkDeletedMail(username: String, linkEntry: LinkEntry): String {
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
+
+        return createHTML().html {
+            head {
+                title("Link Deletado por Inatividade")
+                style {
+                    unsafe {
+                        +"""
+                    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+                    body {
+                        font-family: 'Roboto', sans-serif;
+                        background-color: #f4f4f9;
+                        padding: 20px;
+                        margin: 0;
+                    }
+                    .container {
+                        background-color: white;
+                        padding: 2em;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                    }
+                    h1, h2 {
+                        color: #333;
+                    }
+                    p {
+                        color: #666;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 1em;
+                    }
+                    th, td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: left;
+                    }
+                    th {
+                        background-color: #f2f2f2;
+                    }
+                """.trimIndent()
+                    }
+                }
+            }
+            body {
+                div("container") {
+                    h1 { +"Link Deletado por Inatividade" }
+                    p {
+                        +"Olá, "
+                        +username
+                        +". O link que você criou foi deletado porque não foi acessado há mais de um ano."
+                    }
+                    h2 { +"Estatísticas do Link" }
+                    table {
+                        thead {
+                            tr {
+                                th { +"Propriedade" }
+                                th { +"Valor" }
+                            }
+                        }
+                        tbody {
+                            tr {
+                                td { +"Link Original" }
+                                td { +linkEntry.originalLink }
+                            }
+                            tr {
+                                td { +"Link Encurtado" }
+                                td { +linkEntry.shortLink }
+                            }
+                            tr {
+                                td { +"Data de Criação" }
+                                td { +LocalDateTime.parse(linkEntry.createdAt).format(formatter) }
+                            }
+                            tr {
+                                td { +"Expira em" }
+                                td { +LocalDateTime.parse(linkEntry.expiresAt).format(formatter) }
+                            }
+                            tr {
+                                td { +"Total de Visitas" }
+                                td { +linkEntry.totalVisits.size.toString() }
+                            }
+                        }
+                    }
+                    if (linkEntry.totalVisits.isNotEmpty()) {
+                        h2 { +"Detalhes dos Clicks" }
+                        table {
+                            thead {
+                                tr {
+                                    th { +"Região" }
+                                    th { +"Dispositivo" }
+                                    th { +"Sistema Operacional" }
+                                    th { +"Navegador" }
+                                    th { +"Referência" }
+                                    th { +"Data do Click" }
+                                }
+                            }
+                            tbody {
+                                linkEntry.totalVisits.forEach { clicker ->
+                                    tr {
+                                        td { +"${clicker.region.city}, ${clicker.region.region}, ${clicker.region.country}, ${clicker.region.zipcode}" }
+                                        td { +clicker.deviceInfo.deviceType }
+                                        td { +clicker.deviceInfo.operatingSystem }
+                                        td { +clicker.deviceInfo.browser }
+                                        td { if(clicker.referer == "null") +UNKNOWN else +clicker.referer }
+                                        td { +LocalDateTime.parse(clicker.clickedAt).format(formatter) }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    p {
+                        +"Para mais informações ou suporte, entre em contato conosco."
+                    }
+                }
+            }
+        }
+    }
 }

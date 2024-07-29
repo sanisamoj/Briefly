@@ -50,7 +50,6 @@ object DefaultMailRepository : MailRepository {
                 } else {
                     setText(sendEmailData.text)
                 }
-
             }
 
             Transport.send(message)

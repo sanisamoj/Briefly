@@ -6,6 +6,7 @@ import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
+import com.sanisamoj.services.email.MailService
 import com.sanisamoj.utils.converters.converterStringToLocalDateTime
 import kotlinx.coroutines.runBlocking
 import org.quartz.Job
@@ -44,9 +45,12 @@ class RemoveNonAccessedLinksRoutine: Job {
         for (link in allLinksNonAccess) {
             databaseRepository.deleteLinkByShortLink(link.shortLink)
 
-            val user: User? = databaseRepository.getUserByIdOrNull(link.userId)
-            if(user != null) databaseRepository.removeLinkEntryIdFromUser(user.id.toString(), link.id.toString())
             // Send an email warning that the link has not been accessed for 1 year, so it has been removed from the database
+            val user: User? = databaseRepository.getUserByIdOrNull(link.userId)
+            if(user != null) {
+                databaseRepository.removeLinkEntryIdFromUser(user.id.toString(), link.id.toString())
+                MailService().sendLinkDeletedEmail(user.username, link, user.email)
+            }
         }
     }
 
