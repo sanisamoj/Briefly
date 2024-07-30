@@ -64,7 +64,7 @@ object MailContext {
             }
             body {
                 div("container") {
-                    h1 { +"Bem-vindo ao Snapurl!, $username!" }
+                    h1 { +"Bem-vindo ao Briefly!, $username!" }
                     p {
                         +"Estamos muito felizes em tê-lo conosco. Você precisa ativar a sua conta. "
                     }

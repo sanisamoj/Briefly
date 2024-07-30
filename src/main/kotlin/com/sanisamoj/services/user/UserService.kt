@@ -42,10 +42,4 @@ class UserService(
             }
         }
     }
-
-    suspend fun getUserById(userId: String): UserResponse {
-        val user: User = databaseRepository.getUserById(userId)
-        val userResponse = UserFactory.userResponse(user)
-        return userResponse
-    }
 }
