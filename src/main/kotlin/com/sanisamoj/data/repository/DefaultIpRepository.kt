@@ -9,8 +9,8 @@ import com.sanisamoj.data.models.interfaces.IpRepository
 class DefaultIpRepository(private val geoIpService: GeoIPService = GeoIPService) : IpRepository {
     override suspend fun getInfoByIp(ip: String): IpInfo {
         try {
-            val cityInfo: CityInfo? = geoIpService.getCityInfo("2.18.228.0")
-            val asnInfo: AsnInfo? = geoIpService.getASNInfo("2.18.228.0")
+            val cityInfo: CityInfo? = geoIpService.getCityInfo(ip)
+            val asnInfo: AsnInfo? = geoIpService.getASNInfo(ip)
             return ipInfoFactory(ip, cityInfo, asnInfo)
         } catch (_: Throwable) {
             return IpInfo(ip)
