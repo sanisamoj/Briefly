@@ -1,5 +1,6 @@
 package com.sanisamoj
 
+import com.sanisamoj.data.models.dataclass.RedirectInfo
 import com.sanisamoj.data.models.dataclass.UserAgentInfo
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
@@ -10,6 +11,9 @@ import com.sanisamoj.data.models.interfaces.SessionRepository
 object TestContext {
     private val testContainer: ServerContainer = ServerContainerTest()
     const val IP_TEST: String = "186.204.44.176"
+    const val SHORT_LINK_TEST = "linkTest"
+    const val PERSONALIZED_CODE_TO_LINK = "personalizedCode"
+    const val LINK_PASSWORD_TEST = "123456"
 
     val userCreateRequest = UserCreateRequest(
         username = "test",
@@ -28,6 +32,13 @@ object TestContext {
         browserEngineDetails = listOf("rv:89.0"),
         webKit = "Not applicable",
         browser = "Firefox"
+    )
+
+    val redirectInfoTest: RedirectInfo = RedirectInfo(
+        ip = IP_TEST,
+        shortLink = SHORT_LINK_TEST,
+        userAgent = userAgentInfoTest,
+        referer = "www.test.com.br"
     )
 
     fun getDatabaseRepository(): DatabaseRepository {

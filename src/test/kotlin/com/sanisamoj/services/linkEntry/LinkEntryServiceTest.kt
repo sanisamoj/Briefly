@@ -2,6 +2,9 @@ package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.TestContext
 import com.sanisamoj.TestContext.IP_TEST
+import com.sanisamoj.TestContext.LINK_PASSWORD_TEST
+import com.sanisamoj.TestContext.PERSONALIZED_CODE_TO_LINK
+import com.sanisamoj.TestContext.SHORT_LINK_TEST
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
@@ -30,7 +33,7 @@ class LinkEntryServiceTest {
 
         val linkEntryRequest = LinkEntryRequest(
             userId = user.id.toString(),
-            link = "linkTest",
+            link = SHORT_LINK_TEST,
             active = true,
             expiresIn = LocalDateTime.now().plusDays(5).toString()
         )
@@ -54,7 +57,7 @@ class LinkEntryServiceTest {
 
         val linkEntryRequest = LinkEntryRequest(
             userId = user.id.toString(),
-            link = "linkTest",
+            link = SHORT_LINK_TEST,
             active = true,
             expiresIn = LocalDateTime.now().plusDays(5).toString()
         )
@@ -77,7 +80,7 @@ class LinkEntryServiceTest {
 
         val linkEntryRequest = LinkEntryRequest(
             userId = user.id.toString(),
-            link = "linkTest",
+            link = SHORT_LINK_TEST,
             active = true,
             expiresIn = LocalDateTime.now().plusDays(700).toString()
         )
@@ -112,7 +115,7 @@ class LinkEntryServiceTest {
 
         val linkEntryRequest = LinkEntryRequest(
             userId = user.id.toString(),
-            link = "linkTest",
+            link = SHORT_LINK_TEST,
             active = false,
             expiresIn = LocalDateTime.now().plusDays(5).toString()
         )
@@ -122,7 +125,7 @@ class LinkEntryServiceTest {
 
         val redirectInfo = RedirectInfo(
             ip = "186.204.44.176",
-            shortLink = "linkTest",
+            shortLink = SHORT_LINK_TEST,
             userAgent = TestContext.userAgentInfoTest,
             referer = "Test"
         )
@@ -143,7 +146,7 @@ class LinkEntryServiceTest {
 
         val linkEntryRequest = LinkEntryRequest(
             userId = user.id.toString(),
-            link = "linkTest",
+            link = SHORT_LINK_TEST,
             active = true,
             expiresIn = LocalDateTime.now().plusDays(5).toString()
         )
@@ -178,7 +181,7 @@ class LinkEntryServiceTest {
     fun registerPublicLinkEntryAndGetInfoTest() = testApplication {
         val linkEntryRequest = LinkEntryRequest(
             userId = IP_TEST,
-            link = "linkTest",
+            link = SHORT_LINK_TEST,
             active = true,
             expiresIn = LocalDateTime.now().plusDays(5).toString()
         )
@@ -195,6 +198,55 @@ class LinkEntryServiceTest {
 
         assertEquals(linkEntryRequest.active, midLinkEntryResponse.active)
         assertEquals("https://linktest/", midLinkEntryResponse.originalLink)
+
+        databaseRepository.deleteLinkByShortLink(shortLink)
+    }
+
+    @Test
+    fun registerPublicLinkEntryWithPasswordTest() = testApplication {
+        val linkEntryRequest = LinkEntryRequest(
+            userId = IP_TEST,
+            link = SHORT_LINK_TEST,
+            active = true,
+            password = LINK_PASSWORD_TEST,
+            expiresIn = LocalDateTime.now().plusDays(5).toString()
+        )
+
+        val linkEntryService = LinkEntryService(databaseRepository = TestContext.getDatabaseRepository())
+        val linkEntryResponse: LinkEntryResponse = linkEntryService.register(linkEntryRequest, public = true)
+
+        assertEquals(IP_TEST, linkEntryResponse.userId)
+        assertEquals(linkEntryRequest.active, linkEntryResponse.active)
+        assertEquals("https://linktest/", linkEntryResponse.originalLink)
+
+        val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
+        assertFails {
+            linkEntryService.redirectLink(TestContext.redirectInfoTest, null)
+        }
+
+        databaseRepository.deleteLinkByShortLink(shortLink)
+    }
+
+    @Test
+    fun registerPublicLinkEntryWithPersonalizedCodeTest() = testApplication {
+        val linkEntryRequest = LinkEntryRequest(
+            userId = IP_TEST,
+            link = SHORT_LINK_TEST,
+            active = true,
+            password = LINK_PASSWORD_TEST,
+            personalizedCode = PERSONALIZED_CODE_TO_LINK,
+            expiresIn = LocalDateTime.now().plusDays(5).toString()
+        )
+
+        val linkEntryService = LinkEntryService(databaseRepository = TestContext.getDatabaseRepository())
+        val linkEntryResponse: LinkEntryResponse = linkEntryService.register(linkEntryRequest, public = true)
+
+        assertEquals(IP_TEST, linkEntryResponse.userId)
+        assertEquals(linkEntryRequest.active, linkEntryResponse.active)
+        assertEquals("https://linktest/", linkEntryResponse.originalLink)
+
+        val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
+        assertEquals(PERSONALIZED_CODE_TO_LINK, shortLink)
 
         databaseRepository.deleteLinkByShortLink(shortLink)
     }

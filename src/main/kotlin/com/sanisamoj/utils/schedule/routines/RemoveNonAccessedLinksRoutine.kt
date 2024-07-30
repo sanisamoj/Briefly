@@ -15,6 +15,7 @@ import java.time.LocalDateTime
 
 class RemoveNonAccessedLinksRoutine: Job {
     private val databaseRepository: DatabaseRepository by lazy { GlobalContext.getDatabaseRepository() }
+    private val mailService: MailService by lazy { MailService() }
 
     override fun execute(p0: JobExecutionContext?) {
         runBlocking { checkAndInactiveNonAccessLinks() }
@@ -49,10 +50,8 @@ class RemoveNonAccessedLinksRoutine: Job {
             val user: User? = databaseRepository.getUserByIdOrNull(link.userId)
             if(user != null) {
                 databaseRepository.removeLinkEntryIdFromUser(user.id.toString(), link.id.toString())
-                MailService().sendLinkDeletedEmail(user.username, link, user.email)
+                mailService.sendLinkDeletedEmail(user.username, link, user.email)
             }
         }
     }
-
-
 }
