@@ -14,10 +14,17 @@ class MailService(
         val selfUrl = dotEnv("SELF_URL")
         val activationLink = "$selfUrl/authentication/activate?token=$token"
 
-        val text = MailContext.buildConfirmationTokenMail(name, activationLink)
+        val text: String = MailContext.buildConfirmationTokenMail(name, activationLink)
         val topic = "Ative sua conta!"
         val sendEmailData = SendEmailData(to, topic, text, true)
 
+        mailRepository.sendEmail(sendEmailData)
+    }
+
+    fun sendAccountActivationMail(username: String, to: String) {
+        val text: String = MailContext.buildAccountActivationMail(username)
+        val topic = "Bem-vindo ao Briefly!"
+        val sendEmailData = SendEmailData(to, topic, text, true)
         mailRepository.sendEmail(sendEmailData)
     }
 

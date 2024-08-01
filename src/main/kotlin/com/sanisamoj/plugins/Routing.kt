@@ -16,7 +16,6 @@ fun Application.configureRouting() {
         linkEntryRouting()
         serverRouting()
 
-        staticFiles("/resources", File("files"))
         staticResources("/", "files") {
             default("index.html")
             preCompressed(CompressedFileType.GZIP)

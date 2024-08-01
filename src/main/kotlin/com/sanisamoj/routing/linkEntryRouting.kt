@@ -67,7 +67,7 @@ fun Route.linkEntryRouting() {
             } catch (e: Throwable) {
                 val notFoundLink = when(e.message) {
                     Errors.LinkIsNotActive.description -> INACTIVE_LINK_PAGE_ROUTE
-                    Errors.ProtectedLink.description -> PROTECTED_LINK_ROUTE
+                    Errors.ProtectedLink.description -> PROTECTED_LINK_ROUTE + shortLink.toString()
                     else -> NOT_FOUND_PAGE_ROUTE
                 }
 

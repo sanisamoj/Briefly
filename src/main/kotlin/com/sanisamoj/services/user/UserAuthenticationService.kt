@@ -63,6 +63,11 @@ class UserAuthenticationService(
         val accountId = decodedJWT.getClaim("id").asString()
         val operation = OperationField(Fields.AccountStatus, AccountStatus.Active.name)
         databaseRepository.updateUser(accountId, operation)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val user: User = databaseRepository.getUserById(accountId)
+            MailService(mailRepository).sendAccountActivationMail(user.username, user.email)
+        }
     }
 
     suspend fun login(login: LoginRequest): LoginResponse {
