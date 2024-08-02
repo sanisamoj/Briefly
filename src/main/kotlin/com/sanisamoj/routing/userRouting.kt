@@ -1,9 +1,9 @@
 package com.sanisamoj.routing
 
+import com.sanisamoj.config.GlobalContext.ACTIVATE_ACCOUNT_LINK_ROUTE
+import com.sanisamoj.config.GlobalContext.EXPIRED_LINK_ROUTE
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountType
-import com.sanisamoj.data.pages.confirmationPage
-import com.sanisamoj.data.pages.tokenExpiredPage
 import com.sanisamoj.errors.errorResponse
 import com.sanisamoj.services.linkEntry.LinkEntryManager
 import com.sanisamoj.services.user.UserAuthenticationService
@@ -16,8 +16,6 @@ import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.html.html
-import kotlinx.html.stream.appendHTML
 
 fun Route.userRouting() {
     route("/user") {
@@ -105,14 +103,10 @@ fun Route.userRouting() {
 
             try {
                 UserAuthenticationService().activateAccountByToken(token)
-                call.respondText(buildString {
-                    appendHTML().html { confirmationPage() }
-                }, ContentType.Text.Html)
+                return@get call.respondRedirect(ACTIVATE_ACCOUNT_LINK_ROUTE, permanent = false)
 
             } catch (e: Throwable) {
-                call.respondText(buildString {
-                    appendHTML().html { tokenExpiredPage() }
-                }, ContentType.Text.Html)
+                return@get call.respondRedirect(EXPIRED_LINK_ROUTE, permanent = false)
             }
         }
 

@@ -65,6 +65,14 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
             )
         }
 
+        Errors.PersonalizedShortLinkAlreadyExist.description -> {
+            HttpStatusCode.Conflict to ErrorResponse(Errors.PersonalizedShortLinkAlreadyExist.description)
+        }
+
+        Errors.UnableToComplete.description -> {
+            HttpStatusCode.Forbidden to ErrorResponse(Errors.UnableToComplete.description)
+        }
+
         else -> {
             HttpStatusCode.InternalServerError to ErrorResponse(Errors.InternalServerError.description)
         }

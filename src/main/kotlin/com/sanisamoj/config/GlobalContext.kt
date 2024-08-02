@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    const val VERSION: String = "0.17.9"
+    const val VERSION: String = "0.17.10"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
@@ -19,16 +19,20 @@ object GlobalContext {
     val MODERATOR_TOKEN_EXPIRATION: Long = TimeUnit.DAYS.toMillis(1)
 
     val BLOCKED_IPS_TIME_TO_LIVE: Long = TimeUnit.HOURS.toMillis(1)
-    const val NO_EXPIRATION_TIME = "No expiration"
-    val INACTIVE_LINK_PAGE_ROUTE = "${dotEnv("SELF_URL")}/inactive/"
-    val PROTECTED_LINK_ROUTE = "${dotEnv("SELF_URL")}/protected/"
-    val NOT_FOUND_PAGE_ROUTE = "${dotEnv("SELF_URL")}/404/"
-    const val UNKNOWN = "Unknown"
-
     val SELF_URL = dotEnv("SELF_URL")
+    val ACTIVATE_ACCOUNT_LINK_ROUTE = "$SELF_URL/authentication/activate"
+    val EXPIRED_LINK_ROUTE = "$SELF_URL/expired/"
+    val INACTIVE_LINK_PAGE_ROUTE = "$SELF_URL/inactive/"
+    val PROTECTED_LINK_ROUTE = "$SELF_URL/protected/"
+    val NOT_FOUND_PAGE_ROUTE = "$SELF_URL/404/"
+
+    const val NO_EXPIRATION_TIME = "No expiration"
+    const val UNKNOWN = "Unknown"
 
     var LINK_ENTRY_EXPIRES_IN: LocalDateTime = LocalDateTime.now().plusDays(365)
         private set
+
+    val MIME_TYPE_ALLOWED = listOf("jpeg", "png", "jpg", "gif")
 
     fun getMobileMinVersion(): String { return mobileMinVersion }
     fun getMobileTargetVersion(): String { return mobileTargetVersion }

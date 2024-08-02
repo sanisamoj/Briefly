@@ -22,9 +22,11 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 
 ## Funcionalidades dos Links
 
-- Links Expiráveis: Possibilidade de criar links que expiram após um determinado período.
+- Possibilidade de criar links curtos.
 - QR Code: Possibilidade de compartilhar um QR Code que contém o link encurtado.
 - Proteção de links: Os links terão a possibilidade de serem protegidos por senha.
+- Tempo de vida: Os links podem ser criado com um tempo de expiração.
+- Um código personalizado para o link pode ser criado.
 
 ## Funcionalidades do Sistema
 
@@ -41,8 +43,7 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 - Banco de Dados: 
     - **MongoDB** - Para armazenamento de dados sensíveis.
     - **Redis** - Para armazenamento de dados que precisam de acesso mais rápido.
-- Geolocalização: API de Geolocalização (API Não escolhida ainda.)
-- Integrações: APIs para coleta de informações de IP (GeoIp)
+- Geolocalização: API para coleta de informações de IP (GeoIp)
 
 ## Padrões de Design Utilizados
 

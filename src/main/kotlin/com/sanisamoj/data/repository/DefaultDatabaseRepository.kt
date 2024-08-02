@@ -12,8 +12,10 @@ import com.sanisamoj.database.mongodb.MongodbOperations
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.database.redis.Redis
 import com.sanisamoj.database.redis.RedisKeys
+import io.ktor.http.content.*
 import io.ktor.server.plugins.*
 import org.bson.types.ObjectId
+import java.io.File
 import java.time.LocalDateTime
 
 class DefaultDatabaseRepository(
@@ -231,5 +233,21 @@ class DefaultDatabaseRepository(
         )
 
         return expiredLinkEntryList
+    }
+
+    override suspend fun saveMedia(multipartData: MultiPartData): List<String> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getMedia(name: String): File {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAllMediaNames(): List<String> {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteMedia(name: String) {
+        TODO("Not yet implemented")
     }
 }

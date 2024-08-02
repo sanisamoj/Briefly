@@ -4,6 +4,8 @@ import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.database.mongodb.OperationField
+import io.ktor.http.content.*
+import java.io.File
 import java.time.LocalDateTime
 
 interface DatabaseRepository {
@@ -31,4 +33,9 @@ interface DatabaseRepository {
     suspend fun deleteExpiredLinks(dateTime: LocalDateTime)
     suspend fun filterExpiredLinks(dateTime: LocalDateTime): List<LinkEntry>
     suspend fun filterActiveAndExpiredLinks(dateTime: LocalDateTime): List<LinkEntry>
+
+    suspend fun saveMedia(multipartData: MultiPartData): List<String>
+    fun getMedia(name: String): File
+    fun getAllMediaNames(): List<String>
+    fun deleteMedia(name: String)
 }
