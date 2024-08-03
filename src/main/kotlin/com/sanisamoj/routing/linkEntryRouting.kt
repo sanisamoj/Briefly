@@ -65,13 +65,13 @@ fun Route.linkEntryRouting() {
                 return@get call.respondRedirect(redirectLink, permanent = false)
 
             } catch (e: Throwable) {
-                val notFoundLink = when(e.message) {
+                val redirectionLink = when(e.message) {
                     Errors.LinkIsNotActive.description -> INACTIVE_LINK_PAGE_ROUTE
                     Errors.ProtectedLink.description -> PROTECTED_LINK_ROUTE + shortLink.toString()
                     else -> NOT_FOUND_PAGE_ROUTE
                 }
 
-                return@get call.respondRedirect(notFoundLink, permanent = false)
+                return@get call.respondRedirect(redirectionLink, permanent = false)
             }
         }
 

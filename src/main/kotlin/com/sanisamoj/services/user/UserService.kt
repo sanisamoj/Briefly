@@ -1,7 +1,6 @@
 package com.sanisamoj.services.user
 
 import com.sanisamoj.config.GlobalContext
-import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.data.models.dataclass.UserResponse
 import com.sanisamoj.data.models.enums.AccountType

@@ -258,7 +258,6 @@ class DefaultDatabaseRepository(
 
                 is PartData.FileItem -> {
                     val mimeType = getType(part.originalFileName!!)
-
                     if (!MIME_TYPE_ALLOWED.contains(mimeType)) {
                         imagePathOfSavedImages.forEach {
                             deleteMedia(it)

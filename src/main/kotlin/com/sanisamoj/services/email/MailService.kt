@@ -11,7 +11,7 @@ class MailService(
     private val mailRepository: MailRepository = GlobalContext.getMailRepository()
 ) {
     fun sendConfirmationTokenEmail(name: String, token: String, to: String) {
-        val activationLink = "$ACTIVATE_ACCOUNT_LINK_ROUTE?token=$token"
+        val activationLink = "$ACTIVATE_ACCOUNT_LINK_ROUTE?token=$token&email=$to"
         val text: String = MailContext.buildConfirmationTokenMail(name, activationLink)
         val topic = "Ative sua conta!"
         val sendEmailData = SendEmailData(to, topic, text, true)
