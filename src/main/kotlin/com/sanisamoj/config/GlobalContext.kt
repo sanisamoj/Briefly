@@ -2,11 +2,12 @@ package com.sanisamoj.config
 
 import com.sanisamoj.data.models.interfaces.*
 import com.sanisamoj.utils.analyzers.dotEnv
+import java.io.File
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    const val VERSION: String = "0.17.10"
+    const val VERSION: String = "0.17.11"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
@@ -25,6 +26,7 @@ object GlobalContext {
     val INACTIVE_LINK_PAGE_ROUTE = "$SELF_URL/inactive/"
     val PROTECTED_LINK_ROUTE = "$SELF_URL/protected/"
     val NOT_FOUND_PAGE_ROUTE = "$SELF_URL/404/"
+    val MEDIA_ROUTE = "$SELF_URL/media/"
 
     const val NO_EXPIRATION_TIME = "No expiration"
     const val UNKNOWN = "Unknown"
@@ -32,7 +34,11 @@ object GlobalContext {
     var LINK_ENTRY_EXPIRES_IN: LocalDateTime = LocalDateTime.now().plusDays(365)
         private set
 
-    val MIME_TYPE_ALLOWED = listOf("jpeg", "png", "jpg", "gif")
+    val MIME_TYPE_ALLOWED: List<String> = listOf("jpeg", "png", "jpg", "gif")
+    const val MAX_HEADERS_SIZE: Int = 5 * 1024 * 1024 // 5MB
+
+    private val currentProjectDir = System.getProperty("user.dir")
+    val PUBLIC_IMAGES_DIR = File(currentProjectDir, "uploads")
 
     fun getMobileMinVersion(): String { return mobileMinVersion }
     fun getMobileTargetVersion(): String { return mobileTargetVersion }

@@ -10,6 +10,7 @@ data class User(
     @BsonId
     val id: ObjectId = ObjectId(),
     val username: String,
+    val imageProfile: String = "",
     val email: String,
     val password: String,
     val phone: String,

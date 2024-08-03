@@ -1,5 +1,7 @@
 package com.sanisamoj.data.repository
 
+import com.sanisamoj.config.GlobalContext.MIME_TYPE_ALLOWED
+import com.sanisamoj.config.GlobalContext.PUBLIC_IMAGES_DIR
 import com.sanisamoj.config.WebSocketManager
 import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
@@ -12,6 +14,7 @@ import com.sanisamoj.database.mongodb.MongodbOperations
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.database.redis.Redis
 import com.sanisamoj.database.redis.RedisKeys
+import com.sanisamoj.utils.generators.CharactersGenerator
 import io.ktor.http.content.*
 import io.ktor.server.plugins.*
 import org.bson.types.ObjectId
@@ -236,18 +239,63 @@ class DefaultDatabaseRepository(
     }
 
     override suspend fun saveMedia(multipartData: MultiPartData): List<String> {
-        TODO("Not yet implemented")
+        val pathToPublicImages = PUBLIC_IMAGES_DIR
+        val imageNameList = saveAndReturnListNames(multipartData, pathToPublicImages)
+        val imageSavedList: MutableList<String> = mutableListOf()
+        imageNameList.forEach { name ->
+            imageSavedList.add(name)
+        }
+        return imageSavedList
+    }
+
+    private suspend fun saveAndReturnListNames(multipartData: MultiPartData, path: File): List<String> {
+
+        val imageNameList: MutableList<String> = mutableListOf()
+        val imagePathOfSavedImages: MutableList<File> = mutableListOf()
+
+        multipartData.forEachPart { part ->
+            when (part) {
+
+                is PartData.FileItem -> {
+                    val mimeType = getType(part.originalFileName!!)
+
+                    if (!MIME_TYPE_ALLOWED.contains(mimeType)) {
+                        imagePathOfSavedImages.forEach {
+                            deleteMedia(it)
+                        }
+
+                        throw Exception(Errors.UnsupportedMediaType.description)
+                    }
+
+                    val fileBytes = part.streamProvider().readBytes()
+                    val filename = "${CharactersGenerator.generateWithNoSymbols()}-${part.originalFileName}"
+                    File(path, filename).writeBytes(fileBytes)
+                    imageNameList.add(filename)
+                    imagePathOfSavedImages.add(File(path, filename))
+                }
+
+                else -> {}
+            }
+
+            part.dispose()
+        }
+
+        return imageNameList
+    }
+
+    private fun getType(filename: String): String {
+        val extension = filename.substringAfterLast('.', "")
+        return extension
     }
 
     override fun getMedia(name: String): File {
-        TODO("Not yet implemented")
+        val file = File("$PUBLIC_IMAGES_DIR", name)
+        if(!file.exists()) throw Error(Errors.MediaNotExist.description)
+        else return file
     }
 
-    override fun getAllMediaNames(): List<String> {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteMedia(name: String) {
-        TODO("Not yet implemented")
+    override fun deleteMedia(file: File) {
+        getMedia(file.name)
+        if(file.exists()) file.delete()
     }
 }

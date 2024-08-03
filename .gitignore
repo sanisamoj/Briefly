@@ -37,4 +37,5 @@ target/
 .env
 
 src/main/resources/geo
-out/
+out
+uploads

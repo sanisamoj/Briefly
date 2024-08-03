@@ -36,6 +36,5 @@ interface DatabaseRepository {
 
     suspend fun saveMedia(multipartData: MultiPartData): List<String>
     fun getMedia(name: String): File
-    fun getAllMediaNames(): List<String>
-    fun deleteMedia(name: String)
+    fun deleteMedia(file: File)
 }

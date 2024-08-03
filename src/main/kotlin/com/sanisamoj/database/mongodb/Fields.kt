@@ -11,4 +11,5 @@ enum class Fields(val title: String) {
     ShortLinksId(title = "shortLinksId"),
     TotalVisits(title = "totalVisits"),
     AccountStatus(title = "accountStatus"),
+    imageProfile(title = "imageProfile")
 }

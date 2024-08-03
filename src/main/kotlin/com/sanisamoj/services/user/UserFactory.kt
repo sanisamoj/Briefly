@@ -1,5 +1,6 @@
 package com.sanisamoj.services.user
 
+import com.sanisamoj.config.GlobalContext.MEDIA_ROUTE
 import com.sanisamoj.data.models.dataclass.LinkEntryResponse
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
@@ -28,6 +29,7 @@ object UserFactory {
         return UserResponse(
             id = user.id.toString(),
             username = user.username,
+            profileImageUrl = if(user.imageProfile == "") "" else MEDIA_ROUTE + user.imageProfile,
             email = user.email,
             phone = user.phone,
             linkEntryList = linkEntryResponseList,

@@ -1,5 +1,6 @@
 package com.sanisamoj.config
 
+import com.sanisamoj.config.GlobalContext.PUBLIC_IMAGES_DIR
 import com.sanisamoj.database.mongodb.MongoDatabase
 import com.sanisamoj.utils.schedule.ScheduleRoutine
 import com.sanisamoj.utils.schedule.models.JobIdentification
@@ -18,6 +19,11 @@ object Config {
 
     suspend fun databaseInitialize() {
         MongoDatabase.initialize()
+
+        val uploadDir = PUBLIC_IMAGES_DIR
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs()
+        }
     }
 
     fun routinesInitialize() {

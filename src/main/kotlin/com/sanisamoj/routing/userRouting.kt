@@ -2,12 +2,16 @@ package com.sanisamoj.routing
 
 import com.sanisamoj.config.GlobalContext.ACTIVATE_ACCOUNT_LINK_ROUTE
 import com.sanisamoj.config.GlobalContext.EXPIRED_LINK_ROUTE
+import com.sanisamoj.config.GlobalContext.MAX_HEADERS_SIZE
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.errors.errorResponse
 import com.sanisamoj.services.linkEntry.LinkEntryManager
+import com.sanisamoj.services.media.MediaService
 import com.sanisamoj.services.user.UserAuthenticationService
+import com.sanisamoj.services.user.UserManagerService
 import com.sanisamoj.services.user.UserService
+import com.sanisamoj.utils.converters.BytesConverter
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -131,6 +135,44 @@ fun Route.userRouting() {
                     return@delete call.respond(HttpStatusCode.OK)
                 }
             }
+        }
+    }
+
+    route("/media") {
+
+        // Responsible for returning an image
+        get("/{name?}") {
+            val mediaName: String = call.parameters["name"].toString()
+            val file = MediaService().getImage(mediaName)
+            println(file)
+            if (file.exists()) return@get call.respondFile(file)
+            else return@get call.respond(HttpStatusCode.NotFound)
+        }
+
+        authenticate("user-jwt") {
+
+            // Responsible for saving an image to the server
+            post {
+                val principal = call.principal<JWTPrincipal>()!!
+                val accountId = principal.payload.getClaim("id").asString()
+                val multipartData = call.receiveMultipart()
+                val requestSize = call.request.headers[HttpHeaders.ContentLength]
+                val requestSizeInMb = BytesConverter(requestSize!!.toLong()).getInMegabyte()
+
+                if (requestSizeInMb > MAX_HEADERS_SIZE) throw Exception("totalImageUploadSizeExceeded")
+                val response = UserManagerService().updateImageProfile(accountId, multipartData)
+                return@post call.respond(response)
+            }
+
+            // Responsible for deleting an image
+            delete {
+                val principal = call.principal<JWTPrincipal>()!!
+                val accountId = principal.payload.getClaim("id").asString()
+
+                UserManagerService().deleteImageProfile(accountId)
+                return@delete call.respond(HttpStatusCode.OK)
+            }
+
         }
     }
 }

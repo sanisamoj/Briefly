@@ -3,6 +3,7 @@ package com.sanisamoj.data.models.enums
 enum class Errors(val description: String) {
     PersonalizedShortLinkAlreadyExist("Personalized short link already exist!"),
     TermsOfServiceNotFound("Terms of Service not found!"),
+    UnsupportedMediaType("Unsupported media type!"),
     InternalServerError("Internal Server Error!"),
     InactiveRedirection("Inactive redirection!"),
     RedisNotResponding("Redis not responding!"),
@@ -17,6 +18,7 @@ enum class Errors(val description: String) {
     InactiveAccount("Inactive Account!"),
     BlockedAccount("Blocked Account!"),
     ExpiredSession("Expired session!"),
+    MediaNotExist("Media not exist!"),
     ProtectedLink("Protected link!"),
     DataIsMissing("Data is missing"),
     UserNotFound("User Not Found!"),
