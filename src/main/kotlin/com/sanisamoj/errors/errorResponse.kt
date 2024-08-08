@@ -20,17 +20,20 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
         }
 
         Errors.InvalidLogin.description -> {
-            HttpStatusCode.BadRequest to ErrorResponse(Errors.InvalidLogin.description)
-        }
-
-        Errors.BlockedAccount.description -> {
-            HttpStatusCode.BadRequest to ErrorResponse(Errors.BlockedAccount.description)
+            HttpStatusCode.Unauthorized to ErrorResponse(Errors.InvalidLogin.description)
         }
 
         Errors.InactiveAccount.description -> {
             HttpStatusCode.Forbidden to ErrorResponse(
                 error = Errors.InactiveAccount.description,
                 details = ActionsMessages.ActivateAccount.description
+            )
+        }
+
+        Errors.BlockedAccount.description -> {
+            HttpStatusCode.Forbidden to ErrorResponse(
+                error = Errors.BlockedAccount.description,
+                details = ActionsMessages.ContactSupport.description
             )
         }
 

@@ -326,4 +326,75 @@ object MailContext {
             }
         }
     }
+
+    fun buildReportMail(username: String?, email: String?, text: String): String {
+        return createHTML().html {
+            head {
+                style {
+                    unsafe {
+                        raw(
+                            """
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f4;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        .container {
+                            max-width: 600px;
+                            margin: 50px auto;
+                            background-color: #ffffff;
+                            padding: 20px;
+                            border-radius: 8px;
+                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        }
+                        h1 {
+                            color: #333333;
+                            text-align: center;
+                        }
+                        p {
+                            color: #666666;
+                            line-height: 1.5;
+                        }
+                        .footer {
+                            text-align: center;
+                            color: #999999;
+                            font-size: 12px;
+                            margin-top: 20px;
+                        }
+                    """.trimIndent()
+                        )
+                    }
+                }
+            }
+            body {
+                div("container") {
+                    h1 { +"Relatório de Abuso/Sugestão" }
+                    p {
+                        +"Recebemos o seguinte relatório:"
+                    }
+                    p {
+                        +text
+                    }
+                    username?.let {
+                        p {
+                            +"Usuário: $it"
+                        }
+                    }
+                    email?.let {
+                        p {
+                            +"E-mail: $it"
+                        }
+                    }
+                    p {
+                        +"Se precisar de mais informações, por favor, entre em contato com o usuário."
+                    }
+                    div("footer") {
+                        +"© 2024 Sanisamoj. Todos os direitos reservados."
+                    }
+                }
+            }
+        }
+    }
+
 }

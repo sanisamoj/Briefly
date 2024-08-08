@@ -1,13 +1,15 @@
 package com.sanisamoj.config
 
+import com.sanisamoj.data.models.dataclass.GlobalWarnings
 import com.sanisamoj.data.models.interfaces.*
+import com.sanisamoj.utils.analyzers.ResourceLoader
 import com.sanisamoj.utils.analyzers.dotEnv
 import java.io.File
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    const val VERSION: String = "0.17.12"
+    const val VERSION: String = "0.17.14"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
@@ -40,6 +42,8 @@ object GlobalContext {
 
     private val currentProjectDir = System.getProperty("user.dir")
     val PUBLIC_IMAGES_DIR = File(currentProjectDir, "uploads")
+
+    val globalWarnings: GlobalWarnings = ResourceLoader.convertJsonInputStreamAsObject<GlobalWarnings>("/lang/pt.json")
 
     fun getMobileMinVersion(): String { return mobileMinVersion }
     fun getMobileTargetVersion(): String { return mobileTargetVersion }

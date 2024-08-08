@@ -31,11 +31,14 @@ class LinkEntryServiceTest {
         val userTest = UserTest()
         val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
 
+        val fiveDaysAfter: String = LocalDateTime.now().plusDays(5).toString()
+
         val linkEntryRequest = LinkEntryRequest(
             userId = user.id.toString(),
             link = SHORT_LINK_TEST,
+            personalizedCode = "test",
             active = true,
-            expiresIn = LocalDateTime.now().plusDays(5).toString()
+            expiresIn = fiveDaysAfter
         )
 
         val linkEntryService = LinkEntryService(databaseRepository = TestContext.getDatabaseRepository())
@@ -43,10 +46,12 @@ class LinkEntryServiceTest {
 
         assertEquals(linkEntryRequest.userId, linkEntryResponse.userId)
         assertEquals(linkEntryRequest.active, linkEntryResponse.active)
+        assertEquals(linkEntryRequest.expiresIn, fiveDaysAfter)
         assertEquals("https://linktest/", linkEntryResponse.originalLink)
 
         userTest.deleteUserTest()
         val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
+        assertEquals(linkEntryRequest.personalizedCode, shortLink)
         databaseRepository.deleteLinkByShortLink(shortLink)
     }
 

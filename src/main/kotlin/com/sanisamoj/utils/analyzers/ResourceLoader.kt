@@ -1,5 +1,6 @@
 package com.sanisamoj.utils.analyzers
 
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.InputStream
 
@@ -28,5 +29,18 @@ object ResourceLoader {
         val resourceUrl = this::class.java.getResource(resourcePath)
             ?: throw IllegalArgumentException("Recurso não encontrado: $resourcePath")
         return File(resourceUrl.toURI())
+    }
+
+    /**
+     * Converts the content of a JSON file located at the specified path into an object.
+     *
+     * @param resourcePath Path to the resource within the resources folder.
+     * @return Object of the specified type, deserialized from the JSON.
+     * @throws IllegalArgumentException if the resource is not found.
+     */
+    inline fun <reified T> convertJsonInputStreamAsObject(resourcePath: String): T {
+        val inputStream: InputStream = loadResourceAsStream(resourcePath)
+        val jsonContent: String = inputStream.bufferedReader().use { it.readText() }
+        return Json.decodeFromString<T>(jsonContent)
     }
 }

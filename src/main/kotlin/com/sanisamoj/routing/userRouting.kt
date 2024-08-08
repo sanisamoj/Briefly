@@ -28,7 +28,7 @@ fun Route.userRouting() {
 
             // Route responsible for creating a user
             post {
-                val user = call.receive<UserCreateRequest>()
+                val user: UserCreateRequest = call.receive<UserCreateRequest>()
                 val userResponse: UserResponse = UserService().createUser(user)
                 return@post call.respond(userResponse)
             }
