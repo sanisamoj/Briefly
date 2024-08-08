@@ -134,7 +134,7 @@ class LinkEntryService(
             city = ipInfo.city ?: UNKNOWN,
             cityIsoCode = ipInfo.cityIsoCode ?: UNKNOWN,
             country = ipInfo.country ?: UNKNOWN,
-            countryIsoCode = ipInfo.country ?: UNKNOWN,
+            countryIsoCode = ipInfo.countryIsoCode ?: UNKNOWN,
             continent = ipInfo.continent ?: UNKNOWN,
             latitude = ipInfo.latitude,
             longitude = ipInfo.longitude,
@@ -151,8 +151,8 @@ class LinkEntryService(
     }
 
     private fun defineDeviceInfo(userAgent: UserAgentInfo): DeviceInfo {
-        val deviceType = userAgent.deviceType
-        val browser = userAgent.browser
+        val deviceType: String = userAgent.deviceType
+        val browser: String = userAgent.browser
 
         val operatingSystem: String = try {
             if(deviceType == "desktop") {

@@ -9,6 +9,7 @@ import com.sanisamoj.utils.schedule.models.StartRoutineData
 import com.sanisamoj.utils.schedule.routines.RemoveNonAccessedLinksRoutine
 import com.sanisamoj.utils.schedule.routines.UpdateExpiredLinksRoutine
 import org.quartz.JobKey
+import java.io.File
 import java.time.LocalDateTime
 
 object Config {
@@ -20,7 +21,7 @@ object Config {
     suspend fun databaseInitialize() {
         MongoDatabase.initialize()
 
-        val uploadDir = PUBLIC_IMAGES_DIR
+        val uploadDir: File = PUBLIC_IMAGES_DIR
         if (!uploadDir.exists()) {
             uploadDir.mkdirs()
         }

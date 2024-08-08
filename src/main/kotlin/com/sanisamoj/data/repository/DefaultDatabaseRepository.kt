@@ -38,7 +38,7 @@ class DefaultDatabaseRepository(
     }
 
     override suspend fun registerUser(user: User): User {
-        val userId = MongodbOperations().register(
+        val userId: String = MongodbOperations().register(
             collectionInDb = CollectionsInDb.Users,
             item = user
         ).toString()
@@ -102,9 +102,9 @@ class DefaultDatabaseRepository(
     }
 
     override suspend fun removeLinkEntryIdFromUser(userId: String, linkEntryId: String) {
-        val userInDb = getUserById(userId)
-        val shortLinkIdList = userInDb.shortLinksId.toMutableList()
-        val index = shortLinkIdList.indexOf(linkEntryId)
+        val userInDb: User = getUserById(userId)
+        val shortLinkIdList: MutableList<String> = userInDb.shortLinksId.toMutableList()
+        val index: Int = shortLinkIdList.indexOf(linkEntryId)
         if(index != -1) {
             shortLinkIdList.removeAt(index)
             val update = OperationField(Fields.ShortLinksId, shortLinkIdList)
@@ -129,14 +129,14 @@ class DefaultDatabaseRepository(
 
     override suspend fun registerLink(link: LinkEntry): LinkEntry {
         val mongodbOperations = MongodbOperations()
-        val linkId =  mongodbOperations.register(
+        val linkId : String =  mongodbOperations.register(
             collectionInDb = CollectionsInDb.LinkEntry,
             item = link
         ).toString()
 
         try {
             getUserById(link.userId)
-            val shortLink = getLinkById(link.id.toString())
+            val shortLink: LinkEntry = getLinkById(link.id.toString())
             mongodbOperations.pushItem<LinkEntry>(
                 collectionName = CollectionsInDb.Users,
                 filter = OperationField(Fields.Id, ObjectId(link.userId)),
@@ -146,7 +146,7 @@ class DefaultDatabaseRepository(
             return shortLink
 
         } catch (e: Throwable) {
-            val shortLink = getLinkById(link.id.toString())
+            val shortLink: LinkEntry = getLinkById(link.id.toString())
             return shortLink
         }
 
@@ -240,7 +240,7 @@ class DefaultDatabaseRepository(
 
     override suspend fun saveMedia(multipartData: MultiPartData): List<String> {
         val pathToPublicImages = PUBLIC_IMAGES_DIR
-        val imageNameList = saveAndReturnListNames(multipartData, pathToPublicImages)
+        val imageNameList: List<String> = saveAndReturnListNames(multipartData, pathToPublicImages)
         val imageSavedList: MutableList<String> = mutableListOf()
         imageNameList.forEach { name ->
             imageSavedList.add(name)
@@ -257,7 +257,7 @@ class DefaultDatabaseRepository(
             when (part) {
 
                 is PartData.FileItem -> {
-                    val mimeType = getType(part.originalFileName!!)
+                    val mimeType: String = getType(part.originalFileName!!)
                     if (!MIME_TYPE_ALLOWED.contains(mimeType)) {
                         imagePathOfSavedImages.forEach {
                             deleteMedia(it)
@@ -266,7 +266,7 @@ class DefaultDatabaseRepository(
                         throw Exception(Errors.UnsupportedMediaType.description)
                     }
 
-                    val fileBytes = part.streamProvider().readBytes()
+                    val fileBytes: ByteArray = part.streamProvider().readBytes()
                     val filename = "${CharactersGenerator.generateWithNoSymbols()}-${part.originalFileName}"
                     File(path, filename).writeBytes(fileBytes)
                     imageNameList.add(filename)
