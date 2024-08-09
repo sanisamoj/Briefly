@@ -1,9 +1,14 @@
 package com.sanisamoj.services.server
 
 import com.sanisamoj.config.GlobalContext
+import com.sanisamoj.data.models.dataclass.ReportingRequest
 import com.sanisamoj.data.models.dataclass.SystemClicksCountResponse
 import com.sanisamoj.data.models.dataclass.VersionResponse
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
+import com.sanisamoj.services.email.MailService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ServerService(
     private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository(),
@@ -29,5 +34,11 @@ class ServerService(
 
     fun updateTargetMobileVersion(version: String) {
         setTargetMobileVersion(version)
+    }
+
+    fun report(reportingRequest: ReportingRequest) {
+        CoroutineScope(Dispatchers.IO).launch {
+            MailService().sendReportingEmail(reportingRequest)
+        }
     }
 }

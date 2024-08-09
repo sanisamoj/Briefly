@@ -1,5 +1,8 @@
 {
+  "systemName": "Briefly",
   "activateYourAccount": "Ative sua conta!",
   "welcomeToBriefly": "Bem-vindo ao Briefly!",
-  "removedLink": "O link encurtado foi removido!"
+  "removedLink": "O link encurtado foi removido!",
+  "suggestion": "Sugestão",
+  "abuse": "Abuso"
 }

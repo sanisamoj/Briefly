@@ -8,6 +8,7 @@ enum class Errors(val description: String) {
     InactiveRedirection("Inactive redirection!"),
     RedisNotResponding("Redis not responding!"),
     ShortLinkNotFound("Short link not found!"),
+    InvalidReportType("Invalid report type!"),
     UserAlreadyExists("User already exists!"),
     UnableToComplete("Unable to complete!"),
     InvalidLogin("Invalid email/password!"),

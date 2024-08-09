@@ -86,7 +86,8 @@ fun Route.linkEntryRouting() {
             // Redirect to homepage
             val redirectInfo = RedirectInfo(ip, protectedLinkEntryPass.shortLink, userAgentInfo, referer.toString())
             val redirectLink: String = LinkEntryService().redirectLink(redirectInfo, protectedLinkEntryPass)
-            return@post call.respondRedirect(redirectLink, permanent = false)
+            val privateLinkPassResponse = PrivateLinkPassResponse(redirectLink)
+            return@post call.respond(privateLinkPassResponse)
         }
 
         // Responsible for returning information from a link
