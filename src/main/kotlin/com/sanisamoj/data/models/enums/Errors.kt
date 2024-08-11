@@ -4,6 +4,7 @@ enum class Errors(val description: String) {
     PersonalizedShortLinkAlreadyExist("Personalized short link already exist!"),
     TermsOfServiceNotFound("Terms of Service not found!"),
     UnsupportedMediaType("Unsupported media type!"),
+    LengthExceeded("Custom code Length exceeded!"),
     InternalServerError("Internal Server Error!"),
     InactiveRedirection("Inactive redirection!"),
     RedisNotResponding("Redis not responding!"),

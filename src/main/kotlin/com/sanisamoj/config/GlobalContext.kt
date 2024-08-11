@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    const val VERSION: String = "0.17.16"
+    const val VERSION: String = "0.17.17"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
@@ -33,6 +33,8 @@ object GlobalContext {
 
     const val NO_EXPIRATION_TIME = "No expiration"
     const val UNKNOWN = "Unknown"
+    const val PERSONALIZED_CODE_MIN_LENGTH: Int = 5
+    const val PERSONALIZED_CODE_MAX_LENGTH: Int = 15
 
     var LINK_ENTRY_EXPIRES_IN: LocalDateTime = LocalDateTime.now().plusDays(365)
         private set

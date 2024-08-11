@@ -2,6 +2,8 @@ package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.config.GlobalContext.NO_EXPIRATION_TIME
+import com.sanisamoj.config.GlobalContext.PERSONALIZED_CODE_MAX_LENGTH
+import com.sanisamoj.config.GlobalContext.PERSONALIZED_CODE_MIN_LENGTH
 import com.sanisamoj.config.GlobalContext.UNKNOWN
 import com.sanisamoj.config.WebSocketManager
 import com.sanisamoj.data.models.dataclass.*
@@ -90,6 +92,8 @@ class LinkEntryService(
     private suspend fun checkPersonalizedShortLink(shortLink: String) {
         val linkEntry: LinkEntry? = databaseRepository.getLinkByShortLink(shortLink)
         if(linkEntry != null) throw Error(Errors.PersonalizedShortLinkAlreadyExist.description)
+        if(shortLink.length >= PERSONALIZED_CODE_MAX_LENGTH || shortLink.length < PERSONALIZED_CODE_MIN_LENGTH)
+            throw Error(Errors.LengthExceeded.description)
     }
 
     suspend fun redirectLink(redirectInfo: RedirectInfo, protected: ProtectedLinkEntryPass? = null): String {

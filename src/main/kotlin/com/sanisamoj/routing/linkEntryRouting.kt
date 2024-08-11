@@ -53,7 +53,7 @@ fun Route.linkEntryRouting() {
         // Responsible for redirect user or redirect homepage
         get("/{shortLink?}") {
             val shortLink: String? = call.parameters["shortLink"]
-            val ip: String = call.request.origin.remoteHost
+            val ip: String = call.request.headers["X-Forwarded-For"]?.split(",")?.firstOrNull()?.trim().toString()
             val userAgent: String = call.request.headers["User-Agent"] ?: "Unknown"
             val referer: String? = call.request.headers["Referer"]
             val userAgentInfo: UserAgentInfo = parseUserAgent(userAgent)

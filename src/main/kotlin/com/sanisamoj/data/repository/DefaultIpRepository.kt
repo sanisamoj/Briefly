@@ -20,7 +20,9 @@ class DefaultIpRepository(private val geoIpService: GeoIPService = GeoIPService)
             null
         }
 
-        return ipInfoFactory(ip, cityInfo, asnInfo)
+        val ipInfo: IpInfo = ipInfoFactory(ip, cityInfo, asnInfo)
+        println(ipInfo)
+        return ipInfo
     }
 
     private fun ipInfoFactory(ip: String, cityInfo: CityInfo?, asnInfo: AsnInfo?): IpInfo {
