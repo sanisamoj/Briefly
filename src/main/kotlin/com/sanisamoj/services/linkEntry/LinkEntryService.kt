@@ -91,9 +91,9 @@ class LinkEntryService(
 
     private suspend fun checkPersonalizedShortLink(shortLink: String) {
         val linkEntry: LinkEntry? = databaseRepository.getLinkByShortLink(shortLink)
-        if(linkEntry != null) throw Error(Errors.PersonalizedShortLinkAlreadyExist.description)
         if(shortLink.length >= PERSONALIZED_CODE_MAX_LENGTH || shortLink.length < PERSONALIZED_CODE_MIN_LENGTH)
             throw Error(Errors.LengthExceeded.description)
+        if(linkEntry != null) throw Error(Errors.PersonalizedShortLinkAlreadyExist.description)
     }
 
     suspend fun redirectLink(redirectInfo: RedirectInfo, protected: ProtectedLinkEntryPass? = null): String {

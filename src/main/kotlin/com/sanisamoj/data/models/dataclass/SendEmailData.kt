@@ -4,6 +4,5 @@ data class SendEmailData(
     val to: String,
     val topic: String,
     val text: String,
-    val isHtml: Boolean = false,
-    val attachments: List<String> = emptyList()
+    val isHtml: Boolean = false
 )

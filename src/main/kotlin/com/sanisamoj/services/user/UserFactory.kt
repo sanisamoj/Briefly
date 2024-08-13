@@ -39,7 +39,7 @@ object UserFactory {
 
     // Transforms the user creation request into USER
     fun user(userCreateRequest: UserCreateRequest, accountType: AccountType = AccountType.USER): User {
-        val hashedPassword = BCrypt.hashpw(userCreateRequest.password, BCrypt.gensalt())
+        val hashedPassword: String = BCrypt.hashpw(userCreateRequest.password, BCrypt.gensalt())
         return User(
             username = userCreateRequest.username,
             email = userCreateRequest.email,

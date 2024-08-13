@@ -16,7 +16,7 @@ object TestContext {
     private val testContainer: ServerContainer = ServerContainerTest()
     const val IP_TEST: String = "186.204.44.176"
     const val SHORT_LINK_TEST = "linkTest"
-    const val PERSONALIZED_CODE_TO_LINK = "personalizedCode"
+    const val PERSONALIZED_CODE_TO_LINK = "personalized"
     const val LINK_PASSWORD_TEST = "123456"
     const val IMAGE_TEST_NAME = "image.jpg"
     const val NOT_ALLOWED_IMAGE_TEST_NAME = "image2.raw"

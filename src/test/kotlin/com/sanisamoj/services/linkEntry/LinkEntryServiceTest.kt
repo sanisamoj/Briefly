@@ -36,7 +36,7 @@ class LinkEntryServiceTest {
         val linkEntryRequest = LinkEntryRequest(
             userId = user.id.toString(),
             link = SHORT_LINK_TEST,
-            personalizedCode = "test",
+            personalizedCode = PERSONALIZED_CODE_TO_LINK,
             active = true,
             expiresIn = fiveDaysAfter
         )
@@ -53,6 +53,38 @@ class LinkEntryServiceTest {
         val shortLink = linkEntryResponse.shortLink.substringAfterLast("/")
         assertEquals(linkEntryRequest.personalizedCode, shortLink)
         databaseRepository.deleteLinkByShortLink(shortLink)
+    }
+
+    @Test
+    fun registerLinkWithExceededLengthEntryTest() = testApplication {
+        val userTest = UserTest()
+        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
+
+        val fiveDaysAfter: String = LocalDateTime.now().plusDays(5).toString()
+
+        val linkEntryRequestWithMaxLengthExceeded = LinkEntryRequest(
+            userId = user.id.toString(),
+            link = SHORT_LINK_TEST,
+            personalizedCode = "test123456789789878979879879798798",
+            active = true,
+            expiresIn = fiveDaysAfter
+        )
+
+        val linkEntryRequestWithMinLengthExceeded = LinkEntryRequest(
+            userId = user.id.toString(),
+            link = SHORT_LINK_TEST,
+            personalizedCode = "test",
+            active = true,
+            expiresIn = fiveDaysAfter
+        )
+
+        val linkEntryService = LinkEntryService(databaseRepository = TestContext.getDatabaseRepository())
+        assertFails {
+            linkEntryService.register(linkEntryRequestWithMaxLengthExceeded)
+            linkEntryService.register(linkEntryRequestWithMinLengthExceeded)
+        }
+
+        userTest.deleteUserTest()
     }
 
     @Test
