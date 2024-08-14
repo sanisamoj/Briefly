@@ -101,7 +101,7 @@ fun Route.linkEntryRouting() {
         get("/qrcode") {
             val shortLink: String = call.request.queryParameters["short"].toString()
             val redirectLink: LinkEntryResponse = LinkEntryService().getLinkEntryByShortLink(shortLink)
-            val httpShortLink = "${SELF_URL}/${redirectLink.shortLink}"
+            val httpShortLink = "${SELF_URL}/${redirectLink.shortLink.substringAfterLast("/")}"
             val qrCode = QrCode.generate(httpShortLink, 200, 200)
             call.respondBytes(qrCode, ContentType.Image.PNG)
         }

@@ -102,7 +102,6 @@ EMAIL_PASSWORD=
 
 #Link dos termos de serviço
 TERMS_OF_SERVICE_LINK=
-
 ```
 > *MONGODB_SERVER_URL*=mongodb://host.docker.internal:27017 - Esta configuração serve para que a aplicação se conecte ao Mongodb localizado no localhost da máquina.
 
