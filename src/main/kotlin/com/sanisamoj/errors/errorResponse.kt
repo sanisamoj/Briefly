@@ -80,6 +80,10 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
             HttpStatusCode.NotFound to ErrorResponse(Errors.MediaNotExist.description)
         }
 
+        Errors.InvalidLink.description -> {
+            HttpStatusCode.BadRequest to ErrorResponse(Errors.InvalidLink.description)
+        }
+
         Errors.UnsupportedMediaType.description -> {
             HttpStatusCode.BadRequest to ErrorResponse(
                 error = Errors.UnsupportedMediaType.description,
