@@ -21,7 +21,6 @@ class DefaultIpRepository(private val geoIpService: GeoIPService = GeoIPService)
         }
 
         val ipInfo: IpInfo = ipInfoFactory(ip, cityInfo, asnInfo)
-        println(ipInfo)
         return ipInfo
     }
 
