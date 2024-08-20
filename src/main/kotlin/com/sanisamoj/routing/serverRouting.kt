@@ -2,7 +2,7 @@ package com.sanisamoj.routing
 
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.ReportingRequest
-import com.sanisamoj.data.models.dataclass.SystemClicksCountResponse
+import com.sanisamoj.data.models.dataclass.CountResponse
 import com.sanisamoj.data.models.dataclass.VersionResponse
 import com.sanisamoj.services.server.ServerService
 import io.ktor.http.*
@@ -38,10 +38,19 @@ fun Route.serverRouting() {
 
         authenticate("moderator-jwt") {
 
-            // Responsible for returning the system's click count
-            get("/clicks") {
-                val systemClicksCountResponse: SystemClicksCountResponse = ServerService().getClickInSystemCount()
-                return@get call.respond(systemClicksCountResponse)
+            route("/count") {
+
+                // Responsible for returning the system's click count
+                get("/clicks") {
+                    val countResponse: CountResponse = ServerService().getClickInSystemCount()
+                    return@get call.respond(countResponse)
+                }
+
+                // Responsible for returning the link entries count
+                get("/links") {
+                    val countResponse: CountResponse = ServerService().getLinkEntryCount()
+                    return@get call.respond(countResponse)
+                }
             }
 
             // Responsible for changing the path of terms

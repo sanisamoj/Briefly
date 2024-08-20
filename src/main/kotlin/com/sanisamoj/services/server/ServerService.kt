@@ -2,8 +2,9 @@ package com.sanisamoj.services.server
 
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.ReportingRequest
-import com.sanisamoj.data.models.dataclass.SystemClicksCountResponse
+import com.sanisamoj.data.models.dataclass.CountResponse
 import com.sanisamoj.data.models.dataclass.VersionResponse
+import com.sanisamoj.data.models.enums.WebSocketCountItem
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.services.email.MailService
 import kotlinx.coroutines.CoroutineScope
@@ -24,8 +25,12 @@ class ServerService(
         )
     }
 
-    suspend fun getClickInSystemCount(): SystemClicksCountResponse {
-        return SystemClicksCountResponse(databaseRepository.getCountApplicationClicks())
+    suspend fun getClickInSystemCount(): CountResponse {
+        return CountResponse(WebSocketCountItem.SystemClicksCount.name, databaseRepository.getCountApplicationClicks())
+    }
+
+    suspend fun getLinkEntryCount(): CountResponse {
+        return CountResponse(WebSocketCountItem.LinkEntriesCount.name, databaseRepository.getCountLinkEntry())
     }
 
     fun updateMinMobileVersion(version: String) {

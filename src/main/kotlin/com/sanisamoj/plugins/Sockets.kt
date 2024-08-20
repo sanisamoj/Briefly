@@ -21,39 +21,43 @@ fun Application.configureSockets(
 
     routing {
         authenticate("user-jwt") {
+
+            // Route to click information for shortened links
             webSocket("/links") {
                 val userId = call.parameters["id"].toString()
                 val thisConnection = Connection(this, userId)
-                webSocketManager.addConnection(thisConnection)
+                webSocketManager.addUserConnection(thisConnection)
 
                 try {
                     for (frame in incoming) {
                         if (frame is Frame.Close) {
-                            webSocketManager.removeConnection(thisConnection)
+                            webSocketManager.removeUserConnection(thisConnection)
                             break
                         }
                     }
                 } finally {
-                    webSocketManager.removeConnection(thisConnection)
+                    webSocketManager.removeUserConnection(thisConnection)
                 }
             }
         }
 
         authenticate("moderator-jwt") {
+
+            // Route to system information
             webSocket("/server") {
                 val userId = call.parameters["id"].toString()
                 val thisConnection = Connection(this, userId, admin = true)
-                webSocketManager.addConnection(thisConnection)
+                webSocketManager.addModeratorConnection(thisConnection)
 
                 try {
                     for (frame in incoming) {
                         if (frame is Frame.Close) {
-                            webSocketManager.removeConnection(thisConnection)
+                            webSocketManager.removeModeratorConnection(thisConnection)
                             break
                         }
                     }
                 } finally {
-                    webSocketManager.removeConnection(thisConnection)
+                    webSocketManager.removeModeratorConnection(thisConnection)
                 }
             }
         }

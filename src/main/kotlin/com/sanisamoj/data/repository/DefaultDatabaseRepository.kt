@@ -37,6 +37,10 @@ class DefaultDatabaseRepository(
         return Redis.getItemCount(RedisKeys.ClickersCount.name)
     }
 
+    override suspend fun getCountLinkEntry(): Int {
+        return MongodbOperations().countDocumentsWithoutFilter<LinkEntry>(CollectionsInDb.LinkEntry)
+    }
+
     override suspend fun registerUser(user: User): User {
         val userId: String = MongodbOperations().register(
             collectionInDb = CollectionsInDb.Users,
@@ -133,6 +137,11 @@ class DefaultDatabaseRepository(
             collectionInDb = CollectionsInDb.LinkEntry,
             item = link
         ).toString()
+
+        if(webSocketSession.isAnyModeratorConnected()){
+            val count: Int = getCountLinkEntry()
+            webSocketSession.notifyAboutLinkEntryCount(count)
+        }
 
         try {
             getUserById(link.userId)

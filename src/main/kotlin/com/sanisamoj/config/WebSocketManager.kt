@@ -3,25 +3,35 @@ package com.sanisamoj.config
 import com.sanisamoj.data.models.dataclass.ClickerResponse
 import com.sanisamoj.data.models.dataclass.Connection
 import com.sanisamoj.data.models.dataclass.LinkEntryUpdatedMessage
-import com.sanisamoj.data.models.dataclass.SystemClicksCountResponse
+import com.sanisamoj.data.models.dataclass.CountResponse
+import com.sanisamoj.data.models.enums.WebSocketCountItem
 import io.ktor.websocket.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.*
 
 object WebSocketManager {
-    private val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
+    private val moderatorConnections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
+    private val userConnections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
 
-    fun addConnection(connection: Connection) {
-        connections += connection
+    fun addModeratorConnection(connection: Connection) {
+        moderatorConnections += connection
     }
 
-    fun removeConnection(connection: Connection) {
-        connections -= connection
+    fun addUserConnection(connection: Connection) {
+        userConnections += connection
+    }
+
+    fun removeModeratorConnection(connection: Connection) {
+        moderatorConnections -= connection
+    }
+
+    fun removeUserConnection(connection: Connection) {
+        userConnections -= connection
     }
 
     suspend fun notifyAboutShortLink(userId: String, shortLink: String, clickerResponse: ClickerResponse) {
-        val allConnectionsFromUserId: List<Connection> = connections.filter { it.userId == userId }
+        val allConnectionsFromUserId: List<Connection> = userConnections.filter { it.userId == userId }
         val linkEntryUpdatedMessage = LinkEntryUpdatedMessage(userId, shortLink, clickerResponse)
         val linkEntryUpdatedMessageInString: String = Json.encodeToString(linkEntryUpdatedMessage)
 
@@ -31,11 +41,24 @@ object WebSocketManager {
     }
 
     suspend fun notifyAboutClickCount(count: Int) {
-        val allModeratorConnections: List<Connection> = connections.filter { it.moderator }
+        val allModeratorConnections: List<Connection> = moderatorConnections.filter { it.moderator }
 
         if(isAnyModeratorConnected()) {
-            val systemClicksCountResponse = SystemClicksCountResponse(count)
-            val systemClicksCountResponseInString: String = Json.encodeToString(systemClicksCountResponse)
+            val countResponse = CountResponse(WebSocketCountItem.SystemClicksCount.name, count)
+            val systemClicksCountResponseInString: String = Json.encodeToString(countResponse)
+
+            allModeratorConnections.forEach {
+                it.session.send(Frame.Text(systemClicksCountResponseInString))
+            }
+        }
+    }
+
+    suspend fun notifyAboutLinkEntryCount(count: Int) {
+        val allModeratorConnections: List<Connection> = moderatorConnections.filter { it.moderator }
+
+        if(isAnyModeratorConnected()) {
+            val countResponse = CountResponse(WebSocketCountItem.LinkEntriesCount.name, count)
+            val systemClicksCountResponseInString: String = Json.encodeToString(countResponse)
 
             allModeratorConnections.forEach {
                 it.session.send(Frame.Text(systemClicksCountResponseInString))
@@ -44,7 +67,7 @@ object WebSocketManager {
     }
 
     fun isAnyModeratorConnected(): Boolean {
-        val allModeratorConnections: List<Connection> = connections.filter { it.moderator }
+        val allModeratorConnections: List<Connection> = moderatorConnections.filter { it.moderator }
         return allModeratorConnections.isNotEmpty()
     }
 }

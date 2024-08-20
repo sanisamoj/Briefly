@@ -11,6 +11,7 @@ import java.time.LocalDateTime
 interface DatabaseRepository {
     suspend fun applicationClicksInc(ip: String, route: String)
     suspend fun getCountApplicationClicks(): Int
+    suspend fun getCountLinkEntry(): Int
     suspend fun registerUser(user: User): User
     suspend fun getUserById(id: String): User
     suspend fun getUserByIdOrNull(id: String): User?
