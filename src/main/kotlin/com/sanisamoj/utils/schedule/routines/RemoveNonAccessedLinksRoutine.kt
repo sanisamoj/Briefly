@@ -1,6 +1,6 @@
 package com.sanisamoj.utils.schedule.routines
 
-import com.sanisamoj.config.Config.TWELVE_MONTHS_AGO
+import com.sanisamoj.config.Config.INACCESSIBLE_TIME_MAX
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
@@ -21,7 +21,7 @@ class RemoveNonAccessedLinksRoutine: Job {
         runBlocking { checkAndInactiveNonAccessLinks() }
     }
 
-    private suspend fun checkAndInactiveNonAccessLinks(inaccessibleTime: LocalDateTime = TWELVE_MONTHS_AGO) {
+    private suspend fun checkAndInactiveNonAccessLinks(inaccessibleTime: LocalDateTime = INACCESSIBLE_TIME_MAX) {
         val timeAgo: LocalDateTime = inaccessibleTime
 
         val allLinksNonAccess: MutableList<LinkEntry> = mutableListOf()
