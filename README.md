@@ -25,7 +25,7 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 - Possibilidade de criar links curtos.
 - QR Code: Possibilidade de compartilhar um QR Code que contém o link encurtado.
 - Proteção de links: Os links terão a possibilidade de serem protegidos por senha.
-- Tempo de vida: Os links podem ser criado com um tempo de expiração.
+- Tempo de vida: Os links podem ser criados com um tempo de expiração.
 - Um código personalizado para o link pode ser criado.
 
 ## Funcionalidades do Sistema
@@ -110,9 +110,9 @@ TERMS_OF_SERVICE_LINK=
 > Nas configurações de Email, foi adicionado uma pré-configuração para utilizar os serviços do Gmail. Para a Senha do Email, é necessário gerar uma senha para aplicação em "Apps menos seguros" na sua conta do Gmail.
 
 Para coleta de dados como região dos IPs, estou utilizando a API GeoIp https://www.maxmind.com/en/home.
-Você precisa baixar 2 bancos de dados disponíveis no site deles, que se chama **"GeoLite2 ASN"** e **"GeoLite2 City"**, copiar os arquivos **"GeoLite2-ASN.mmdb"** e **"GeoLite2-City.mmdb"** para a pasta **resources/geo/**.
+É necessário realizar o download de 2 bancos de dados disponíveis no site deles, que se chama **"GeoLite2 ASN"** e **"GeoLite2 City"**, copiar os arquivos **"GeoLite2-ASN.mmdb"** e **"GeoLite2-City.mmdb"** para a pasta **resources/geo/**.
 
-> Caso queira que o servidor responda uma arquivo HTML na rota principal, crie uma pasta chamada files em resources e insira o seu arquivo com o nome index.html para o servidor mapear e entregar a página.
+> Caso seja necessário que o servidor responda um arquivo HTML na rota principal, crie uma pasta chamada files em resources e insira o seu arquivo com o nome index.html para o servidor mapear e entregar a página.
 
 #### Execute o comando a seguir para construir a imagem Docker.
 

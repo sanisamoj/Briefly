@@ -34,7 +34,7 @@ object GlobalContext {
     const val NO_EXPIRATION_TIME = "No expiration"
     const val UNKNOWN = "Unknown"
     const val PERSONALIZED_CODE_MIN_LENGTH: Int = 5
-    const val PERSONALIZED_CODE_MAX_LENGTH: Int = 15
+    const val PERSONALIZED_CODE_MAX_LENGTH: Int = 130
 
     var LINK_ENTRY_EXPIRES_IN: LocalDateTime = LocalDateTime.now().plusDays(365)
         private set
