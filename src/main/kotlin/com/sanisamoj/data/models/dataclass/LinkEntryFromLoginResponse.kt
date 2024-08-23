@@ -1,14 +1,10 @@
 package com.sanisamoj.data.models.dataclass
-
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MidLinkEntryResponse(
+data class LinkEntryFromLoginResponse(
     val active: Boolean,
     val shortLink: String,
-    val qrCodeLink: String,
-    val originalLink: String?,
-    val totalVisits: List<ClickerResponse>,
+    val originalLink: String,
     val expiresAt: String,
-    val createAt: String
 )

@@ -91,6 +91,10 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
             )
         }
 
+        Errors.TheLinkHasOwner.description -> {
+            HttpStatusCode.Forbidden to ErrorResponse(Errors.TheLinkHasOwner.description)
+        }
+
         else -> {
             HttpStatusCode.InternalServerError to ErrorResponse(Errors.InternalServerError.description)
         }

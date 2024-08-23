@@ -189,6 +189,8 @@ class LinkEntryService(
         val linkEntry: LinkEntry = databaseRepository.getLinkByShortLink(shortLink)
             ?: throw Exception(Errors.ShortLinkNotFound.description)
 
+        if(!linkEntry.public) throw Error(Errors.TheLinkHasOwner.description)
+
         return LinkEntryFactory.midLinkEntryResponse(linkEntry)
     }
 

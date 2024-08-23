@@ -26,13 +26,14 @@ object LinkEntryFactory {
         val selfUrl: String = SELF_URL
         val shortLink = "${selfUrl}/${linkEntry.shortLink}"
         val qrCodeLink = "${selfUrl}/qrcode?short=${linkEntry.shortLink}"
+        val originalLink: String? = if(linkEntry.password != null) null else linkEntry.originalLink
         val totalVisitsResponseList: List<ClickerResponse> = linkEntry.totalVisits.map { clickerResponse(it) }
 
         return MidLinkEntryResponse(
             active = linkEntry.active,
             shortLink = shortLink,
             qrCodeLink = qrCodeLink,
-            originalLink = linkEntry.originalLink,
+            originalLink = originalLink,
             totalVisits = totalVisitsResponseList,
             expiresAt = linkEntry.expiresAt,
             createAt = linkEntry.createdAt

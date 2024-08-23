@@ -47,6 +47,7 @@ fun Route.userRouting() {
                     return@delete call.respond(HttpStatusCode.OK)
                 }
 
+                // Responsible for updating a link
                 put("/link") {
                     val shortLink: String = call.parameters["short"].toString()
                     val active: Boolean = call.parameters["active"].toString() == "true"
@@ -104,13 +105,14 @@ fun Route.userRouting() {
         // Responsible for activate account by token email
         get("/activate") {
             val token: String = call.parameters["token"].toString()
+            val email: String = call.parameters["email"].toString()
 
             try {
                 UserAuthenticationService().activateAccountByToken(token)
                 return@get call.respondRedirect(ACTIVATED_ACCOUNT_LINK_ROUTE, permanent = false)
 
             } catch (e: Throwable) {
-                return@get call.respondRedirect(EXPIRED_TOKEN_EMAIL_LINK_ROUTE, permanent = false)
+                return@get call.respondRedirect("$EXPIRED_TOKEN_EMAIL_LINK_ROUTE$email", permanent = false)
             }
         }
 

@@ -1,10 +1,7 @@
 package com.sanisamoj.services.user
 
 import com.sanisamoj.config.GlobalContext.MEDIA_ROUTE
-import com.sanisamoj.data.models.dataclass.LinkEntryResponse
-import com.sanisamoj.data.models.dataclass.User
-import com.sanisamoj.data.models.dataclass.UserCreateRequest
-import com.sanisamoj.data.models.dataclass.UserResponse
+import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.services.linkEntry.LinkEntryService
 import kotlinx.coroutines.runBlocking
@@ -12,14 +9,20 @@ import org.mindrot.jbcrypt.BCrypt
 
 object UserFactory {
     fun userResponse(user: User): UserResponse {
-        val linkEntryResponseList: MutableList<LinkEntryResponse> = mutableListOf()
+        val linkEntryResponseList: MutableList<LinkEntryFromLoginResponse> = mutableListOf()
         val linkEntryService = LinkEntryService()
 
         runBlocking {
             user.shortLinksId.forEach {
                 try {
-                    val linkEntryResponse = linkEntryService.getLinkEntryByShortLinkById(it)
-                    linkEntryResponseList.add(linkEntryResponse)
+                    val linkEntryResponse: LinkEntryResponse = linkEntryService.getLinkEntryByShortLinkById(it)
+                    val linkEntryFromLoginResponse = LinkEntryFromLoginResponse(
+                        active = linkEntryResponse.active,
+                        shortLink = linkEntryResponse.shortLink,
+                        originalLink = linkEntryResponse.originalLink,
+                        expiresAt = linkEntryResponse.expiresAt
+                    )
+                    linkEntryResponseList.add(linkEntryFromLoginResponse)
                 } catch (_: Throwable) {
                     // Intentionally ignored
                 }
