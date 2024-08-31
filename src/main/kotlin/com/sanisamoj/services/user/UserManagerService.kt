@@ -18,7 +18,11 @@ class UserManagerService(
         val imageNameInUser: String = user.imageProfile
 
         val mediaService = MediaService()
-        if(imageNameInUser != "") mediaService.deleteImage(imageNameInUser)
+        if(imageNameInUser != "") {
+            try {
+                mediaService.deleteImage(imageNameInUser)
+            } catch (_: Throwable) {}
+        }
 
         val savedImage: SavedMediaResponse = MediaService().savePublicImage(multipartData)[0]
         databaseRepository.updateUser(userId, OperationField(Fields.ImageProfile, savedImage.filename))
