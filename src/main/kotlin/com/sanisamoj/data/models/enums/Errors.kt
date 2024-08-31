@@ -2,6 +2,7 @@ package com.sanisamoj.data.models.enums
 
 enum class Errors(val description: String) {
     PersonalizedShortLinkAlreadyExist("Personalized short link already exist!"),
+    TheLimitMaxImageAllowed("The limit of images has been exceeded."),
     TermsOfServiceNotFound("Terms of Service not found!"),
     UnsupportedMediaType("Unsupported media type!"),
     LengthExceeded("Custom code Length exceeded!"),

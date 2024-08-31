@@ -1,5 +1,6 @@
 package com.sanisamoj.data.repository
 
+import com.sanisamoj.config.GlobalContext.MAX_UPLOAD_PROFILE_IMAGE
 import com.sanisamoj.config.GlobalContext.MIME_TYPE_ALLOWED
 import com.sanisamoj.config.GlobalContext.PUBLIC_IMAGES_DIR
 import com.sanisamoj.config.WebSocketManager
@@ -249,7 +250,7 @@ class DefaultDatabaseRepository(
 
     override suspend fun saveMedia(multipartData: MultiPartData): List<String> {
         val pathToPublicImages = PUBLIC_IMAGES_DIR
-        val imageNameList: List<String> = saveAndReturnListNames(multipartData, pathToPublicImages)
+        val imageNameList: List<String> = saveAndReturnListNames(multipartData, pathToPublicImages, MAX_UPLOAD_PROFILE_IMAGE)
         val imageSavedList: MutableList<String> = mutableListOf()
         imageNameList.forEach { name ->
             imageSavedList.add(name)
@@ -257,21 +258,33 @@ class DefaultDatabaseRepository(
         return imageSavedList
     }
 
-    private suspend fun saveAndReturnListNames(multipartData: MultiPartData, path: File): List<String> {
+    private suspend fun saveAndReturnListNames(
+        multipartData: MultiPartData,
+        path: File,
+        maxImagesAllowed: Int
+    ): List<String> {
 
         val imageNameList: MutableList<String> = mutableListOf()
         val imagePathOfSavedImages: MutableList<File> = mutableListOf()
+
+        var imageCount = 0
 
         multipartData.forEachPart { part ->
             when (part) {
 
                 is PartData.FileItem -> {
+                    if (imageCount > maxImagesAllowed) {
+                        imagePathOfSavedImages.forEach {
+                            deleteMedia(it)
+                        }
+                        throw Exception(Errors.TheLimitMaxImageAllowed.description)
+                    }
+
                     val mimeType: String = getType(part.originalFileName!!)
                     if (!MIME_TYPE_ALLOWED.contains(mimeType)) {
                         imagePathOfSavedImages.forEach {
                             deleteMedia(it)
                         }
-
                         throw Exception(Errors.UnsupportedMediaType.description)
                     }
 
@@ -280,6 +293,7 @@ class DefaultDatabaseRepository(
                     File(path, filename).writeBytes(fileBytes)
                     imageNameList.add(filename)
                     imagePathOfSavedImages.add(File(path, filename))
+                    imageCount++
                 }
 
                 else -> {}

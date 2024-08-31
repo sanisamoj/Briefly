@@ -95,6 +95,10 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
             HttpStatusCode.Forbidden to ErrorResponse(Errors.TheLinkHasOwner.description)
         }
 
+        Errors.TheLimitMaxImageAllowed.description -> {
+            HttpStatusCode.BadRequest to ErrorResponse(Errors.TheLimitMaxImageAllowed.description)
+        }
+
         else -> {
             HttpStatusCode.InternalServerError to ErrorResponse(Errors.InternalServerError.description)
         }

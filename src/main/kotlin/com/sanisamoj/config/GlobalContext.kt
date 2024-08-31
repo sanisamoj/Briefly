@@ -41,6 +41,7 @@ object GlobalContext {
 
     val MIME_TYPE_ALLOWED: List<String> = listOf("jpeg", "png", "jpg", "gif")
     const val MAX_HEADERS_SIZE: Int = 5 * 1024 * 1024 // 5MB
+    const val MAX_UPLOAD_PROFILE_IMAGE: Int = 1
 
     private val currentProjectDir = System.getProperty("user.dir")
     val PUBLIC_IMAGES_DIR = File(currentProjectDir, "uploads")
