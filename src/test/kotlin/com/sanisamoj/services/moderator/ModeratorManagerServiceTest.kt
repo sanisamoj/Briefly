@@ -77,4 +77,20 @@ class ModeratorManagerServiceTest {
 
         databaseRepository.deleteUser(user.id.toString())
     }
+
+    @Test
+    fun deleteUser() = testApplication {
+        val userTest = UserTest()
+        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
+
+        val moderatorManagerService = ModeratorManagerService(
+            databaseRepository = databaseRepository,
+            sessionRepository = sessionRepository
+        )
+
+        moderatorManagerService.deleteAccount(user.id.toString())
+        assertFails {
+            moderatorManagerService.getUserById(user.id.toString())
+        }
+    }
 }

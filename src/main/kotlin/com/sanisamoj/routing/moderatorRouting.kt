@@ -54,6 +54,13 @@ fun Route.moderatorRouting() {
                     return@get call.respond(usersResponse)
                 }
 
+                // Responsible for deleting user
+                delete("/user") {
+                    val userId: String = call.parameters["id"].toString()
+                    ModeratorManagerService().deleteAccount(userId)
+                    return@delete call.respond(HttpStatusCode.OK)
+                }
+
                 // Responsible for return user by ID
                 get("/user") {
                     val userId = call.parameters["id"]
