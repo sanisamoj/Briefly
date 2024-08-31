@@ -12,7 +12,6 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
-    clickerCount()
     accessGuardian()
     configureSecurity()
     rateLimit()
