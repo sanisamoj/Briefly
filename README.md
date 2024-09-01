@@ -131,4 +131,4 @@ No momento apenas alguns endpoints estão disponíveis, e estão hospedados na p
 
 ## Protótipo
 No presente momento estou dispondo de uma página muito humilde para testes.
-https://www.sanisamojrepository.com/
+https://www.briefly.top
