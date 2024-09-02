@@ -62,6 +62,7 @@ Para instalar o projeto para testes, utilizaremos o Docker.
 - Instale a última versão do **Docker** em sua máquina.
 - Instale o **Mongodb** (Verifique na página oficial, ou monte uma imagem com o Docker).
 - Instale o **Redis** na sua máquina (Verifique a página oficial, ou monte uma imagem com o Docker).
+- Para a utilização autenticação além do E-mail, estou utilizando os bots do projeto [NotifyBot](https://github.com/sanisamoj/NotifyBot).
 - Crie um arquivo **.env** na pasta raiz do projeto, ou adicione um arquivo **.env** manualmente na construção da imagem docker.
 
 ```.env
@@ -99,6 +100,10 @@ SMTP_SSL_TRUST=*
 EMAIL_SYSTEM=
 #Senha do email para autenticação do serviço de email
 EMAIL_PASSWORD=
+
+#Token para notificações do bot
+BOT_TOKEN=
+BOT_ID=
 
 #Link dos termos de serviço
 TERMS_OF_SERVICE_LINK=
