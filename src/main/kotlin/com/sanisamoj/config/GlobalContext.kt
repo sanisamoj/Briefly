@@ -17,7 +17,7 @@ object GlobalContext {
     var TERMS_OF_SERVICE_LINK: String = dotEnv("TERMS_OF_SERVICE_LINK")
         private set
 
-    val USER_TOKEN_EXPIRATION: Long = TimeUnit.DAYS.toMillis(15)
+    val USER_TOKEN_EXPIRATION: Long = TimeUnit.DAYS.toMillis(30)
     val EMAIL_TOKEN_EXPIRATION: Long = TimeUnit.MINUTES.toMillis(5)
     val MODERATOR_TOKEN_EXPIRATION: Long = TimeUnit.DAYS.toMillis(1)
 
