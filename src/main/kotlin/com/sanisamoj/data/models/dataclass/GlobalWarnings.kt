@@ -9,5 +9,6 @@ data class GlobalWarnings(
     val welcomeToBriefly: String,
     val removedLink: String,
     val suggestion: String,
-    val abuse: String
+    val abuse: String,
+    val thisYourValidationCode: String
 )

@@ -1,5 +1,6 @@
 package com.sanisamoj
 
+import com.sanisamoj.data.BotRepositoryTest
 import com.sanisamoj.data.IpRepositoryTest
 import com.sanisamoj.data.MailRepositoryTest
 import com.sanisamoj.data.models.interfaces.*
@@ -11,4 +12,5 @@ class ServerContainerTest : ServerContainer {
     override val sessionRepository: SessionRepository by lazy { DefaultSessionRepository() }
     override val ipRepository: IpRepository by lazy { IpRepositoryTest() }
     override val mailRepository: MailRepository by lazy { MailRepositoryTest() }
+    override val botRepository: BotRepository by lazy { BotRepositoryTest() }
 }

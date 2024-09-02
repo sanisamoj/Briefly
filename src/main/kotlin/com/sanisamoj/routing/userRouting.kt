@@ -63,6 +63,7 @@ fun Route.userRouting() {
 
             authenticate("user-jwt") {
 
+                // Responsible for updating user profile
                 put("/profile") {
                     val putUserProfile: PutUserProfile = call.receive()
                     val principal: JWTPrincipal = call.principal()!!
@@ -76,8 +77,12 @@ fun Route.userRouting() {
                             return@put call.respond(HttpStatusCode.OK, userResponse)
                         }
                         putUserProfile.email != null -> {
-                            val userResponse = userManagerService.updateEmail(userId, putUserProfile.email)
-                            return@put call.respond(HttpStatusCode.OK, userResponse)
+                            userManagerService.updateEmail(userId, putUserProfile.email)
+                            return@put call.respond(HttpStatusCode.OK)
+                        }
+                        putUserProfile.phone != null -> {
+                            userManagerService.updatePhone(userId, putUserProfile.phone)
+                            return@put call.respond(HttpStatusCode.OK)
                         }
                         putUserProfile.password != null -> {
                             userManagerService.updatePassword(userId, putUserProfile.password)
@@ -87,6 +92,21 @@ fun Route.userRouting() {
                             return@put call.respond(HttpStatusCode.BadRequest, "No valid data to update")
                         }
                     }
+                }
+
+                // Confirm and update phone
+                post("/phone") {
+                    val updatePhoneWithValidationCode: UpdatePhoneWithValidationCode = call.receive<UpdatePhoneWithValidationCode>()
+                    val principal: JWTPrincipal = call.principal()!!
+                    val userId: String = principal.payload.getClaim("id").asString()
+
+                    UserManagerService().validateValidationCodeToUpdatePhone(
+                        userId = userId,
+                        newPhone = updatePhoneWithValidationCode.phone,
+                        validationCode = updatePhoneWithValidationCode.validationCode
+                    )
+
+                    return@post call.respond(HttpStatusCode.OK)
                 }
             }
         }

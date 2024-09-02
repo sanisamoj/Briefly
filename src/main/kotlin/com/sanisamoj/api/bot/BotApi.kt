@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object BotApi {
-    private const val BASE_URL_BOT_API = "https://localhost:8585/"
+    private const val BASE_URL_BOT_API = "http://localhost:8585/"
     private val retrofitCep = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
         .baseUrl(BASE_URL_BOT_API)

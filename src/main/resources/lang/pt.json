@@ -4,5 +4,6 @@
   "welcomeToBriefly": "Bem-vindo ao Briefly!",
   "removedLink": "O link encurtado foi removido!",
   "suggestion": "Sugestão",
-  "abuse": "Abuso"
+  "abuse": "Abuso",
+  "thisYourValidationCode": "Este é seu código de validação, não compartilhe ele com ninguém! Ele apenas estará válido por 5 minutos."
 }

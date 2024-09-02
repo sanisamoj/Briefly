@@ -100,6 +100,14 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
             HttpStatusCode.BadRequest to ErrorResponse(Errors.TheLimitMaxImageAllowed.description)
         }
 
+        Errors.ExpiredValidationCode.description -> {
+            HttpStatusCode.Forbidden to ErrorResponse(Errors.ExpiredValidationCode.description)
+        }
+
+        Errors.InvalidValidationCode.description -> {
+            HttpStatusCode.Forbidden to ErrorResponse(Errors.InvalidValidationCode.description)
+        }
+
         else -> {
             HttpStatusCode.InternalServerError to ErrorResponse(Errors.InternalServerError.description)
         }

@@ -4,6 +4,8 @@ enum class Errors(val description: String) {
     PersonalizedShortLinkAlreadyExist("Personalized short link already exist!"),
     TheLimitMaxImageAllowed("The limit of images has been exceeded."),
     TermsOfServiceNotFound("Terms of Service not found!"),
+    InvalidValidationCode("Invalid Validation Code!"),
+    ExpiredValidationCode("Expired Validation Code!"),
     UnsupportedMediaType("Unsupported media type!"),
     LengthExceeded("Custom code Length exceeded!"),
     InternalServerError("Internal Server Error!"),
@@ -27,5 +29,5 @@ enum class Errors(val description: String) {
     DataIsMissing("Data is missing"),
     UserNotFound("User Not Found!"),
     ExpiredLink("Expired link!"),
-    InvalidLink("Invalid Link!"),
+    InvalidLink("Invalid Link!")
 }

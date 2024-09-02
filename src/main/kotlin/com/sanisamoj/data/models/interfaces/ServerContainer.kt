@@ -5,4 +5,5 @@ interface ServerContainer {
     val sessionRepository: SessionRepository
     val ipRepository: IpRepository
     val mailRepository: MailRepository
+    val botRepository: BotRepository
 }

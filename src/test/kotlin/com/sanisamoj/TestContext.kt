@@ -3,6 +3,7 @@ package com.sanisamoj
 import com.sanisamoj.data.models.dataclass.RedirectInfo
 import com.sanisamoj.data.models.dataclass.UserAgentInfo
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
+import com.sanisamoj.data.models.interfaces.BotRepository
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.MailRepository
 import com.sanisamoj.data.models.interfaces.ServerContainer
@@ -58,6 +59,10 @@ object TestContext {
 
     fun getMailRepository(): MailRepository {
         return testContainer.mailRepository
+    }
+
+    fun getBotRepository(): BotRepository {
+        return testContainer.botRepository
     }
 
     fun createMultiPartData(file: File, imageName: String): MultiPartData {

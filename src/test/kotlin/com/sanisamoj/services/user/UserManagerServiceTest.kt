@@ -3,6 +3,7 @@ package com.sanisamoj.services.user
 import com.sanisamoj.TestContext
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.enums.AccountStatus
+import com.sanisamoj.data.models.interfaces.BotRepository
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.utils.UserTest
 import io.ktor.server.testing.testApplication
@@ -11,9 +12,10 @@ import kotlin.test.assertEquals
 
 class UserManagerServiceTest {
     private val databaseRepository: DatabaseRepository = TestContext.getDatabaseRepository()
+    private val botRepository: BotRepository = TestContext.getBotRepository()
 
     @Test
-    fun updateNameUser() = testApplication {
+    fun updateNameUserTest() = testApplication {
         val userTest = UserTest()
         val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
 
@@ -23,5 +25,10 @@ class UserManagerServiceTest {
         val updatedUser: User = databaseRepository.getUserById(user.id.toString())
         assertEquals(TestContext.UPDATED_NAME_TEST, updatedUser.username)
         userTest.deleteUserTest()
+    }
+
+    @Test
+    fun updatePhoneTest() = testApplication {
+
     }
 }

@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    const val VERSION: String = "0.20.0"
+    const val VERSION: String = "0.21.0"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
@@ -58,6 +58,7 @@ object GlobalContext {
     fun getSessionRepository(): SessionRepository { return serverContainer.sessionRepository }
     fun getIpRepository(): IpRepository { return serverContainer.ipRepository }
     fun getMailRepository(): MailRepository { return serverContainer.mailRepository }
+    fun getBotRepository(): BotRepository { return serverContainer.botRepository }
 
     fun updateTermsLink(link: String) {
         TERMS_OF_SERVICE_LINK = link
