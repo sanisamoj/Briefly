@@ -3,7 +3,7 @@ package com.sanisamoj.data.repository
 import com.sanisamoj.data.models.dataclass.SessionEntry
 import com.sanisamoj.data.models.dataclass.Sessions
 import com.sanisamoj.data.models.interfaces.SessionRepository
-import com.sanisamoj.database.redis.CollectionsInRedis
+import com.sanisamoj.data.models.enums.CollectionsInRedis
 import com.sanisamoj.database.redis.DataIdentificationRedis
 import com.sanisamoj.database.redis.Redis
 import java.util.concurrent.TimeUnit

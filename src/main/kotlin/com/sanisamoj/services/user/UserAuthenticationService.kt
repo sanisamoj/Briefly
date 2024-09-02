@@ -12,7 +12,7 @@ import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.MailRepository
 import com.sanisamoj.data.models.interfaces.SessionRepository
-import com.sanisamoj.database.mongodb.Fields
+import com.sanisamoj.data.models.enums.Fields
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.services.email.MailService
 import com.sanisamoj.utils.analyzers.dotEnv

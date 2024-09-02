@@ -6,7 +6,7 @@ import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.MailRepository
-import com.sanisamoj.database.mongodb.Fields
+import com.sanisamoj.data.models.enums.Fields
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.services.user.UserAuthenticationService
 import com.sanisamoj.services.user.UserService

@@ -3,7 +3,7 @@ package com.sanisamoj.security
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.BlockedIp
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
-import com.sanisamoj.database.redis.CollectionsInRedis
+import com.sanisamoj.data.models.enums.CollectionsInRedis
 import com.sanisamoj.database.redis.DataIdentificationRedis
 import com.sanisamoj.database.redis.Redis
 import kotlinx.coroutines.CoroutineScope

@@ -41,7 +41,7 @@ object Redis {
 
         return try {
             jedisPool.resource.use { jedis -> jedis["$key:${collection}"] }
-        } catch (e: JedisConnectionException) {
+        } catch (_: JedisConnectionException) {
             throw Exception(Errors.RedisNotResponding.description)
         }
     }
@@ -79,7 +79,7 @@ object Redis {
             val stringInObject = ObjectConverter().stringToObject<T>(valueInString)
             stringInObject
 
-        } catch (e: JedisConnectionException) {
+        } catch (_: JedisConnectionException) {
             throw Exception(Errors.RedisNotResponding.description)
         }
     }
@@ -108,7 +108,7 @@ object Redis {
     fun flushAll() {
         try {
             jedisPool.resource.use { jedis -> jedis.flushAll() }
-            println("All Redis data has been deleted.")
+            println("Redis: All Redis data has been deleted.")
 
         } catch (e: Throwable) {
             println(e.message)

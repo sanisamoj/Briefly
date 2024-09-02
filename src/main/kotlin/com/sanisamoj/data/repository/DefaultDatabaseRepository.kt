@@ -10,7 +10,7 @@ import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.database.mongodb.CollectionsInDb
-import com.sanisamoj.database.mongodb.Fields
+import com.sanisamoj.data.models.enums.Fields
 import com.sanisamoj.database.mongodb.MongodbOperations
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.database.redis.Redis
@@ -155,7 +155,7 @@ class DefaultDatabaseRepository(
 
             return shortLink
 
-        } catch (e: Throwable) {
+        } catch (_: Throwable) {
             val shortLink: LinkEntry = getLinkById(link.id.toString())
             return shortLink
         }

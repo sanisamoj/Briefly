@@ -6,7 +6,7 @@ import com.sanisamoj.TestContext
 import com.sanisamoj.data.models.dataclass.LoginRequest
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
-import com.sanisamoj.database.mongodb.Fields
+import com.sanisamoj.data.models.enums.Fields
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.utils.analyzers.dotEnv
 import com.sanisamoj.utils.eraseAllDataToTests

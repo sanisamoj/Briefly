@@ -5,7 +5,7 @@ import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.LinkEntryResponse
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
-import com.sanisamoj.database.mongodb.Fields
+import com.sanisamoj.data.models.enums.Fields
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.utils.converters.converterStringToLocalDateTime
 import io.ktor.server.plugins.*

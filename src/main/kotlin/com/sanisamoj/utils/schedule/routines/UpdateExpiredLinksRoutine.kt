@@ -3,7 +3,7 @@ package com.sanisamoj.utils.schedule.routines
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
-import com.sanisamoj.database.mongodb.Fields
+import com.sanisamoj.data.models.enums.Fields
 import com.sanisamoj.database.mongodb.OperationField
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

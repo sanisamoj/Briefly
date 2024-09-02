@@ -3,8 +3,9 @@ package com.sanisamoj.services.user
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.SavedMediaResponse
 import com.sanisamoj.data.models.dataclass.User
+import com.sanisamoj.data.models.dataclass.UserResponse
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
-import com.sanisamoj.database.mongodb.Fields
+import com.sanisamoj.data.models.enums.Fields
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.services.media.MediaService
 import io.ktor.http.content.*
@@ -33,6 +34,22 @@ class UserManagerService(
         val user: User = databaseRepository.getUserById(userId)
         databaseRepository.updateUser(userId, OperationField(Fields.ImageProfile, value = ""))
         MediaService().deleteImage(user.imageProfile)
+    }
+
+    suspend fun updateName(userId: String, name: String): UserResponse {
+        databaseRepository.updateUser(userId, OperationField(Fields.Name, value = name))
+        val user: User = databaseRepository.getUserById(userId)
+        return UserFactory.userResponse(user)
+    }
+
+    suspend fun updateEmail(userId: String, newEmail: String): UserResponse {
+        databaseRepository.updateUser(userId, OperationField(Fields.Email, value = newEmail))
+        val user: User = databaseRepository.getUserById(userId)
+        return UserFactory.userResponse(user)
+    }
+
+    suspend fun updatePassword(userId: String, newPassword: String) {
+        databaseRepository.updateUser(userId, OperationField(Fields.Password, value = newPassword))
     }
 
 }

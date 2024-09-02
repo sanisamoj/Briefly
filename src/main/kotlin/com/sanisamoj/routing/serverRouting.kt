@@ -5,6 +5,7 @@ import com.sanisamoj.data.models.dataclass.ReportingRequest
 import com.sanisamoj.data.models.dataclass.CountResponse
 import com.sanisamoj.data.models.dataclass.VersionResponse
 import com.sanisamoj.services.server.ServerService
+import com.sanisamoj.utils.tests.eraseAllDataToTests
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -34,6 +35,11 @@ fun Route.serverRouting() {
             val reportingRequest: ReportingRequest = call.receive<ReportingRequest>()
             ServerService().report(reportingRequest)
             call.respond(HttpStatusCode.OK)
+        }
+
+        delete("/server") {
+            eraseAllDataToTests()
+            return@delete call.respond(HttpStatusCode.OK)
         }
 
         authenticate("moderator-jwt") {

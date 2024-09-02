@@ -56,7 +56,36 @@ fun Route.userRouting() {
                     LinkEntryManager().updateLinkEntryStatusFromUser(userId, shortLink, active)
                     return@put call.respond(HttpStatusCode.OK)
                 }
+            }
+        }
 
+        rateLimit(RateLimitName("validation")) {
+
+            // Responsible for updating name user
+            put("/name") {
+                val putUserProfile: PutUserProfile = call.receive<PutUserProfile>()
+                val principal: JWTPrincipal = call.principal<JWTPrincipal>()!!
+                val userId: String = principal.payload.getClaim("id").asString()
+                UserManagerService().updateName(userId, putUserProfile.name!!)
+                return@put call.respond(HttpStatusCode.OK)
+            }
+
+            // Responsible for updating email from the user
+            put("/email") {
+                val putUserProfile: PutUserProfile = call.receive<PutUserProfile>()
+                val principal: JWTPrincipal = call.principal<JWTPrincipal>()!!
+                val userId: String = principal.payload.getClaim("id").asString()
+                UserManagerService().updateEmail(userId, putUserProfile.email!!)
+                return@put call.respond(HttpStatusCode.OK)
+            }
+
+            // Responsible for updating password from the user
+            put("/password") {
+                val putUserProfile: PutUserProfile = call.receive<PutUserProfile>()
+                val principal: JWTPrincipal = call.principal<JWTPrincipal>()!!
+                val userId: String = principal.payload.getClaim("id").asString()
+                UserManagerService().updatePassword(userId, putUserProfile.password!!)
+                return@put call.respond(HttpStatusCode.OK)
             }
         }
     }
@@ -111,7 +140,7 @@ fun Route.userRouting() {
                 UserAuthenticationService().activateAccountByToken(token)
                 return@get call.respondRedirect(ACTIVATED_ACCOUNT_LINK_ROUTE, permanent = false)
 
-            } catch (e: Throwable) {
+            } catch (_: Throwable) {
                 return@get call.respondRedirect("$EXPIRED_TOKEN_EMAIL_LINK_ROUTE$email", permanent = false)
             }
         }

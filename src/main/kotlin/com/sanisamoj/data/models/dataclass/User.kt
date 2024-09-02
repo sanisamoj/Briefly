@@ -17,5 +17,6 @@ data class User(
     val type: String = AccountType.USER.name,
     val accountStatus: String = AccountStatus.Inactive.name,
     val shortLinksId: List<String> = emptyList(),
+    val validationCode: Int = -1,
     val createdAt: String = LocalDateTime.now().toString(),
 )

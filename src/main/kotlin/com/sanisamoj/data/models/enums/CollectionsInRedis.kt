@@ -1,4 +1,4 @@
-package com.sanisamoj.database.redis
+package com.sanisamoj.data.models.enums
 
 enum class CollectionsInRedis {
     RevokedSessions, LiveSessions, BlockedIps
