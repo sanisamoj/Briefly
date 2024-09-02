@@ -76,16 +76,8 @@ fun Route.userRouting() {
                             val userResponse = userManagerService.updateName(userId, putUserProfile.name)
                             return@put call.respond(HttpStatusCode.OK, userResponse)
                         }
-                        putUserProfile.email != null -> {
-                            userManagerService.updateEmail(userId, putUserProfile.email)
-                            return@put call.respond(HttpStatusCode.OK)
-                        }
                         putUserProfile.phone != null -> {
                             userManagerService.updatePhone(userId, putUserProfile.phone)
-                            return@put call.respond(HttpStatusCode.OK)
-                        }
-                        putUserProfile.password != null -> {
-                            userManagerService.updatePassword(userId, putUserProfile.password)
                             return@put call.respond(HttpStatusCode.OK)
                         }
                         else -> {
@@ -106,6 +98,25 @@ fun Route.userRouting() {
                         validationCode = updatePhoneWithValidationCode.validationCode
                     )
 
+                    return@post call.respond(HttpStatusCode.OK)
+                }
+
+                // Responsible for emit update password actions
+                put("/password") {
+                    val principal: JWTPrincipal = call.principal()!!
+                    val userId: String = principal.payload.getClaim("id").asString()
+
+                    UserManagerService().updatePassword(userId)
+                    return@put call.respond(HttpStatusCode.OK)
+                }
+
+                // Responsible for confirm validation code and update password
+                post("password") {
+                    val putUserProfile: PutUserProfile = call.receive()
+                    val principal: JWTPrincipal = call.principal()!!
+                    val userId: String = principal.payload.getClaim("id").asString()
+
+                    UserManagerService().validateValidationCodeToUpdatePassword(userId, putUserProfile.password!!, putUserProfile.validationCode!!)
                     return@post call.respond(HttpStatusCode.OK)
                 }
             }

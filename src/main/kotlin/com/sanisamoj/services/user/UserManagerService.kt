@@ -6,14 +6,15 @@ import com.sanisamoj.data.models.dataclass.SavedMediaResponse
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.dataclass.UserResponse
 import com.sanisamoj.data.models.enums.Errors
-import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.enums.Fields
 import com.sanisamoj.data.models.interfaces.BotRepository
+import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.services.media.MediaService
 import com.sanisamoj.utils.generators.CharactersGenerator
 import io.ktor.http.content.*
 import kotlinx.coroutines.runBlocking
+import org.mindrot.jbcrypt.BCrypt
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -52,13 +53,52 @@ class UserManagerService(
 
     suspend fun updatePhone(userId: String, newPhone: String) {
         val validationCode: Int = CharactersGenerator.codeValidationGenerate()
-        databaseRepository.updateUser(userId, OperationField(Fields.ValidationCode, validationCode))
-        deleteValidationCodeInSpecificTime(userId)
+        generateValidationCodeWithCustomCode(userId, validationCode)
+        sendValidationCodeMessageByBot(newPhone, validationCode)
+    }
 
-        val messageToSend1 = MessageToSend(newPhone, GlobalContext.globalWarnings.thisYourValidationCode)
-        val messageToSend2 = MessageToSend(newPhone, validationCode.toString())
+    suspend fun validateValidationCodeToUpdatePhone(userId: String, newPhone: String, validationCode: Int): UserResponse {
+        isCorrectCode(userId, validationCode)
+
+        databaseRepository.updateUser(userId, OperationField(Fields.Phone, newPhone))
+        val updatedUser: User = databaseRepository.getUserById(userId)
+        return UserFactory.userResponse(updatedUser)
+    }
+
+    suspend fun updatePassword(userId: String) {
+        val user: User = databaseRepository.getUserById(userId)
+        val validationCode: Int = CharactersGenerator.codeValidationGenerate()
+        generateValidationCodeWithCustomCode(userId, validationCode)
+        sendValidationCodeMessageByBot(user.phone, validationCode)
+    }
+
+    suspend fun validateValidationCodeToUpdatePassword(userId: String, newPassword: String, validationCode: Int) {
+        isCorrectCode(userId, validationCode)
+        val hashedPassword: String = BCrypt.hashpw(newPassword, BCrypt.gensalt())
+        databaseRepository.updateUser(userId, OperationField(Fields.Password, hashedPassword))
+    }
+
+    private suspend fun sendValidationCodeMessageByBot(phone: String, validationCode: Int) {
+        val messageToSend1 = MessageToSend(phone, GlobalContext.globalWarnings.thisYourValidationCode)
+        val messageToSend2 = MessageToSend(phone, validationCode.toString())
         botRepository.sendMessage(messageToSend1)
         botRepository.sendMessage(messageToSend2)
+    }
+
+    private suspend fun isCorrectCode(userId: String, validationCode: Int) {
+        val user: User = databaseRepository.getUserById(userId)
+        if(user.validationCode == validationCode) {
+            return
+        } else if(user.validationCode == -1) {
+            throw Exception(Errors.ExpiredValidationCode.description)
+        } else {
+            throw Exception(Errors.InvalidValidationCode.description)
+        }
+    }
+
+    private suspend fun generateValidationCodeWithCustomCode(userId: String, validationCode: Int) {
+        databaseRepository.updateUser(userId, OperationField(Fields.ValidationCode, validationCode))
+        deleteValidationCodeInSpecificTime(userId)
     }
 
     private fun deleteValidationCodeInSpecificTime(userId: String, timeInMinutes: Long = 5) {
@@ -71,29 +111,6 @@ class UserManagerService(
         }, timeInMinutes, TimeUnit.MINUTES)
 
         return
-    }
-
-    suspend fun validateValidationCodeToUpdatePhone(userId: String, newPhone: String, validationCode: Int): UserResponse {
-        val user: User = databaseRepository.getUserById(userId)
-        if(user.validationCode == validationCode) {
-            databaseRepository.updateUser(userId, OperationField(Fields.Phone, newPhone))
-            val updatedUser: User = databaseRepository.getUserById(userId)
-            return UserFactory.userResponse(updatedUser)
-        } else if(user.validationCode == -1) {
-            throw Exception(Errors.ExpiredValidationCode.description)
-        } else {
-            throw Exception(Errors.InvalidValidationCode.description)
-        }
-    }
-
-    suspend fun updateEmail(userId: String, newEmail: String): UserResponse {
-        databaseRepository.updateUser(userId, OperationField(Fields.Email, value = newEmail))
-        val user: User = databaseRepository.getUserById(userId)
-        return UserFactory.userResponse(user)
-    }
-
-    suspend fun updatePassword(userId: String, newPassword: String) {
-        databaseRepository.updateUser(userId, OperationField(Fields.Password, value = newPassword))
     }
 
 }
