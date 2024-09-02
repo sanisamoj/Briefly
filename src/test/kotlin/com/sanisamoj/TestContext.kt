@@ -20,6 +20,7 @@ object TestContext {
     const val LINK_PASSWORD_TEST = "123456"
     const val IMAGE_TEST_NAME = "image.jpg"
     const val NOT_ALLOWED_IMAGE_TEST_NAME = "image2.raw"
+    const val UPDATED_NAME_TEST = "Updated name Test"
 
     val userCreateRequest = UserCreateRequest(
         username = "test",
