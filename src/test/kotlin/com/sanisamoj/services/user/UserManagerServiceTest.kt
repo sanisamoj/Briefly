@@ -2,17 +2,24 @@ package com.sanisamoj.services.user
 
 import com.sanisamoj.TestContext
 import com.sanisamoj.data.models.dataclass.User
+import com.sanisamoj.data.models.dataclass.UserResponse
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.interfaces.BotRepository
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.utils.UserTest
+import com.sanisamoj.utils.eraseAllDataToTests
 import io.ktor.server.testing.testApplication
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 
 class UserManagerServiceTest {
     private val databaseRepository: DatabaseRepository = TestContext.getDatabaseRepository()
     private val botRepository: BotRepository = TestContext.getBotRepository()
+
+    init {
+        eraseAllDataToTests()
+    }
 
     @Test
     fun updateNameUserTest() = testApplication {
@@ -29,6 +36,17 @@ class UserManagerServiceTest {
 
     @Test
     fun updatePhoneTest() = testApplication {
+        val userTest = UserTest()
+        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
+        val userId: String = user.id.toString()
+        val userManagerService = UserManagerService(databaseRepository = databaseRepository, botRepository = botRepository)
+        userManagerService.updatePhone(user.id.toString(), "1111111111111")
 
+        val updatedUser: User = databaseRepository.getUserById(user.id.toString())
+        assertFails { userManagerService.validateValidationCodeToUpdatePhone(userId, "1111111111111", 123456) }
+
+        val updatedUserResponse: UserResponse = userManagerService.validateValidationCodeToUpdatePhone(userId, "1111111111111", updatedUser.validationCode)
+        assertEquals("1111111111111", updatedUserResponse.phone)
+        userTest.deleteUserTest()
     }
 }
