@@ -102,6 +102,7 @@ EMAIL_SYSTEM=
 EMAIL_PASSWORD=
 
 #Token para notificações do bot
+BOT_URL=
 BOT_TOKEN=
 BOT_ID=
 
