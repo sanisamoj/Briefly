@@ -2,7 +2,7 @@ package com.sanisamoj.data.models.enums
 
 enum class Fields(val title: String) {
     Id(title = "_id"),
-    Name(title = "name"),
+    Name(title = "username"),
     Email(title = "email"),
     Phone(title = "phone"),
     Active(title = "active"),

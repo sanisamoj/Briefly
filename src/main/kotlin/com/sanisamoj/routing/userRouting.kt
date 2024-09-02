@@ -61,31 +61,33 @@ fun Route.userRouting() {
 
         rateLimit(RateLimitName("validation")) {
 
-            // Responsible for updating name user
-            put("/name") {
-                val putUserProfile: PutUserProfile = call.receive<PutUserProfile>()
-                val principal: JWTPrincipal = call.principal<JWTPrincipal>()!!
-                val userId: String = principal.payload.getClaim("id").asString()
-                UserManagerService().updateName(userId, putUserProfile.name!!)
-                return@put call.respond(HttpStatusCode.OK)
-            }
+            authenticate("user-jwt") {
 
-            // Responsible for updating email from the user
-            put("/email") {
-                val putUserProfile: PutUserProfile = call.receive<PutUserProfile>()
-                val principal: JWTPrincipal = call.principal<JWTPrincipal>()!!
-                val userId: String = principal.payload.getClaim("id").asString()
-                UserManagerService().updateEmail(userId, putUserProfile.email!!)
-                return@put call.respond(HttpStatusCode.OK)
-            }
+                put("/profile") {
+                    val putUserProfile: PutUserProfile = call.receive()
+                    val principal: JWTPrincipal = call.principal()!!
+                    val userId: String = principal.payload.getClaim("id").asString()
 
-            // Responsible for updating password from the user
-            put("/password") {
-                val putUserProfile: PutUserProfile = call.receive<PutUserProfile>()
-                val principal: JWTPrincipal = call.principal<JWTPrincipal>()!!
-                val userId: String = principal.payload.getClaim("id").asString()
-                UserManagerService().updatePassword(userId, putUserProfile.password!!)
-                return@put call.respond(HttpStatusCode.OK)
+                    val userManagerService = UserManagerService()
+
+                    when {
+                        putUserProfile.name != null -> {
+                            val userResponse = userManagerService.updateName(userId, putUserProfile.name)
+                            return@put call.respond(HttpStatusCode.OK, userResponse)
+                        }
+                        putUserProfile.email != null -> {
+                            val userResponse = userManagerService.updateEmail(userId, putUserProfile.email)
+                            return@put call.respond(HttpStatusCode.OK, userResponse)
+                        }
+                        putUserProfile.password != null -> {
+                            userManagerService.updatePassword(userId, putUserProfile.password)
+                            return@put call.respond(HttpStatusCode.OK)
+                        }
+                        else -> {
+                            return@put call.respond(HttpStatusCode.BadRequest, "No valid data to update")
+                        }
+                    }
+                }
             }
         }
     }
