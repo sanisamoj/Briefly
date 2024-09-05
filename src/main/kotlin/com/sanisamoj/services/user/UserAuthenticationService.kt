@@ -83,8 +83,8 @@ class UserAuthenticationService(
         val sessionId: String = ObjectId().toString()
 
         val userAccountType: Boolean = user.type == AccountType.USER.name
-        val time = if(userAccountType) USER_TOKEN_EXPIRATION else MODERATOR_TOKEN_EXPIRATION
-        val secret = if(userAccountType) {
+        val time: Long = if(userAccountType) USER_TOKEN_EXPIRATION else MODERATOR_TOKEN_EXPIRATION
+        val secret: String = if(userAccountType) {
             dotEnv("USER_SECRET")
         } else {
             dotEnv("MODERATOR_SECRET")
@@ -97,7 +97,7 @@ class UserAuthenticationService(
             secret = secret,
             time = time
         )
-        val token = Token.generate(tokenInfo)
+        val token: String = Token.generate(tokenInfo)
 
         addSessionEntry(userResponse.id, sessionId)
 

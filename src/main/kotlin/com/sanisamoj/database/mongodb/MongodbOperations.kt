@@ -56,6 +56,27 @@ class MongodbOperations {
         return result
     }
 
+    // Returns all items with paging and filtering
+    suspend inline fun <reified T : Any> findAllWithPagingAndFilter(
+        collectionName: CollectionsInDb,
+        pageSize: Int,
+        pageNumber: Int,
+        filter: OperationField
+    ): List<T> {
+        val database = MongoDatabase.getDatabase()
+        val collection = database.getCollection<T>(collectionName.name)
+        val skip = (pageNumber - 1) * pageSize
+
+        // Aplicando o filtro e a paginação
+        val result: List<T> = collection.find(Document(filter.field.title, filter.value))
+            .skip(skip)
+            .limit(pageSize)
+            .toList()
+
+        return result
+    }
+
+
     // Returns all items with paging
     suspend inline fun <reified T : Any> findAllWithPaging(
         collectionName: CollectionsInDb,

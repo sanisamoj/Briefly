@@ -90,9 +90,10 @@ class LinkEntryService(
     }
 
     private suspend fun checkPersonalizedShortLink(shortLink: String) {
-        val linkEntry: LinkEntry? = databaseRepository.getLinkByShortLink(shortLink)
         if(shortLink.length >= PERSONALIZED_CODE_MAX_LENGTH || shortLink.length < PERSONALIZED_CODE_MIN_LENGTH)
             throw Error(Errors.LengthExceeded.description)
+
+        val linkEntry: LinkEntry? = databaseRepository.getLinkByShortLink(shortLink)
         if(linkEntry != null) throw Error(Errors.PersonalizedShortLinkAlreadyExist.description)
     }
 
@@ -194,8 +195,10 @@ class LinkEntryService(
         return LinkEntryFactory.midLinkEntryResponse(linkEntry)
     }
 
-    suspend fun getLinkEntryByShortLinkById(shortLinkId: String): LinkEntryResponse {
-        val linkEntry: LinkEntry = databaseRepository.getLinkById(shortLinkId)
-        return LinkEntryFactory.linkEntryResponse(linkEntry)
+    suspend fun getAllLinkEntryFromTheUserWithPagination(userId: String, page: Int, size: Int): List<LinkEntryResponse> {
+        val linkEntryList: List<LinkEntry> = databaseRepository.getAllLinkEntriesFromTheUserWithPagination(userId, page, size)
+        return linkEntryList.map { linkEntry ->
+            LinkEntryFactory.linkEntryResponse(linkEntry)
+        }
     }
 }

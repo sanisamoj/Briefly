@@ -180,6 +180,19 @@ class DefaultDatabaseRepository(
         return MongodbOperations().findAll(CollectionsInDb.LinkEntry)
     }
 
+    override suspend fun getAllLinkEntriesFromTheUserWithPagination(
+        userId: String,
+        page: Int,
+        size: Int
+    ): List<LinkEntry> {
+        return MongodbOperations().findAllWithPagingAndFilter(
+            collectionName = CollectionsInDb.LinkEntry,
+            pageNumber = page,
+            pageSize = size,
+            filter = OperationField(Fields.UserId, userId)
+        )
+    }
+
     override suspend fun updateLinkByShortLink(shortLink: String, update: OperationField): LinkEntry {
         return MongodbOperations().updateAndReturnItem<LinkEntry>(
             collectionName = CollectionsInDb.LinkEntry,

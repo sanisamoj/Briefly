@@ -36,14 +36,34 @@ fun Route.linkEntryRouting() {
                 return@post call.respond(HttpStatusCode.Created, linkEntryResponse)
             }
 
-            // Responsible for return linkEntry
+            // Responsible for return a unique linkEntry from the user or list with pagination
             get {
-                val shortLink: String = call.request.queryParameters["short"].toString()
-                val principal = call.principal<JWTPrincipal>()!!
+                // Retrieve query parameters from the request
+                val shortLink: String? = call.request.queryParameters["short"]
+                val page: String? = call.request.queryParameters["page"]
+                val size: String? = call.request.queryParameters["size"]
+
+                val principal = call.principal<JWTPrincipal>() ?: return@get call.respond(HttpStatusCode.Unauthorized, "User not authenticated")
                 val accountId = principal.payload.getClaim("id").asString()
 
-                val linkEntryResponse = LinkEntryService().getLinkEntryByShortLinkWithUserId(accountId, shortLink)
-                return@get call.respond(linkEntryResponse)
+                // Check if pagination parameters are provided
+                if (page != null && size != null) {
+                    val pageNumber = page.toIntOrNull()
+                    val pageSize = size.toIntOrNull()
+
+                    if (pageNumber != null && pageSize != null) {
+                        val linkEntryResponse = LinkEntryService().getAllLinkEntryFromTheUserWithPagination(accountId, pageNumber, pageSize)
+                        call.respond(linkEntryResponse)
+                    } else {
+                        throw Error(Errors.InvalidPageOrSizeParameters.description)
+                    }
+                } else if (shortLink != null) {
+                    val linkEntryResponse = LinkEntryService().getLinkEntryByShortLinkWithUserId(accountId, shortLink)
+                    call.respond(linkEntryResponse)
+
+                } else {
+                    throw Error(Errors.ShortLinkOrPaginationRequired .description)
+                }
             }
         }
     }

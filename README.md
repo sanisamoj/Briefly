@@ -102,7 +102,7 @@ EMAIL_SYSTEM=
 EMAIL_PASSWORD=
 
 #Token para notificações do bot
-BOT_URL=
+BOT_URL=http://localhost:8585/
 BOT_TOKEN=
 BOT_ID=
 

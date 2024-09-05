@@ -9,6 +9,5 @@ data class UserResponse(
     val profileImageUrl: String,
     val email: String,
     val phone: String,
-    val linkEntryList: List<LinkEntryFromLoginResponse>,
     val createdAt: String
 )

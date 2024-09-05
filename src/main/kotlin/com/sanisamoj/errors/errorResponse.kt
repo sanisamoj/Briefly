@@ -108,6 +108,14 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
             HttpStatusCode.Forbidden to ErrorResponse(Errors.InvalidValidationCode.description)
         }
 
+        Errors.InvalidPageOrSizeParameters.description -> {
+            HttpStatusCode.BadRequest to ErrorResponse(Errors.InvalidPageOrSizeParameters.description)
+        }
+
+        Errors.ShortLinkOrPaginationRequired.description -> {
+            HttpStatusCode.BadRequest to ErrorResponse(Errors.ShortLinkOrPaginationRequired.description)
+        }
+
         else -> {
             HttpStatusCode.InternalServerError to ErrorResponse(Errors.InternalServerError.description)
         }
