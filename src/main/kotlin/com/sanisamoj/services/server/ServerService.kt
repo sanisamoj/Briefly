@@ -25,6 +25,10 @@ class ServerService(
         )
     }
 
+    suspend fun incrementAccess(ip: String, route: String) {
+        databaseRepository.applicationClicksInc(ip, route)
+    }
+
     suspend fun getClickInSystemCount(): CountResponse {
         return CountResponse(WebSocketCountItem.SystemClicksCount.name, databaseRepository.getCountApplicationClicks())
     }

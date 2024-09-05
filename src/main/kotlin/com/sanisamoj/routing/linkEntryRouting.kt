@@ -9,6 +9,7 @@ import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.services.linkEntry.LinkEntryFactory
 import com.sanisamoj.services.linkEntry.LinkEntryService
 import com.sanisamoj.services.linkEntry.QrCode
+import com.sanisamoj.services.server.ServerService
 import com.sanisamoj.utils.generators.parseUserAgent
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -82,9 +83,11 @@ fun Route.linkEntryRouting() {
             try {
                 val redirectInfo = RedirectInfo(ip, shortLink.toString(), userAgentInfo, referer.toString())
                 val redirectLink: String = LinkEntryService().redirectLink(redirectInfo)
+                ServerService().incrementAccess(ip, "/${shortLink}")
                 return@get call.respondRedirect(redirectLink, permanent = false)
 
             } catch (e: Throwable) {
+                ServerService().incrementAccess(ip, "/")
                 val redirectionLink = when(e.message) {
                     Errors.LinkIsNotActive.description -> INACTIVE_LINK_PAGE_ROUTE
                     Errors.ProtectedLink.description -> PROTECTED_LINK_ROUTE + shortLink.toString()
