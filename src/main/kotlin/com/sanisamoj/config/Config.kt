@@ -7,6 +7,7 @@ import com.sanisamoj.utils.schedule.models.JobIdentification
 import com.sanisamoj.utils.schedule.models.RoutineGroups
 import com.sanisamoj.utils.schedule.models.StartRoutineData
 import com.sanisamoj.utils.schedule.routines.RemoveNonAccessedLinksRoutine
+import com.sanisamoj.utils.schedule.routines.UpdateBotApiToken
 import com.sanisamoj.utils.schedule.routines.UpdateExpiredLinksRoutine
 import org.quartz.JobKey
 import java.io.File
@@ -15,21 +16,27 @@ import java.time.LocalDateTime
 object Config {
     private val jobsIdentificationList: MutableList<JobIdentification> = mutableListOf()
     private const val EVERY_DAY_AT_3PM_CRON: String = "0 0 2 * * ?"
+    private const val EVERY_TWO_YEARS_CRON: String = "0 0 0 1 1 ? */2"
 
     val INACCESSIBLE_TIME_MAX: LocalDateTime = LocalDateTime.now().minusMonths(36)
 
-    suspend fun databaseInitialize() {
+    suspend fun initialize() {
         MongoDatabase.initialize()
 
+        // Create the folder for the images
         val uploadDir: File = PUBLIC_IMAGES_DIR
         if (!uploadDir.exists()) {
             uploadDir.mkdirs()
         }
+
+        // Update bot api token
+        GlobalContext.getBotRepository().updateToken()
     }
 
     fun routinesInitialize() {
         updateExpiredLinksRoutine()
         removeInactiveLinksRoutine()
+        updateBotApiToken()
     }
 
     private fun updateExpiredLinksRoutine() {
@@ -56,6 +63,19 @@ object Config {
 
         val jobKey: JobKey = ScheduleRoutine().startRoutine<RemoveNonAccessedLinksRoutine>(startRoutineData)
 
+        val jobIdentification = JobIdentification(jobKey, routineName)
+        jobsIdentificationList.add(jobIdentification)
+    }
+
+    private fun updateBotApiToken() {
+        val routineName = "UpdateBotApiToken-EveryTwoYears_At00"
+        val startRoutineData = StartRoutineData(
+            name = routineName,
+            group = RoutineGroups.TokenUpdate,
+            cronExpression = EVERY_TWO_YEARS_CRON
+        )
+
+        val jobKey: JobKey = ScheduleRoutine().startRoutine<UpdateBotApiToken>(startRoutineData)
         val jobIdentification = JobIdentification(jobKey, routineName)
         jobsIdentificationList.add(jobIdentification)
     }
