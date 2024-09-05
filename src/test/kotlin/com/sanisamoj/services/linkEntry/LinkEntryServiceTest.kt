@@ -287,4 +287,33 @@ class LinkEntryServiceTest {
 
         databaseRepository.deleteLinkByShortLink(shortLink)
     }
+
+    @Test
+    fun getLinkEntryListWithPagination() = testApplication {
+        val userTest = UserTest()
+        val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
+
+        val linkEntryRequest = LinkEntryRequest(
+            userId = user.id.toString(),
+            link = SHORT_LINK_TEST,
+            active = true,
+            password = LINK_PASSWORD_TEST,
+            expiresIn = LocalDateTime.now().plusDays(5).toString()
+        )
+
+        val linkEntryService = LinkEntryService(databaseRepository = TestContext.getDatabaseRepository())
+        linkEntryService.register(linkEntryRequest, public = true)
+        linkEntryService.register(linkEntryRequest, public = true)
+        linkEntryService.register(linkEntryRequest, public = true)
+        linkEntryService.register(linkEntryRequest, public = true)
+
+        val linkEntryResponseList: LinkEntryWithPaginationResponse = linkEntryService.getAllLinkEntryFromTheUserWithPagination(
+            userId = user.id.toString(),
+            page = 1,
+            size = 3
+        )
+
+        assertEquals(3, linkEntryResponseList.linkEntryList.size)
+        eraseAllDataToTests()
+    }
 }

@@ -193,6 +193,11 @@ class DefaultDatabaseRepository(
         )
     }
 
+    override suspend fun countAllLinkEntriesFromTheUser(userId: String): Int {
+        val filter = OperationField(Fields.UserId, userId)
+        return MongodbOperations().countDocumentsWithFilter<LinkEntry>(CollectionsInDb.LinkEntry, filter)
+    }
+
     override suspend fun updateLinkByShortLink(shortLink: String, update: OperationField): LinkEntry {
         return MongodbOperations().updateAndReturnItem<LinkEntry>(
             collectionName = CollectionsInDb.LinkEntry,

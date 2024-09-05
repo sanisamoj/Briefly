@@ -29,6 +29,7 @@ interface DatabaseRepository {
     suspend fun getLinkByShortLink(shortLink: String): LinkEntry?
     suspend fun getAllLinkEntries(): List<LinkEntry>
     suspend fun getAllLinkEntriesFromTheUserWithPagination(userId: String, page: Int, size: Int): List<LinkEntry>
+    suspend fun countAllLinkEntriesFromTheUser(userId: String): Int
     suspend fun updateLinkByShortLink(shortLink: String, update: OperationField): LinkEntry
     suspend fun addClickerInShortLink(shortLink: String, clicker: Clicker)
     suspend fun deleteLinkByShortLink(shortLink: String)

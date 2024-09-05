@@ -14,6 +14,8 @@ import com.sanisamoj.utils.analyzers.hasEmptyStringProperties
 import com.sanisamoj.utils.converters.converterStringToLocalDateTime
 import com.sanisamoj.utils.generators.CharactersGenerator
 import com.sanisamoj.utils.generators.completeAndBuildUrl
+import com.sanisamoj.utils.pagination.PaginationResponse
+import com.sanisamoj.utils.pagination.paginationMethod
 import io.ktor.server.plugins.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -195,10 +197,18 @@ class LinkEntryService(
         return LinkEntryFactory.midLinkEntryResponse(linkEntry)
     }
 
-    suspend fun getAllLinkEntryFromTheUserWithPagination(userId: String, page: Int, size: Int): List<LinkEntryResponse> {
+    suspend fun getAllLinkEntryFromTheUserWithPagination(userId: String, page: Int, size: Int): LinkEntryWithPaginationResponse {
         val linkEntryList: List<LinkEntry> = databaseRepository.getAllLinkEntriesFromTheUserWithPagination(userId, page, size)
-        return linkEntryList.map { linkEntry ->
-            LinkEntryFactory.linkEntryResponse(linkEntry)
+        val countAllLinkEntriesFromTheUser: Int = databaseRepository.countAllLinkEntriesFromTheUser(userId)
+
+        val paginationResponse: PaginationResponse = paginationMethod(countAllLinkEntriesFromTheUser.toDouble(), size, page)
+        val linkEntryResponseList: MutableList<LinkEntryResponse> = mutableListOf()
+
+        linkEntryList.map { linkEntry ->
+            linkEntryResponseList.add(LinkEntryFactory.linkEntryResponse(linkEntry))
         }
+
+        val linkEntryWithPaginationResponse: LinkEntryWithPaginationResponse = LinkEntryWithPaginationResponse(linkEntryResponseList, paginationResponse)
+        return linkEntryWithPaginationResponse
     }
 }

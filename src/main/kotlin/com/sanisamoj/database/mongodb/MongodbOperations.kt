@@ -95,6 +95,15 @@ class MongodbOperations {
         return result
     }
 
+    // Returns count of items with filter
+    suspend inline fun <reified T : Any> countDocumentsWithFilter(collectionName: CollectionsInDb, filter: OperationField): Int {
+        val database = MongoDatabase.getDatabase()
+        val collection = database.getCollection<T>(collectionName.name)
+        val result: Int = collection.find<T>(Document(filter.field.title, filter.value)).count()
+
+        return result
+    }
+
     // Returns count of items without filter
     suspend inline fun <reified T : Any> countDocumentsWithoutFilter(collectionName: CollectionsInDb): Int {
         val database = MongoDatabase.getDatabase()
