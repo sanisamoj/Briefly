@@ -1,11 +1,17 @@
 package com.sanisamoj.services.user
 
 import com.sanisamoj.config.GlobalContext
+import com.sanisamoj.data.models.dataclass.ReportingRequest
+import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.data.models.dataclass.UserResponse
+import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.data.models.enums.Errors
+import com.sanisamoj.data.models.enums.Fields
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
+import com.sanisamoj.database.mongodb.OperationField
+import com.sanisamoj.services.email.MailService
 
 class UserService(
     private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository()
@@ -40,5 +46,15 @@ class UserService(
                 throw IllegalArgumentException(Errors.DataIsMissing.description)
             }
         }
+    }
+
+    suspend fun emitRemoveAccount(userId: String, reportingRequest: ReportingRequest) {
+        databaseRepository.updateUser(
+            userId = userId,
+            update = OperationField(Fields.AccountStatus, AccountStatus.Suspended.name)
+        )
+
+        val user: User = databaseRepository.getUserById(userId)
+        MailService().sendAccountRemovalEmail(userId, user.email, reportingRequest.reporting)
     }
 }

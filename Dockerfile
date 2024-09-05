@@ -26,7 +26,7 @@ WORKDIR /app
 
 # Copie o arquivo .env e o arquivo .jar criado no estágio de build para o diretório de trabalho
 COPY .env .
-COPY --from=build /app/target/briefly-0.22.0-jar-with-dependencies.jar briefly.jar
+COPY --from=build /app/target/briefly-0.23.0-jar-with-dependencies.jar briefly.jar
 
 # Exponha a porta 9098
 EXPOSE 9098

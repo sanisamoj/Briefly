@@ -60,4 +60,17 @@ class MailService(
         val sendEmailData = SendEmailData(superAdminEmail, topic, text, true)
         mailRepository.sendEmail(sendEmailData)
     }
+
+    fun sendAccountRemovalEmail(userId: String, email: String, reportText: String) {
+        val text: String = MailContext.buildAccountRemovalMail(
+            userId = userId,
+            email = email,
+            reportType = ReportType.REMOVAL.name,
+            report = reportText
+        )
+        val topic: String = globalWarnings.accountRemoval
+        val superAdminEmail: String = dotEnv("SUPERADMIN_EMAIL")
+        val sendEmailData = SendEmailData(superAdminEmail, topic, text, true)
+        mailRepository.sendEmail(sendEmailData)
+    }
 }

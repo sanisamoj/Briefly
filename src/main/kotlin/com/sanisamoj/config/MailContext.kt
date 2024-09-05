@@ -64,7 +64,7 @@ object MailContext {
             }
             body {
                 div("container") {
-                    h1 { +"Bem-vindo ao Briefly!, $username!" }
+                    h1 { +"Bem-vindo ao Briefly! $username!" }
                     p {
                         +"Estamos muito felizes em tê-lo conosco. Você precisa ativar a sua conta. "
                     }
@@ -81,7 +81,7 @@ object MailContext {
                     p {
                         +"Atenciosamente,"
                         br()
-                        +"Equipe Sanisamoj"
+                        +"Equipe Briefly"
                     }
                     div("footer") {
                         +"© 2024 Sanisamoj. Todos os direitos reservados."
@@ -94,7 +94,7 @@ object MailContext {
     private val activationAccountMailCssStyles = """
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #ffffff;
             margin: 0;
             padding: 0;
         }
@@ -110,9 +110,16 @@ object MailContext {
             color: #333333;
             text-align: center;
         }
-        p {
-            color: #666666;
-            line-height: 1.5;
+        p, h3 {
+            color: #333333;
+            line-height: 1.6;
+        }
+        ul {
+            padding-left: 15px; /* Reduz o recuo dos itens da lista */
+            margin-left: 0; /* Remove qualquer margem extra à esquerda */
+        }
+        li {
+            margin-bottom: 8px; /* Adiciona um espaço entre os itens */
         }
         .button {
             display: block;
@@ -120,7 +127,7 @@ object MailContext {
             margin: 20px auto;
             padding: 10px;
             text-align: center;
-            background-color: #28a745;
+            background-color: #007bff;
             color: #ffffff;
             text-decoration: none;
             border-radius: 5px;
@@ -128,22 +135,16 @@ object MailContext {
         }
         .footer {
             text-align: center;
-            color: #999999;
+            color: #666666;
             font-size: 12px;
             margin-top: 20px;
         }
         .info {
             margin-top: 20px;
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
             background-color: #f9f9f9;
-        }
-        .info h2 {
-            margin-top: 0;
-        }
-        .info p {
-            margin: 5px 0;
         }
     """.trimIndent()
 
@@ -159,42 +160,40 @@ object MailContext {
                 div("container") {
                     h1 { +"Bem-vindo ao Briefly, $username!" }
                     p {
-                        +"Obrigado por se registrar no Briefly!"
+                        +"Obrigado por se registrar no Briefly! Sua conta foi criada com sucesso."
                     }
-
                     div("info") {
                         h2 { +"Sobre o Briefly" }
                         p {
-                            +"Briefly é um serviço de encurtamento de links que oferece diversas funcionalidades para gerenciar e analisar seus links. Veja abaixo alguns recursos importantes:"
+                            +"O Briefly é um serviço de encurtamento de links que oferece diversas funcionalidades para você gerenciar e analisar seus links. Confira abaixo algumas de nossas principais funcionalidades:"
                         }
-                        h3 { +"Informações Coletadas das Conexões" }
+                        h3 { +"Informações Coletadas" }
                         ul {
                             li { +"IP: O endereço IP do usuário será registrado para fins de análise e segurança." }
-                            li { +"Geolocalização: Com base no endereço IP, a localização geográfica do usuário será determinada." }
-                            li { +"Horário: O timestamp de cada conexão será registrado." }
-                            li { +"Dispositivo: Informações sobre o dispositivo do usuário, incluindo tipo (desktop, mobile), sistema operacional (Windows, iOS, Android, etc.) e navegador (Chrome, Firefox, Safari, etc.)." }
-                            li { +"URL de origem: A URL de origem da qual o usuário foi redirecionado para o link encurtado." }
+                            li { +"Geolocalização: A localização geográfica será determinada com base no endereço IP." }
+                            li { +"Horário: O registro de cada conexão será armazenado com um timestamp." }
+                            li { +"Dispositivo: Informações sobre o dispositivo utilizado, como tipo (desktop, mobile), sistema operacional (Windows, iOS, Android) e navegador (Chrome, Firefox, Safari)." }
+                            li { +"URL de origem: A URL da página de onde o usuário foi redirecionado para o link encurtado." }
                         }
-                        h3 { +"Informações dos Links" }
+                        h3 { +"Análise de Links" }
                         ul {
-                            li { +"Cliques: Número total de cliques em cada link encurtado." }
-                            li { +"Filtros de Análise: Quantidade de cliques por hora, dia, semana e mês; Distribuição geográfica dos cliques; Análise dos cliques com base no tipo de dispositivo, sistema operacional e navegador." }
+                            li { +"Cliques: Total de cliques em cada link encurtado." }
+                            li { +"Filtros: Análise por hora, dia, semana e mês; Distribuição geográfica dos cliques; Estatísticas por dispositivo, sistema operacional e navegador." }
                         }
                         h3 { +"Funcionalidades dos Links" }
                         ul {
-                            li { +"Links Expiráveis: Possibilidade de criar links que expiram após um determinado período." }
-                            li { +"QR Code: Possibilidade de compartilhar um QR Code que contém o link encurtado." }
-                            li { +"Proteção de Links: Os links terão a possibilidade de serem protegidos por senha." }
+                            li { +"Links Expiráveis: Criação de links com validade definida." }
+                            li { +"QR Code: Geração de QR Codes que levam ao link encurtado." }
+                            li { +"Proteção de Links: Links podem ser protegidos por senha para maior segurança." }
                         }
                         h3 { +"Funcionalidades do Sistema" }
                         ul {
-                            li { +"Possibilidade de encurtar links (Estando ou não logado)." }
-                            li { +"Possibilidade de acompanhar informações coletadas de cliques dos links." }
-                            li { +"Notificações via E-mail aos usuários cadastrados sobre seus links." }
-                            li { +"Gerenciar links como atualizar status ou removê-lo." }
+                            li { +"Encurtamento de links, com ou sem login." }
+                            li { +"Monitoramento e visualização das informações coletadas sobre os cliques." }
+                            li { +"Notificações por e-mail sobre o desempenho dos links." }
+                            li { +"Gerenciamento de links: Atualizar status ou excluir links a qualquer momento." }
                         }
                     }
-
                     p {
                         +"Atenciosamente,"
                         br()
@@ -388,6 +387,75 @@ object MailContext {
                     }
                     p {
                         +"Se precisar de mais informações, por favor, entre em contato com o usuário."
+                    }
+                    div("footer") {
+                        +"© 2024 Sanisamoj. Todos os direitos reservados."
+                    }
+                }
+            }
+        }
+    }
+
+    fun buildAccountRemovalMail(userId: String, email: String, reportType: String, report: String): String {
+        return createHTML().html {
+            head {
+                style {
+                    unsafe {
+                        raw(
+                            """
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f4;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        .container {
+                            max-width: 600px;
+                            margin: 50px auto;
+                            background-color: #ffffff;
+                            padding: 20px;
+                            border-radius: 8px;
+                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        }
+                        h1 {
+                            color: #333333;
+                            text-align: center;
+                        }
+                        p {
+                            color: #666666;
+                            line-height: 1.5;
+                        }
+                        .footer {
+                            text-align: center;
+                            color: #999999;
+                            font-size: 12px;
+                            margin-top: 20px;
+                        }
+                    """.trimIndent()
+                        )
+                    }
+                }
+            }
+            body {
+                div("container") {
+                    h1 { +"Solicitação de Remoção de Conta" }
+                    p {
+                        +"Recebemos o seguinte pedido de remoção de conta do sistema:"
+                    }
+                    p {
+                        +"Tipo de Relatório: $reportType"
+                    }
+                    p {
+                        +"Descrição do Relatório: $report"
+                    }
+                    p {
+                        +"ID do Usuário: $userId"
+                    }
+                    p {
+                        +"E-mail do Usuário: $email"
+                    }
+                    p {
+                        +"Por favor, prossiga com a remoção da conta deste usuário conforme solicitado."
                     }
                     div("footer") {
                         +"© 2024 Sanisamoj. Todos os direitos reservados."

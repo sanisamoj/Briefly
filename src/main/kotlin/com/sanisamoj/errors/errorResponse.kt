@@ -38,6 +38,13 @@ fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
             )
         }
 
+        Errors.SuspendedAccount.description -> {
+            HttpStatusCode.Forbidden to ErrorResponse(
+                error = Errors.SuspendedAccount.description,
+                details = ActionsMessages.ContactSupport.description
+            )
+        }
+
         Errors.ShortLinkNotFound.description -> {
             HttpStatusCode.NotFound to ErrorResponse(Errors.ShortLinkNotFound.description)
         }

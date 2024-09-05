@@ -10,5 +10,6 @@ data class GlobalWarnings(
     val removedLink: String,
     val suggestion: String,
     val abuse: String,
+    val accountRemoval: String,
     val thisYourValidationCode: String
 )

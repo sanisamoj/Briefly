@@ -1,6 +1,7 @@
 package com.sanisamoj.services.linkEntry
 
 import com.sanisamoj.config.GlobalContext
+import com.sanisamoj.config.GlobalContext.NO_EXPIRATION_TIME
 import com.sanisamoj.data.models.dataclass.LinkEntry
 import com.sanisamoj.data.models.dataclass.LinkEntryResponse
 import com.sanisamoj.data.models.enums.Errors
@@ -51,8 +52,11 @@ class LinkEntryManager(
         if(userId != linkEntry.userId) throw Exception(Errors.AccessProhibited.description)
 
         val expiresAt: LocalDateTime = converterStringToLocalDateTime(linkEntry.expiresAt)
-        val currentTime: LocalDateTime = LocalDateTime.now()
-        if(expiresAt.isBefore(currentTime)) throw Exception(Errors.ExpiredLink.description)
+
+        if(linkEntry.expiresAt != NO_EXPIRATION_TIME) {
+            val currentTime: LocalDateTime = LocalDateTime.now()
+            if(expiresAt.isBefore(currentTime)) throw Exception(Errors.ExpiredLink.description)
+        }
 
         val update = OperationField(Fields.Active, status)
         val updatedLinkEntry: LinkEntry = databaseRepository.updateLinkByShortLink(shortLink, update)

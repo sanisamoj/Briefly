@@ -118,6 +118,7 @@ class UserAuthenticationService(
     private fun verifyUserStatus(user: User) {
         if(user.accountStatus == AccountStatus.Inactive.name) { throw Exception(Errors.InactiveAccount.description) }
         if(user.accountStatus == AccountStatus.Blocked.name) { throw Exception(Errors.BlockedAccount.description) }
+        if(user.accountStatus == AccountStatus.Suspended.name) { throw Exception(Errors.SuspendedAccount.description) }
     }
 
     private suspend fun addSessionEntry(accountId: String, sessionId: String) {

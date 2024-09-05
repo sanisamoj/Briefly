@@ -119,6 +119,13 @@ fun Route.userRouting() {
                     UserManagerService().validateValidationCodeToUpdatePassword(userId, putUserProfile.password!!, putUserProfile.validationCode!!)
                     return@post call.respond(HttpStatusCode.OK)
                 }
+
+                //  Responsible for account removal
+                delete {
+                    val reportingRequest: ReportingRequest = call.receive<ReportingRequest>()
+                    val principal: JWTPrincipal = call.principal()!!
+                    val userId: String = principal.payload.getClaim("id").asString()
+                }
             }
         }
     }

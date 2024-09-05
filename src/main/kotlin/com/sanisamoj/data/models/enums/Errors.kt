@@ -23,6 +23,7 @@ enum class Errors(val description: String) {
     LinkIsNotActive("Link is not active"),
     TooManyRequests("Too many requests!"),
     InvalidPassword("Invalid password!"),
+    SuspendedAccount("Suspended Account!"),
     InactiveAccount("Inactive Account!"),
     BlockedAccount("Blocked Account!"),
     ExpiredSession("Expired session!"),
