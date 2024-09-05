@@ -1,14 +1,19 @@
 package com.sanisamoj.services.user
 
 import com.sanisamoj.TestContext
+import com.sanisamoj.data.models.dataclass.ReportingRequest
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.data.models.dataclass.UserResponse
 import com.sanisamoj.data.models.enums.AccountStatus
 import com.sanisamoj.data.models.enums.AccountType
+import com.sanisamoj.data.models.enums.ReportType
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
+import com.sanisamoj.data.models.interfaces.MailRepository
+import com.sanisamoj.utils.UserTest
 import com.sanisamoj.utils.eraseAllDataToTests
 import io.ktor.server.testing.*
+import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -16,6 +21,7 @@ import kotlin.test.assertNotNull
 
 class UserServiceTest {
     private val databaseRepository: DatabaseRepository = TestContext.getDatabaseRepository()
+    private val mailRepository: MailRepository = TestContext.getMailRepository()
     private val userCreateRequestTest = UserCreateRequest(
         username = "test",
         email = "test@gmail.com",
@@ -89,5 +95,24 @@ class UserServiceTest {
         databaseRepository.deleteUser(user.id)
     }
 
+    @Test
+    fun emitRemoveAccountTest() = testApplication {
+        runBlocking {
+            val userTest = UserTest()
+            val user: User = userTest.createUserTest(accountStatus = AccountStatus.Active)
+
+            val userService = UserService(
+                databaseRepository = databaseRepository,
+                mailRepository = mailRepository
+            )
+
+            val reportingRequest = ReportingRequest(reportType = ReportType.REMOVAL.name, reporting = "Motivo")
+            userService.emitRemoveAccount(user.id.toString(), reportingRequest)
+
+            val updatedUser: User = databaseRepository.getUserById(user.id.toString())
+            assertEquals(AccountStatus.Suspended.name, updatedUser.accountStatus)
+            userTest.deleteUserTest()
+        }
+    }
 
 }

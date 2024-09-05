@@ -10,6 +10,7 @@ import com.sanisamoj.data.models.enums.AccountType
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.enums.Fields
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
+import com.sanisamoj.data.models.interfaces.MailRepository
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.services.email.MailService
 import kotlinx.coroutines.CoroutineScope
@@ -17,7 +18,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class UserService(
-    private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository()
+    private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository(),
+    private val mailRepository: MailRepository = GlobalContext.getMailRepository()
 ) {
     suspend fun createUser(userCreateRequest: UserCreateRequest, accountType: AccountType = AccountType.USER): UserResponse {
         verifyUserCreateRequest(userCreateRequest) // Check if there are any empty items
@@ -51,15 +53,15 @@ class UserService(
         }
     }
 
-    fun emitRemoveAccount(userId: String, reportingRequest: ReportingRequest) {
-        CoroutineScope(Dispatchers.IO).launch {
-            databaseRepository.updateUser(
-                userId = userId,
-                update = OperationField(Fields.AccountStatus, AccountStatus.Suspended.name)
-            )
+    suspend fun emitRemoveAccount(userId: String, reportingRequest: ReportingRequest) {
+        databaseRepository.updateUser(
+            userId = userId,
+            update = OperationField(Fields.AccountStatus, AccountStatus.Suspended.name)
+        )
 
+        CoroutineScope(Dispatchers.IO).launch {
             val user: User = databaseRepository.getUserById(userId)
-            MailService().sendAccountRemovalEmail(userId, user.email, reportingRequest.reporting)
+            MailService(mailRepository).sendAccountRemovalEmail(userId, user.email, reportingRequest.reporting)
         }
     }
 }
