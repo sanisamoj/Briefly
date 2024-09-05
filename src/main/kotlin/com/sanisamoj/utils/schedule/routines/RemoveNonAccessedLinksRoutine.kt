@@ -4,7 +4,9 @@ import com.sanisamoj.config.Config.INACCESSIBLE_TIME_MAX
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
+import com.sanisamoj.data.models.dataclass.MessageToSend
 import com.sanisamoj.data.models.dataclass.User
+import com.sanisamoj.data.models.interfaces.BotRepository
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.services.email.MailService
 import com.sanisamoj.utils.converters.converterStringToLocalDateTime
@@ -16,6 +18,7 @@ import java.time.LocalDateTime
 class RemoveNonAccessedLinksRoutine: Job {
     private val databaseRepository: DatabaseRepository by lazy { GlobalContext.getDatabaseRepository() }
     private val mailService: MailService by lazy { MailService() }
+    private val botRepository: BotRepository by lazy { GlobalContext.getBotRepository() }
 
     override fun execute(p0: JobExecutionContext?) {
         runBlocking { checkAndInactiveNonAccessLinks() }
@@ -46,11 +49,16 @@ class RemoveNonAccessedLinksRoutine: Job {
         for (link in allLinksNonAccess) {
             databaseRepository.deleteLinkByShortLink(link.shortLink)
 
-            // Send an email warning that the link has not been accessed for 1 year, so it has been removed from the database
+            // Send an email and whatsapp message warning that the link has not been accessed for 3 years, so it has been removed from the database
             val user: User? = databaseRepository.getUserByIdOrNull(link.userId)
             if(user != null) {
                 databaseRepository.removeLinkEntryIdFromUser(user.id.toString(), link.id.toString())
                 mailService.sendLinkDeletedEmail(user.username, link, user.email)
+
+                try {
+                    val messageToSend = MessageToSend(user.phone, GlobalContext.globalWarnings.linkDeletedMail)
+                    botRepository.sendMessage(messageToSend)
+                } catch (_: Throwable) {}
             }
         }
     }

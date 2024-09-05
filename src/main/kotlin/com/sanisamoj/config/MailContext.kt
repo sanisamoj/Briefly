@@ -258,7 +258,7 @@ object MailContext {
                     p {
                         +"Olá, "
                         +username
-                        +". O link que você criou foi deletado porque não foi acessado há mais de um ano."
+                        +". O link que você criou foi deletado porque não foi acessado há mais de 3 anos."
                     }
                     h2 { +"Estatísticas do Link" }
                     table {

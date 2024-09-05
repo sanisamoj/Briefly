@@ -16,7 +16,7 @@ object Config {
     private val jobsIdentificationList: MutableList<JobIdentification> = mutableListOf()
     private const val EVERY_DAY_AT_3PM_CRON: String = "0 0 2 * * ?"
 
-    val INACCESSIBLE_TIME_MAX: LocalDateTime = LocalDateTime.now().minusMonths(24)
+    val INACCESSIBLE_TIME_MAX: LocalDateTime = LocalDateTime.now().minusMonths(36)
 
     suspend fun databaseInitialize() {
         MongoDatabase.initialize()
