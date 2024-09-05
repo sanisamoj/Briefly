@@ -12,6 +12,9 @@ import com.sanisamoj.data.models.enums.Fields
 import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.services.email.MailService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class UserService(
     private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository()
@@ -48,13 +51,15 @@ class UserService(
         }
     }
 
-    suspend fun emitRemoveAccount(userId: String, reportingRequest: ReportingRequest) {
-        databaseRepository.updateUser(
-            userId = userId,
-            update = OperationField(Fields.AccountStatus, AccountStatus.Suspended.name)
-        )
+    fun emitRemoveAccount(userId: String, reportingRequest: ReportingRequest) {
+        CoroutineScope(Dispatchers.IO).launch {
+            databaseRepository.updateUser(
+                userId = userId,
+                update = OperationField(Fields.AccountStatus, AccountStatus.Suspended.name)
+            )
 
-        val user: User = databaseRepository.getUserById(userId)
-        MailService().sendAccountRemovalEmail(userId, user.email, reportingRequest.reporting)
+            val user: User = databaseRepository.getUserById(userId)
+            MailService().sendAccountRemovalEmail(userId, user.email, reportingRequest.reporting)
+        }
     }
 }

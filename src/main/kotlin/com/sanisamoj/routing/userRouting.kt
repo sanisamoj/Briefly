@@ -125,6 +125,8 @@ fun Route.userRouting() {
                     val reportingRequest: ReportingRequest = call.receive<ReportingRequest>()
                     val principal: JWTPrincipal = call.principal()!!
                     val userId: String = principal.payload.getClaim("id").asString()
+                    UserService().emitRemoveAccount(userId, reportingRequest)
+                    return@delete call.respond(HttpStatusCode.OK)
                 }
             }
         }
