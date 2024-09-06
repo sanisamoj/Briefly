@@ -51,9 +51,8 @@ class LinkEntryManager(
 
         if(userId != linkEntry.userId) throw Exception(Errors.AccessProhibited.description)
 
-        val expiresAt: LocalDateTime = converterStringToLocalDateTime(linkEntry.expiresAt)
-
         if(linkEntry.expiresAt != NO_EXPIRATION_TIME) {
+            val expiresAt: LocalDateTime = converterStringToLocalDateTime(linkEntry.expiresAt)
             val currentTime: LocalDateTime = LocalDateTime.now()
             if(expiresAt.isBefore(currentTime)) throw Exception(Errors.ExpiredLink.description)
         }
