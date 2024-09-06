@@ -1,6 +1,7 @@
 package com.sanisamoj.utils.schedule.routines
 
 import com.sanisamoj.config.Config.INACCESSIBLE_TIME_MAX
+import com.sanisamoj.config.Config.NOTIFY_EXPIRATION_TIME
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.Clicker
 import com.sanisamoj.data.models.dataclass.LinkEntry
@@ -21,11 +22,48 @@ class RemoveNonAccessedLinksRoutine: Job {
     private val botRepository: BotRepository by lazy { GlobalContext.getBotRepository() }
 
     override fun execute(p0: JobExecutionContext?) {
-        runBlocking { checkAndInactiveNonAccessLinks() }
+        runBlocking {
+            checkAndInactiveNonAccessLinks()
+            notifyAboutExpiration()
+        }
     }
 
     private suspend fun checkAndInactiveNonAccessLinks(inaccessibleTime: LocalDateTime = INACCESSIBLE_TIME_MAX) {
-        val timeAgo: LocalDateTime = inaccessibleTime
+        val allLinksNonAccess: List<LinkEntry> = verifyAndReturnAllInactiveNonAccessLinksIn(inaccessibleTime)
+
+        for (link in allLinksNonAccess) {
+            databaseRepository.deleteLinkByShortLink(link.shortLink)
+
+            // Send an email and whatsapp message warning that the link has not been accessed for 3 years, so it has been removed from the database
+            val user: User? = databaseRepository.getUserByIdOrNull(link.userId)
+            if(user != null) {
+                databaseRepository.removeLinkEntryIdFromUser(user.id.toString(), link.id.toString())
+                mailService.sendLinkDeletedEmail(user.username, link, user.email)
+
+                try {
+                    val messageToSend = MessageToSend(user.phone, GlobalContext.globalWarnings.linkDeletedMail)
+                    botRepository.sendMessage(messageToSend)
+                } catch (_: Throwable) {}
+            }
+        }
+    }
+
+    private suspend fun notifyAboutExpiration(expiration: LocalDateTime = NOTIFY_EXPIRATION_TIME) {
+        val allLinksNonAccess: List<LinkEntry> = verifyAndReturnAllInactiveNonAccessLinksIn(expiration)
+
+        allLinksNonAccess.forEach { linkEntry ->
+            val user: User = databaseRepository.getUserById(linkEntry.userId)
+            val message: String = GlobalContext.globalWarnings.someExpirationLinkTime
+            val messageToSend = MessageToSend(user.phone, message)
+
+            try {
+                botRepository.sendMessage(messageToSend)
+            } catch (_: Throwable) {}
+        }
+    }
+
+    private suspend fun verifyAndReturnAllInactiveNonAccessLinksIn(time: LocalDateTime): List<LinkEntry> {
+        val timeAgo: LocalDateTime = time
 
         val allLinksNonAccess: MutableList<LinkEntry> = mutableListOf()
         val allLinks: List<LinkEntry> = databaseRepository.getAllLinkEntries()
@@ -46,20 +84,6 @@ class RemoveNonAccessedLinksRoutine: Job {
             }
         }
 
-        for (link in allLinksNonAccess) {
-            databaseRepository.deleteLinkByShortLink(link.shortLink)
-
-            // Send an email and whatsapp message warning that the link has not been accessed for 3 years, so it has been removed from the database
-            val user: User? = databaseRepository.getUserByIdOrNull(link.userId)
-            if(user != null) {
-                databaseRepository.removeLinkEntryIdFromUser(user.id.toString(), link.id.toString())
-                mailService.sendLinkDeletedEmail(user.username, link, user.email)
-
-                try {
-                    val messageToSend = MessageToSend(user.phone, GlobalContext.globalWarnings.linkDeletedMail)
-                    botRepository.sendMessage(messageToSend)
-                } catch (_: Throwable) {}
-            }
-        }
+        return allLinksNonAccess
     }
 }

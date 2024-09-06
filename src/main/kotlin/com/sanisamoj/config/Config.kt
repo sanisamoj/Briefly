@@ -19,6 +19,7 @@ object Config {
     private const val EVERY_TWO_YEARS_CRON: String = "0 0 0 1 1 ? */2"
 
     val INACCESSIBLE_TIME_MAX: LocalDateTime = LocalDateTime.now().minusMonths(36)
+    val NOTIFY_EXPIRATION_TIME: LocalDateTime = LocalDateTime.now().minusDays(7)
 
     suspend fun initialize() {
         MongoDatabase.initialize()
