@@ -15,8 +15,10 @@ class DefaultBotRepository(
     private val botId: String by lazy { dotEnv("BOT_ID") }
 
     override suspend fun updateToken() {
-        val loginRequest = LoginRequest(email, password)
-        token = botApiService.login(loginRequest).token
+        try {
+            val loginRequest = LoginRequest(email, password)
+            token = botApiService.login(loginRequest).token
+        } catch (_: Throwable) {}
     }
 
     override suspend fun sendMessage(messageToSend: MessageToSend) {
