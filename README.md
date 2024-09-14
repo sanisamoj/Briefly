@@ -40,9 +40,9 @@ Será um projeto aberto, destinado a ser incluído em um portfólio e oferecerá
 ## Tecnologias e Ferramentas Utilizadas
 
 - Backend: **Ktor (Kotlin)**
-- Banco de Dados: 
-    - **MongoDB** - Para armazenamento de dados sensíveis.
-    - **Redis** - Para armazenamento de dados que precisam de acesso mais rápido.
+  - Banco de Dados: 
+      - **MongoDB** - Para armazenamento de dados sensíveis.
+      - **Redis** - Para armazenamento de dados que precisam de acesso mais rápido.
 - Geolocalização: API para coleta de informações de IP (GeoIp)
 
 ## Padrões de Design Utilizados
