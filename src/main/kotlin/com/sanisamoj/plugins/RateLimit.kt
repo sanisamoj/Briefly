@@ -10,7 +10,6 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-
 fun Application.rateLimit() {
     install(RateLimit) {
         register(RateLimitName("register")) {

@@ -10,12 +10,12 @@ import java.net.InetAddress
 object GeoIPService {
 
     private val cityDbReader: DatabaseReader by lazy {
-        val cityDbFile = ResourceLoader.loadResourceAsStream("/geo/GeoLite2-City.mmdb")
+        val cityDbFile = ResourceLoader.loadExternalFileAsFile("/geo/GeoLite2-City.mmdb")
         DatabaseReader.Builder(cityDbFile).build()
     }
 
     private val asnDbReader: DatabaseReader by lazy {
-        val asnDbFile = ResourceLoader.loadResourceAsStream("/geo/GeoLite2-ASN.mmdb")
+        val asnDbFile = ResourceLoader.loadExternalFileAsFile("/geo/GeoLite2-ASN.mmdb")
         DatabaseReader.Builder(asnDbFile).build()
     }
 

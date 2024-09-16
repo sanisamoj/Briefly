@@ -117,9 +117,9 @@ TERMS_OF_SERVICE_LINK=
 > Nas configurações de Email, foi adicionado uma pré-configuração para utilizar os serviços do Gmail. Para a Senha do Email, é necessário gerar uma senha para aplicação em "Apps menos seguros" na sua conta do Gmail.
 
 Para coleta de dados como região dos IPs, estou utilizando a API GeoIp https://www.maxmind.com/en/home.
-É necessário realizar o download de 2 bancos de dados disponíveis no site deles, que se chama **"GeoLite2 ASN"** e **"GeoLite2 City"**, copiar os arquivos **"GeoLite2-ASN.mmdb"** e **"GeoLite2-City.mmdb"** para a pasta **resources/geo/**.
+É necessário realizar o download de 2 bancos de dados disponíveis no site deles, que se chama **"GeoLite2 ASN"** e **"GeoLite2 City"**, copiar os arquivos **"GeoLite2-ASN.mmdb"** e **"GeoLite2-City.mmdb"** para a pasta **/geo** fora de src.
 
-> Caso seja necessário que o servidor responda um arquivo HTML na rota principal, crie uma pasta chamada files em resources e insira o seu arquivo com o nome index.html para o servidor mapear e entregar a página.
+> Caso seja necessário que o servidor responda um arquivo HTML na rota principal, crie uma pasta chamada files fora de src e insira o seu arquivo com o nome index.html para o servidor mapear e entregar a página.
 
 #### Execute o comando a seguir para construir a imagem Docker.
 

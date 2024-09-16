@@ -217,7 +217,6 @@ fun Route.userRouting() {
         get("/{name?}") {
             val mediaName: String = call.parameters["name"].toString()
             val file = MediaService().getImage(mediaName)
-            println(file)
             if (file.exists()) return@get call.respondFile(file)
             else return@get call.respond(HttpStatusCode.NotFound)
         }

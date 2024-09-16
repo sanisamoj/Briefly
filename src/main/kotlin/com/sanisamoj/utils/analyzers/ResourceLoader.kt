@@ -3,6 +3,7 @@ package com.sanisamoj.utils.analyzers
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.InputStream
+import java.nio.file.Files
 
 object ResourceLoader {
 
@@ -29,6 +30,39 @@ object ResourceLoader {
         val resourceUrl = this::class.java.getResource(resourcePath)
             ?: throw IllegalArgumentException("Recurso não encontrado: $resourcePath")
         return File(resourceUrl.toURI())
+    }
+
+    /**
+     * Loads a file from the external file system as an InputStream.
+     *
+     * @param filePath Path to the external file.
+     * @return InputStream of the file.
+     * @throws IllegalArgumentException if the file is not found.
+     */
+    fun loadExternalFileAsStream(filePath: String): InputStream {
+        val currentProjectDir = System.getProperty("user.dir")
+        val externalFile = File(currentProjectDir, filePath)
+        if (externalFile.exists()) {
+            println("cai aqui")
+            return Files.newInputStream(externalFile.toPath())
+        }
+        throw IllegalArgumentException("Arquivo externo não encontrado: $filePath")
+    }
+
+    /**
+     * Loads a file from the external file system as a File.
+     *
+     * @param filePath Path to the external file.
+     * @return File pointing to the external file.
+     * @throws IllegalArgumentException if the file is not found.
+     */
+    fun loadExternalFileAsFile(filePath: String): File {
+        val currentProjectDir = System.getProperty("user.dir")
+        val externalFile = File(currentProjectDir, filePath)
+        if (externalFile.exists()) {
+            return externalFile
+        }
+        throw IllegalArgumentException("Arquivo externo não encontrado: $filePath")
     }
 
     /**

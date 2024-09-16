@@ -10,6 +10,7 @@ import io.ktor.server.http.content.*
 import io.ktor.server.plugins.cachingheaders.*
 import io.ktor.server.routing.*
 import io.ktor.http.content.*
+import java.io.File
 
 fun Application.configureRouting() {
     routing {
@@ -27,9 +28,6 @@ fun Application.configureRouting() {
         linkEntryRouting()
         serverRouting()
 
-        staticResources("/", "files") {
-            default("index.html")
-            preCompressed(CompressedFileType.GZIP)
-        }
+        staticFiles("/", File("files"))
     }
 }
