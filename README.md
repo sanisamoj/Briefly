@@ -63,6 +63,7 @@ Para instalar o projeto para testes, utilizaremos o Docker.
 - Instale o **Mongodb** (Verifique na página oficial, ou monte uma imagem com o Docker).
 - Instale o **Redis** na sua máquina (Verifique a página oficial, ou monte uma imagem com o Docker).
 - Para a autenticação além do uso de E-mail, estou utilizando os bots do projeto [NotifyBot](https://github.com/sanisamoj/NotifyBot).
+- Para o registro de erros, estou usando a API [EventLoggerServer](https://github.com/sanisamoj/EventLoggerServer)
 - Crie um arquivo **.env** na pasta raiz do projeto, ou adicione um arquivo **.env** manualmente na construção da imagem docker.
 
 ```.env
@@ -106,6 +107,11 @@ BOT_URL=http://localhost:8585/
 BOT_LOGIN_EMAIL=
 BOT_LOGIN_PASSWORD=
 BOT_ID=
+
+#Credenciais para API de logs
+LOG_URL=http://localhost:9096/
+APP_LOG_NAME=
+APP_LOG_PASSWORD=
 
 #Link dos termos de serviço
 TERMS_OF_SERVICE_LINK=
