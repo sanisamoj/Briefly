@@ -3,8 +3,14 @@ package com.sanisamoj.data.repository
 import com.sanisamoj.api.bot.BotApiService
 import com.sanisamoj.data.models.dataclass.LoginRequest
 import com.sanisamoj.data.models.dataclass.MessageToSend
+import com.sanisamoj.data.models.enums.Errors
+import com.sanisamoj.data.models.enums.EventSeverity
 import com.sanisamoj.data.models.interfaces.BotRepository
+import com.sanisamoj.errors.LogFactory
+import com.sanisamoj.errors.Logger
 import com.sanisamoj.utils.analyzers.dotEnv
+import kotlinx.coroutines.delay
+import java.util.concurrent.TimeUnit
 
 class DefaultBotRepository(
     private val botApiService: BotApiService
@@ -18,10 +24,24 @@ class DefaultBotRepository(
         try {
             val loginRequest = LoginRequest(email, password)
             token = botApiService.login(loginRequest).token
-        } catch (_: Throwable) {}
+            println("Bot token updated!")
+        } catch (_: Throwable) {
+            delay(TimeUnit.SECONDS.toMillis(60))
+            updateToken()
+        }
     }
 
     override suspend fun sendMessage(messageToSend: MessageToSend) {
-        botApiService.sendMessage(botId, messageToSend, "Bearer $token")
+        try {
+            botApiService.sendMessage(botId, messageToSend, "Bearer $token")
+        } catch (cause: Throwable) {
+            Logger.register(
+                LogFactory.throwableToLog(
+                    cause = cause,
+                    severity = EventSeverity.HIGH,
+                    description = Errors.BotTokenNotUpdated.description
+                )
+            )
+        }
     }
 }

@@ -1,8 +1,8 @@
 package com.sanisamoj.api.log
 
 import com.sanisamoj.data.models.dataclass.ApplicationServiceLoginRequest
-import com.sanisamoj.data.models.dataclass.CreateEventRequest
-import com.sanisamoj.data.models.dataclass.LogEventResponse
+import com.sanisamoj.data.models.dataclass.Log
+import com.sanisamoj.data.models.dataclass.LogResponse
 import com.sanisamoj.data.models.dataclass.TokenResponse
 import retrofit2.http.Body
 import retrofit2.http.Header
@@ -15,10 +15,10 @@ interface LogApiService {
         @Body loginRequest: ApplicationServiceLoginRequest
     ) : TokenResponse
 
-    @POST("application/login")
+    @POST("log")
     suspend fun registerLog(
-        @Body event: CreateEventRequest,
+        @Body log: Log,
         @Header("Authorization") token: String
-    ) : LogEventResponse
+    ) : LogResponse
 
 }

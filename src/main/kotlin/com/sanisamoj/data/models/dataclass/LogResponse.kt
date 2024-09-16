@@ -1,6 +1,6 @@
 package com.sanisamoj.data.models.dataclass
 
-data class LogEventResponse(
+data class LogResponse(
     val id: String,
     val applicationId: String,
     val number: Int,
