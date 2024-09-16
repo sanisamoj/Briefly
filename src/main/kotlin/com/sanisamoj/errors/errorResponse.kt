@@ -7,9 +7,9 @@ import io.ktor.http.*
 
 fun errorResponse(errorMessage: String?): Pair<HttpStatusCode, ErrorResponse> {
     val response = when(errorMessage) {
-//        Errors.UserAlreadyExists.description -> {
-//            HttpStatusCode.Conflict to ErrorResponse(Errors.UserAlreadyExists.description)
-//        }
+        Errors.UserAlreadyExists.description -> {
+            HttpStatusCode.Conflict to ErrorResponse(Errors.UserAlreadyExists.description)
+        }
 
         Errors.DataIsMissing.description -> {
             HttpStatusCode.BadRequest to ErrorResponse(Errors.DataIsMissing.description)

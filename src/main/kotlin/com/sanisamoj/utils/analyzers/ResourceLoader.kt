@@ -43,7 +43,6 @@ object ResourceLoader {
         val currentProjectDir = System.getProperty("user.dir")
         val externalFile = File(currentProjectDir, filePath)
         if (externalFile.exists()) {
-            println("cai aqui")
             return Files.newInputStream(externalFile.toPath())
         }
         throw IllegalArgumentException("Arquivo externo não encontrado: $filePath")
