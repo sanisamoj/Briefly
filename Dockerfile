@@ -28,6 +28,10 @@ WORKDIR /app
 COPY .env .
 COPY --from=build /app/target/briefly-0.25.3-jar-with-dependencies.jar briefly.jar
 
+# Copie as pastas e arquivos necessários para o projeto
+COPY geo ./geo
+COPY files ./files
+
 # Exponha a porta 9098
 EXPOSE 9098
 
