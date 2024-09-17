@@ -9,5 +9,6 @@ data class UserResponse(
     val profileImageUrl: String,
     val email: String,
     val phone: String,
+    val type: String,
     val createdAt: String
 )

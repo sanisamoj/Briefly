@@ -13,6 +13,7 @@ object UserFactory {
             profileImageUrl = if(user.imageProfile == "") "" else MEDIA_ROUTE + user.imageProfile,
             email = user.email,
             phone = user.phone,
+            type = user.type,
             createdAt = user.createdAt,
         )
     }
