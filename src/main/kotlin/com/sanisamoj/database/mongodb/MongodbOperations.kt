@@ -153,7 +153,7 @@ class MongodbOperations {
             )
             val result: T = collection.find<T>(Document(filter.field.title, filter.value)).first()
             result
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
 

@@ -40,10 +40,8 @@ class RemoveNonAccessedLinksRoutine: Job {
                 databaseRepository.removeLinkEntryIdFromUser(user.id.toString(), link.id.toString())
                 mailService.sendLinkDeletedEmail(user.username, link, user.email)
 
-                try {
-                    val messageToSend = MessageToSend(user.phone, GlobalContext.globalWarnings.linkDeletedMail)
-                    botRepository.sendMessage(messageToSend)
-                } catch (_: Throwable) {}
+                val messageToSend = MessageToSend(user.phone, GlobalContext.globalWarnings.linkDeletedMail)
+                botRepository.sendMessage(messageToSend)
             }
         }
     }
@@ -56,9 +54,7 @@ class RemoveNonAccessedLinksRoutine: Job {
             val message: String = GlobalContext.globalWarnings.someExpirationLinkTime
             val messageToSend = MessageToSend(user.phone, message)
 
-            try {
-                botRepository.sendMessage(messageToSend)
-            } catch (_: Throwable) {}
+            botRepository.sendMessage(messageToSend)
         }
     }
 

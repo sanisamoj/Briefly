@@ -10,13 +10,13 @@ class DefaultIpRepository(private val geoIpService: GeoIPService = GeoIPService)
     override suspend fun getInfoByIp(ip: String): IpInfo {
         val cityInfo: CityInfo? = try {
             geoIpService.getCityInfo(ip)
-        } catch (e: Throwable) {
+        } catch (_: Throwable) {
             null
         }
 
         val asnInfo: AsnInfo? = try {
             geoIpService.getASNInfo(ip)
-        } catch (e: Throwable) {
+        } catch (_: Throwable) {
             null
         }
 

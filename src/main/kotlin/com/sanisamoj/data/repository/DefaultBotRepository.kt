@@ -5,11 +5,13 @@ import com.sanisamoj.data.models.dataclass.LoginRequest
 import com.sanisamoj.data.models.dataclass.MessageToSend
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.enums.EventSeverity
+import com.sanisamoj.data.models.enums.EventType
 import com.sanisamoj.data.models.interfaces.BotRepository
 import com.sanisamoj.errors.LogFactory
 import com.sanisamoj.errors.Logger
 import com.sanisamoj.utils.analyzers.dotEnv
 import kotlinx.coroutines.delay
+import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 class DefaultBotRepository(
@@ -24,8 +26,24 @@ class DefaultBotRepository(
         try {
             val loginRequest = LoginRequest(email, password)
             token = botApiService.login(loginRequest).token
-            println("Bot token updated!")
+
+            Logger.register(
+                log = LogFactory.log(
+                    message = Errors.BotTokenNotUpdated.description,
+                    eventType = EventType.INFO,
+                    severity = EventSeverity.LOW,
+                    additionalData = mapOf("at" to "${LocalDateTime.now()}")
+                )
+            )
         } catch (_: Throwable) {
+            Logger.register(
+                log = LogFactory.log(
+                    message = "Bot token not updated! Retry in 1 minute!",
+                    eventType = EventType.ERROR,
+                    severity = EventSeverity.MEDIUM,
+                    additionalData = mapOf("at" to "${LocalDateTime.now()}")
+                )
+            )
             delay(TimeUnit.SECONDS.toMillis(60))
             updateToken()
         }
@@ -39,7 +57,7 @@ class DefaultBotRepository(
                 LogFactory.throwableToLog(
                     cause = cause,
                     severity = EventSeverity.HIGH,
-                    description = Errors.BotTokenNotUpdated.description
+                    description = Errors.BotUnableToSendMessage.description
                 )
             )
         }

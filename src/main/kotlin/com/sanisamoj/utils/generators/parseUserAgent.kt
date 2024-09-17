@@ -67,7 +67,7 @@ fun parseUserAgent(userAgent: String): UserAgentInfo {
             webKit = webKit,
             browser = browser
         )
-    } catch (e: Throwable) {
+    } catch (_: Throwable) {
         return UserAgentInfo(
             general = userAgent,
             deviceType = "unknown",

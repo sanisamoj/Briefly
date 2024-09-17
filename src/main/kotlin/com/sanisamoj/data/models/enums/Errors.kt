@@ -4,6 +4,7 @@ enum class Errors(val description: String) {
     ShortLinkOrPaginationRequired("Short link or pagination parameters required"),
     PersonalizedShortLinkAlreadyExist("Personalized short link already exist!"),
     TheLimitMaxImageAllowed("The limit of images has been exceeded."),
+    BotUnableToSendMessage("The bot was unable to send the message"),
     InvalidPageOrSizeParameters("Invalid page or size parameter"),
     TermsOfServiceNotFound("Terms of Service not found!"),
     InvalidValidationCode("Invalid Validation Code!"),
