@@ -137,6 +137,7 @@ Para coleta de dados como região dos IPs, estou utilizando a API GeoIp https://
 
 > As portas pré-definidas podem ser alteradas no arquivo *"aplication.conf"*, e devem ser refletidas na construção da imagem com o Docker.
 
+> Para mais informações: [Guia de Deploy](TO_DEPLOY.md)
 
 ## Endpoints disponíveis
 No momento apenas alguns endpoints estão disponíveis, e estão hospedados na página de endpoints do Postman.

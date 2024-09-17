@@ -22,7 +22,7 @@ Transfira também os bancos de dados para a pesquisa IPs, para /geo.
 
     docker run --name briefly -p 9098:9098 --network  my_network briefly:latest
 
-Para mapear as imagens, a página e o banco de dados de IP para fora do container, um exemplo:
+> Para mapear as imagens, a página e o banco de dados de IP para fora do container, um exemplo:
 docker run --rm -v /root/images/uploads:/app/uploads -v /root/geo:/app/briefly_resources/geo -v /root/files:/app/briefly_resources/files --network default_network -p 9098:9098 briefly:latest
 
 
