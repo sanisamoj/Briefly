@@ -221,7 +221,7 @@ fun Route.userRouting() {
             else return@get call.respond(HttpStatusCode.NotFound)
         }
 
-        authenticate("user-jwt") {
+        authenticate("user-jwt", "moderator-jwt") {
 
             // Responsible for saving an image to the server
             post {
