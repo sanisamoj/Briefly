@@ -19,7 +19,7 @@ class DefaultBotRepository(
 ) : BotRepository {
     private val email: String by lazy { dotEnv("BOT_LOGIN_EMAIL") }
     private val password: String by lazy { dotEnv("BOT_LOGIN_PASSWORD") }
-    private lateinit var token: String
+    private var token: String = ""
     private val botId: String by lazy { dotEnv("BOT_ID") }
 
     override suspend fun updateToken() {

@@ -15,7 +15,7 @@ object Logger {
     private val repository: LogApiService by lazy { LogApi.retrofitLogService }
     private val applicationName: String = dotEnv("APP_LOG_NAME")
     private val password: String = dotEnv("APP_LOG_PASSWORD")
-    private lateinit var token: String
+    private var token: String = ""
 
     suspend fun updateToken() {
         try {
