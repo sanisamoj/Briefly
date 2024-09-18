@@ -13,6 +13,7 @@ import io.ktor.server.response.*
 fun Application.statusPage() {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
+            println(cause)
             val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(cause.message)
             if(response.first == HttpStatusCode.InternalServerError) Logger.register(LogFactory.throwableToLog(cause, errorCode = "500"))
             return@exception call.respond(response.first, message = response.second)
