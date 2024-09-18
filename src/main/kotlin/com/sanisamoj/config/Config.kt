@@ -33,10 +33,12 @@ object Config {
             uploadDir.mkdirs()
         }
 
-        // Update bot api token
-        GlobalContext.getBotRepository().updateToken()
-        // Update log api token
-        Logger.updateToken()
+        try {
+            // Update bot api token
+            GlobalContext.getBotRepository().updateToken()
+            // Update log api token
+            Logger.updateToken()
+        } catch (_: Throwable) {}
     }
 
     fun routinesInitialize() {

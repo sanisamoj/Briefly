@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    const val VERSION: String = "0.26.0"
+    const val VERSION: String = "0.26.1"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
@@ -39,7 +39,7 @@ object GlobalContext {
     var LINK_ENTRY_EXPIRES_IN: LocalDateTime = LocalDateTime.now().plusDays(365)
         private set
 
-    val MIME_TYPE_ALLOWED: List<String> = listOf("jpeg", "png", "jpg", "gif")
+    val MIME_TYPE_ALLOWED: List<String> = listOf("jpeg", "png", "jpg", "gif", "webp")
     const val MAX_HEADERS_SIZE: Int = 5 * 1024 * 1024 // 5MB
     const val MAX_UPLOAD_PROFILE_IMAGE: Int = 1
 
