@@ -5,6 +5,7 @@ enum class Errors(val description: String) {
     PersonalizedShortLinkAlreadyExist("Personalized short link already exist!"),
     TheLimitMaxImageAllowed("The limit of images has been exceeded."),
     BotUnableToSendMessage("The bot was unable to send the message"),
+    MaxRetriesReached("Max retries reached, token update failed."),
     InvalidPageOrSizeParameters("Invalid page or size parameter"),
     TermsOfServiceNotFound("Terms of Service not found!"),
     InvalidValidationCode("Invalid Validation Code!"),

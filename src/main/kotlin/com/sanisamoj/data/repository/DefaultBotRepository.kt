@@ -22,31 +22,47 @@ class DefaultBotRepository(
     private val password: String by lazy { dotEnv("BOT_LOGIN_PASSWORD") }
     private var token: String = ""
     private val botId: String by lazy { dotEnv("BOT_ID") }
+    private val maxRetries = 3
 
     override suspend fun updateToken() {
-        try {
-            val loginRequest = LoginRequest(email, password)
-            token = botApiService.login(loginRequest).token
+        var attempts = 0
+        while (attempts < maxRetries) {
+            try {
+                val loginRequest = LoginRequest(email, password)
+                token = botApiService.login(loginRequest).token
 
-            Logger.register(
-                log = LogFactory.log(
-                    message = Infos.BotTokenUpdated.description,
-                    eventType = EventType.INFO,
-                    severity = EventSeverity.LOW,
-                    additionalData = mapOf("at" to "${LocalDateTime.now()}")
+                Logger.register(
+                    log = LogFactory.log(
+                        message = Infos.BotTokenUpdated.description,
+                        eventType = EventType.INFO,
+                        severity = EventSeverity.LOW,
+                        additionalData = mapOf("at" to "${LocalDateTime.now()}")
+                    )
                 )
-            )
-        } catch (_: Throwable) {
-            Logger.register(
-                log = LogFactory.log(
-                    message = "Bot token not updated! Retry in 1 minute!",
-                    eventType = EventType.ERROR,
-                    severity = EventSeverity.MEDIUM,
-                    additionalData = mapOf("at" to "${LocalDateTime.now()}")
+                return
+            } catch (_: Throwable) {
+                attempts++
+                Logger.register(
+                    log = LogFactory.log(
+                        message = "${Errors.BotTokenNotUpdated.description} Retry in 1 minute! Attempt $attempts/$maxRetries",
+                        eventType = EventType.ERROR,
+                        severity = EventSeverity.MEDIUM,
+                        additionalData = mapOf("at" to "${LocalDateTime.now()}")
+                    )
                 )
-            )
-            delay(TimeUnit.SECONDS.toMillis(60))
-            updateToken()
+                if (attempts >= maxRetries) {
+                    Logger.register(
+                        log = LogFactory.log(
+                            message = Errors.MaxRetriesReached.description,
+                            eventType = EventType.ERROR,
+                            severity = EventSeverity.HIGH,
+                            additionalData = mapOf("at" to "${LocalDateTime.now()}")
+                        )
+                    )
+                    break
+                }
+                delay(TimeUnit.SECONDS.toMillis(60))
+            }
         }
     }
 
