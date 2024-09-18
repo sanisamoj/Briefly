@@ -6,6 +6,7 @@ import com.sanisamoj.data.models.dataclass.MessageToSend
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.data.models.enums.EventSeverity
 import com.sanisamoj.data.models.enums.EventType
+import com.sanisamoj.data.models.enums.Infos
 import com.sanisamoj.data.models.interfaces.BotRepository
 import com.sanisamoj.errors.LogFactory
 import com.sanisamoj.errors.Logger
@@ -29,7 +30,7 @@ class DefaultBotRepository(
 
             Logger.register(
                 log = LogFactory.log(
-                    message = Errors.BotTokenNotUpdated.description,
+                    message = Infos.BotTokenUpdated.description,
                     eventType = EventType.INFO,
                     severity = EventSeverity.LOW,
                     additionalData = mapOf("at" to "${LocalDateTime.now()}")

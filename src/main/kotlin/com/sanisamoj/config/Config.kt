@@ -1,7 +1,6 @@
 package com.sanisamoj.config
 
 import com.sanisamoj.config.GlobalContext.PUBLIC_IMAGES_DIR
-import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.database.mongodb.MongoDatabase
 import com.sanisamoj.errors.Logger
 import com.sanisamoj.utils.schedule.ScheduleRoutine
@@ -12,6 +11,8 @@ import com.sanisamoj.utils.schedule.routines.RemoveNonAccessedLinksRoutine
 import com.sanisamoj.utils.schedule.routines.UpdateBotApiToken
 import com.sanisamoj.utils.schedule.routines.UpdateExpiredLinksRoutine
 import com.sanisamoj.utils.schedule.routines.UpdateLogApiToken
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.quartz.JobKey
 import java.io.File
 import java.time.LocalDateTime
@@ -34,15 +35,17 @@ object Config {
             uploadDir.mkdirs()
         }
 
-        try {
-            // Update log api token
-            Logger.updateToken()
-        } catch (_: Throwable) { println(Errors.LogTokenNotUpdated.description) }
+        runBlocking {
+            launch {
+                // Update log api token
+                Logger.updateToken()
+            }
 
-        try {
-            // Update bot api token
-            GlobalContext.getBotRepository().updateToken()
-        } catch (_: Throwable) { println(Errors.BotTokenNotUpdated.description) }
+            launch {
+                // Update bot api token
+                GlobalContext.getBotRepository().updateToken()
+            }
+        }
     }
 
     fun routinesInitialize() {
