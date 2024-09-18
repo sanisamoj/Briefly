@@ -14,6 +14,7 @@ enum class Errors(val description: String) {
     InternalServerError("Internal Server Error!"),
     InactiveRedirection("Inactive redirection!"),
     BotTokenNotUpdated("Bot token not updated"),
+    LogTokenNotUpdated("Log token not updated!"),
     RedisNotResponding("Redis not responding!"),
     ShortLinkNotFound("Short link not found!"),
     InvalidReportType("Invalid report type!"),

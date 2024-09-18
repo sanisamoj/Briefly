@@ -1,6 +1,7 @@
 package com.sanisamoj.config
 
 import com.sanisamoj.config.GlobalContext.PUBLIC_IMAGES_DIR
+import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.database.mongodb.MongoDatabase
 import com.sanisamoj.errors.Logger
 import com.sanisamoj.utils.schedule.ScheduleRoutine
@@ -34,11 +35,14 @@ object Config {
         }
 
         try {
-            // Update bot api token
-            GlobalContext.getBotRepository().updateToken()
             // Update log api token
             Logger.updateToken()
-        } catch (_: Throwable) {}
+        } catch (_: Throwable) { println(Errors.LogTokenNotUpdated.description) }
+
+        try {
+            // Update bot api token
+            GlobalContext.getBotRepository().updateToken()
+        } catch (_: Throwable) { println(Errors.BotTokenNotUpdated.description) }
     }
 
     fun routinesInitialize() {
