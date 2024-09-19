@@ -28,6 +28,8 @@ fun Application.configureRouting() {
         linkEntryRouting()
         serverRouting()
 
-        staticFiles("/", File("files"))
+        staticFiles("/", File("files"))  {
+            default("index.html")
+        }
     }
 }
