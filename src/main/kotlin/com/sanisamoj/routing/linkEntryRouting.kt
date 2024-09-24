@@ -4,6 +4,7 @@ import com.sanisamoj.config.GlobalContext.INACTIVE_LINK_PAGE_ROUTE
 import com.sanisamoj.config.GlobalContext.NOT_FOUND_PAGE_ROUTE
 import com.sanisamoj.config.GlobalContext.PROTECTED_LINK_ROUTE
 import com.sanisamoj.config.GlobalContext.SELF_URL
+import com.sanisamoj.config.GlobalContext.UNKNOWN
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.Errors
 import com.sanisamoj.services.linkEntry.LinkEntryFactory
@@ -44,7 +45,7 @@ fun Route.linkEntryRouting() {
                 val page: String? = call.request.queryParameters["page"]
                 val size: String? = call.request.queryParameters["size"]
 
-                val principal = call.principal<JWTPrincipal>() ?: return@get call.respond(HttpStatusCode.Unauthorized, "User not authenticated")
+                val principal = call.principal<JWTPrincipal>() ?: return@get call.respond(HttpStatusCode.Unauthorized)
                 val accountId = principal.payload.getClaim("id").asString()
 
                 // Check if pagination parameters are provided
@@ -75,7 +76,7 @@ fun Route.linkEntryRouting() {
         get("/{shortLink?}") {
             val shortLink: String? = call.parameters["shortLink"]
             val ip: String = call.request.headers["X-Forwarded-For"]?.split(",")?.firstOrNull()?.trim().toString()
-            val userAgent: String = call.request.headers["User-Agent"] ?: "Unknown"
+            val userAgent: String = call.request.headers["User-Agent"] ?: UNKNOWN
             val referer: String? = call.request.headers["Referer"]
             val userAgentInfo: UserAgentInfo = parseUserAgent(userAgent)
 
@@ -102,7 +103,7 @@ fun Route.linkEntryRouting() {
         post("/protected") {
             val protectedLinkEntryPass: ProtectedLinkEntryPass = call.receive<ProtectedLinkEntryPass>()
             val ip: String = call.request.origin.remoteHost
-            val userAgent: String = call.request.headers["User-Agent"] ?: "Unknown"
+            val userAgent: String = call.request.headers["User-Agent"] ?: UNKNOWN
             val referer: String? = call.request.headers["Referer"]
             val userAgentInfo: UserAgentInfo = parseUserAgent(userAgent)
 

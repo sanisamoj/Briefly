@@ -2,6 +2,7 @@ package com.sanisamoj.services.email
 
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.config.GlobalContext.ACTIVATE_ACCOUNT_LINK_ROUTE
+import com.sanisamoj.config.GlobalContext.UPDATE_PASSWORD_LINK_ROUTE
 import com.sanisamoj.config.GlobalContext.globalWarnings
 import com.sanisamoj.config.MailContext
 import com.sanisamoj.data.models.dataclass.LinkEntry
@@ -71,6 +72,14 @@ class MailService(
         val topic: String = globalWarnings.accountRemoval
         val superAdminEmail: String = dotEnv("SUPERADMIN_EMAIL")
         val sendEmailData = SendEmailData(superAdminEmail, topic, text, true)
+        mailRepository.sendEmail(sendEmailData)
+    }
+
+    fun sendUpdatePasswordEmail(username: String, token: String, to: String) {
+        val resetToken = "$UPDATE_PASSWORD_LINK_ROUTE?token=$token"
+        val text: String = MailContext.buildPasswordResetTokenMail(username, resetToken)
+        val topic: String = globalWarnings.updatePasswordTopic
+        val sendEmailData = SendEmailData(to, topic, text, true)
         mailRepository.sendEmail(sendEmailData)
     }
 }

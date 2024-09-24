@@ -13,7 +13,6 @@ import io.ktor.server.response.*
 fun Application.statusPage() {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
-            println(cause)
             val response: Pair<HttpStatusCode, ErrorResponse> = errorResponse(cause.message)
             if(response.first == HttpStatusCode.InternalServerError) Logger.register(LogFactory.throwableToLog(cause, errorCode = "500"))
             return@exception call.respond(response.first, message = response.second)
@@ -22,7 +21,7 @@ fun Application.statusPage() {
         status(HttpStatusCode.TooManyRequests) { call, status ->
             val retryAfter = call.response.headers["Retry-After"]
             val errorResponse = ErrorResponse(Errors.TooManyRequests.description, "Wait for $retryAfter seconds.")
-            call.respond(status, errorResponse)
+            return@status call.respond(status, errorResponse)
         }
     }
 }

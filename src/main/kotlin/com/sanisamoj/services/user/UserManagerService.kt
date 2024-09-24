@@ -14,7 +14,6 @@ import com.sanisamoj.services.media.MediaService
 import com.sanisamoj.utils.generators.CharactersGenerator
 import io.ktor.http.content.*
 import kotlinx.coroutines.runBlocking
-import org.mindrot.jbcrypt.BCrypt
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -63,19 +62,6 @@ class UserManagerService(
         databaseRepository.updateUser(userId, OperationField(Fields.Phone, newPhone))
         val updatedUser: User = databaseRepository.getUserById(userId)
         return UserFactory.userResponse(updatedUser)
-    }
-
-    suspend fun updatePassword(userId: String) {
-        val user: User = databaseRepository.getUserById(userId)
-        val validationCode: Int = CharactersGenerator.codeValidationGenerate()
-        generateValidationCodeWithCustomCode(userId, validationCode)
-        sendValidationCodeMessageByBot(user.phone, validationCode)
-    }
-
-    suspend fun validateValidationCodeToUpdatePassword(userId: String, newPassword: String, validationCode: Int) {
-        isCorrectCode(userId, validationCode)
-        val hashedPassword: String = BCrypt.hashpw(newPassword, BCrypt.gensalt())
-        databaseRepository.updateUser(userId, OperationField(Fields.Password, hashedPassword))
     }
 
     private suspend fun sendValidationCodeMessageByBot(phone: String, validationCode: Int) {

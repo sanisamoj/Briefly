@@ -13,10 +13,11 @@ import io.ktor.server.auth.jwt.*
 fun Application.configureSecurity(
     sessionRepository: SessionRepository = GlobalContext.getSessionRepository()
 ) {
-    val jwtAudience = dotEnv("JWT_AUDIENCE")
-    val jwtDomain = dotEnv("JWT_DOMAIN")
-    val userSecret = dotEnv("USER_SECRET")
-    val moderatorSecret = dotEnv("MODERATOR_SECRET")
+    val jwtAudience: String = dotEnv("JWT_AUDIENCE")
+    val jwtDomain: String  = dotEnv("JWT_DOMAIN")
+    val userSecret: String  = dotEnv("USER_SECRET")
+    val moderatorSecret: String  = dotEnv("MODERATOR_SECRET")
+    val updatePasswordSecret: String  = dotEnv("UPDATE_PASSWORD_SECRET")
 
     authentication {
         jwt("user-jwt") {
@@ -55,6 +56,19 @@ fun Application.configureSecurity(
                     accountId = accountId,
                     sessionId = sessionId
                 )
+                if (credential.payload.audience.contains(jwtAudience)) JWTPrincipal(credential.payload) else null
+            }
+        }
+
+        jwt("update-jwt") {
+            verifier(
+                JWT
+                    .require(Algorithm.HMAC256(updatePasswordSecret))
+                    .withAudience(jwtAudience)
+                    .withIssuer(jwtDomain)
+                    .build()
+            )
+            validate { credential ->
                 if (credential.payload.audience.contains(jwtAudience)) JWTPrincipal(credential.payload) else null
             }
         }

@@ -465,4 +465,82 @@ object MailContext {
         }
     }
 
+    fun buildPasswordResetTokenMail(username: String, resetLink: String): String {
+        return createHTML().html {
+            head {
+                title("Redefinição de Senha")
+                style {
+                    unsafe {
+                        raw(
+                            """
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f4;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        .container {
+                            max-width: 600px;
+                            margin: 50px auto;
+                            background-color: #ffffff;
+                            padding: 20px;
+                            border-radius: 8px;
+                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        }
+                        h1 {
+                            color: #333333;
+                            text-align: center;
+                        }
+                        p {
+                            color: #666666;
+                            line-height: 1.5;
+                        }
+                        .button {
+                            display: block;
+                            width: 200px;
+                            margin: 20px auto;
+                            padding: 10px;
+                            text-align: center;
+                            background-color: #007bff;
+                            color: #ffffff;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            font-weight: bold;
+                        }
+                        .footer {
+                            text-align: center;
+                            color: #999999;
+                            font-size: 12px;
+                            margin-top: 20px;
+                        }
+                    """.trimIndent()
+                        )
+                    }
+                }
+            }
+            body {
+                div("container") {
+                    h1 { +"Redefinição de Senha, $username!" }
+                    p {
+                        +"Você solicitou a redefinição de sua senha. Por favor, clique no link abaixo para continuar e criar uma nova senha."
+                    }
+                    a(href = resetLink, classes = "button") { +"Redefinir Senha" }
+                    p {
+                        +"Este link é válido por apenas 5 minutos. Após esse período, você precisará solicitar um novo link de redefinição."
+                    }
+                    p {
+                        +"Se você não solicitou a redefinição de senha, por favor, ignore este e-mail."
+                    }
+                    p {
+                        +"Atenciosamente,"
+                        br()
+                        +"Equipe Briefly"
+                    }
+                    div("footer") {
+                        +"© 2024 Briefly. Todos os direitos reservados."
+                    }
+                }
+            }
+        }
+    }
 }

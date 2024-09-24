@@ -26,7 +26,7 @@ WORKDIR /app
 
 # Copie o arquivo .env e o arquivo .jar criado no estágio de build para o diretório de trabalho
 COPY .env .
-COPY --from=build /app/target/briefly-0.26.3-jar-with-dependencies.jar briefly.jar
+COPY --from=build /app/target/briefly-0.27.0-jar-with-dependencies.jar briefly.jar
 
 # Copie as pastas e arquivos necessários para o projeto
 COPY geo ./geo

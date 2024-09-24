@@ -2,6 +2,7 @@ package com.sanisamoj.services.user
 
 import com.sanisamoj.config.GlobalContext
 import com.sanisamoj.data.models.dataclass.ReportingRequest
+import com.sanisamoj.data.models.dataclass.TokenInfo
 import com.sanisamoj.data.models.dataclass.User
 import com.sanisamoj.data.models.dataclass.UserCreateRequest
 import com.sanisamoj.data.models.dataclass.UserResponse
@@ -13,9 +14,13 @@ import com.sanisamoj.data.models.interfaces.DatabaseRepository
 import com.sanisamoj.data.models.interfaces.MailRepository
 import com.sanisamoj.database.mongodb.OperationField
 import com.sanisamoj.services.email.MailService
+import com.sanisamoj.utils.analyzers.dotEnv
+import com.sanisamoj.utils.generators.Token
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.bson.types.ObjectId
+import org.mindrot.jbcrypt.BCrypt
 
 class UserService(
     private val databaseRepository: DatabaseRepository = GlobalContext.getDatabaseRepository(),
@@ -30,6 +35,29 @@ class UserService(
         val userInDatabase = databaseRepository.registerUser(user)
         val userResponse = UserFactory.userResponse(userInDatabase)
         return userResponse
+    }
+
+    suspend fun emitTokenToUpdatePassword(email: String) {
+        val user: User = databaseRepository.getUserByEmail(email)
+            ?: throw Exception(Errors.UserNotFound.description)
+
+        val tokenInfo = TokenInfo(
+            id = user.id.toString(),
+            email = user.email,
+            sessionId = ObjectId().toString(),
+            secret = dotEnv("UPDATE_PASSWORD_SECRET"),
+            time = GlobalContext.EMAIL_TOKEN_EXPIRATION
+        )
+        val token: String = Token.generate(tokenInfo)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            MailService(mailRepository).sendUpdatePasswordEmail(user.username, token, user.email)
+        }
+    }
+
+    suspend fun updatePassword(userId: String, newPassword: String) {
+        val hashedPassword: String = BCrypt.hashpw(newPassword, BCrypt.gensalt())
+        databaseRepository.updateUser(userId, OperationField(Fields.Password, hashedPassword))
     }
 
     private suspend fun verifyIfUserAlreadyExists(user: UserCreateRequest): Boolean {

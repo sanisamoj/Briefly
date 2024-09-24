@@ -101,26 +101,7 @@ fun Route.userRouting() {
                     return@post call.respond(HttpStatusCode.OK)
                 }
 
-                // Responsible for emit update password actions
-                put("/password") {
-                    val principal: JWTPrincipal = call.principal()!!
-                    val userId: String = principal.payload.getClaim("id").asString()
-
-                    UserManagerService().updatePassword(userId)
-                    return@put call.respond(HttpStatusCode.OK)
-                }
-
-                // Responsible for confirm validation code and update password
-                post("password") {
-                    val putUserProfile: PutUserProfile = call.receive()
-                    val principal: JWTPrincipal = call.principal()!!
-                    val userId: String = principal.payload.getClaim("id").asString()
-
-                    UserManagerService().validateValidationCodeToUpdatePassword(userId, putUserProfile.password!!, putUserProfile.validationCode!!)
-                    return@post call.respond(HttpStatusCode.OK)
-                }
-
-                //  Responsible for account removal
+                // Responsible for account removal
                 delete {
                     val reportingRequest: ReportingRequest = call.receive<ReportingRequest>()
                     val principal: JWTPrincipal = call.principal()!!
@@ -128,6 +109,27 @@ fun Route.userRouting() {
                     UserService().emitRemoveAccount(userId, reportingRequest)
                     return@delete call.respond(HttpStatusCode.OK)
                 }
+            }
+
+            // Responsible for issuing the token for changing the password
+            post("/password") {
+                val email: String = call.parameters["email"].toString()
+                UserService().emitTokenToUpdatePassword(email)
+                return@post call.respond(HttpStatusCode.OK)
+            }
+
+            authenticate("update-jwt") {
+
+                // Responsible for validating the token and changing the password
+                put("/password") {
+                    val principal: JWTPrincipal = call.principal<JWTPrincipal>()!!
+                    val userId: String = principal.payload.getClaim("id").asString()
+
+                    val updatePassword: UpdatePassword = call.receive<UpdatePassword>()
+                    UserService().updatePassword(userId, updatePassword.newPassword)
+                    return@put call.respond(HttpStatusCode.OK)
+                }
+
             }
         }
     }

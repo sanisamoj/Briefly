@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    const val VERSION: String = "0.26.3"
+    const val VERSION: String = "0.27.0"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
@@ -23,6 +23,7 @@ object GlobalContext {
 
     val BLOCKED_IPS_TIME_TO_LIVE: Long = TimeUnit.HOURS.toMillis(1)
     val SELF_URL = dotEnv("SELF_URL")
+    val UPDATE_PASSWORD_LINK_ROUTE = "$SELF_URL/update/password"
     val ACTIVATE_ACCOUNT_LINK_ROUTE = "$SELF_URL/authentication/activate"
     val ACTIVATED_ACCOUNT_LINK_ROUTE = "$SELF_URL/activated/"
     val EXPIRED_TOKEN_EMAIL_LINK_ROUTE = "$SELF_URL/expired/"
