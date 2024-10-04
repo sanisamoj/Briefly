@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 object GlobalContext {
-    const val VERSION: String = "0.27.1"
+    const val VERSION: String = "0.28.0"
     private var mobileMinVersion: String = "0.1.0"
     private var mobileTargetVersion: String = "1.0.0"
     private val serverContainer: ServerContainer = DefaultServerContainer()
@@ -25,11 +25,6 @@ object GlobalContext {
     val SELF_URL = dotEnv("SELF_URL")
     val UPDATE_PASSWORD_LINK_ROUTE = "$SELF_URL/update/password"
     val ACTIVATE_ACCOUNT_LINK_ROUTE = "$SELF_URL/authentication/activate"
-    val ACTIVATED_ACCOUNT_LINK_ROUTE = "$SELF_URL/activated/"
-    val EXPIRED_TOKEN_EMAIL_LINK_ROUTE = "$SELF_URL/expired/"
-    val INACTIVE_LINK_PAGE_ROUTE = "$SELF_URL/inactive/"
-    val PROTECTED_LINK_ROUTE = "$SELF_URL/protected/"
-    val NOT_FOUND_PAGE_ROUTE = "$SELF_URL/404/"
     val MEDIA_ROUTE = "$SELF_URL/media/"
 
     const val NO_EXPIRATION_TIME = "No expiration"

@@ -1,7 +1,5 @@
 package com.sanisamoj.routing
 
-import com.sanisamoj.config.GlobalContext.ACTIVATED_ACCOUNT_LINK_ROUTE
-import com.sanisamoj.config.GlobalContext.EXPIRED_TOKEN_EMAIL_LINK_ROUTE
 import com.sanisamoj.config.GlobalContext.MAX_HEADERS_SIZE
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountType
@@ -178,14 +176,13 @@ fun Route.userRouting() {
         // Responsible for activate account by token email
         get("/activate") {
             val token: String = call.parameters["token"].toString()
-            val email: String = call.parameters["email"].toString()
 
             try {
                 UserAuthenticationService().activateAccountByToken(token)
-                return@get call.respondRedirect(ACTIVATED_ACCOUNT_LINK_ROUTE, permanent = false)
+                return@get call.respond(HttpStatusCode.OK)
 
             } catch (_: Throwable) {
-                return@get call.respondRedirect("$EXPIRED_TOKEN_EMAIL_LINK_ROUTE$email", permanent = false)
+                return@get call.respond(HttpStatusCode.Unauthorized)
             }
         }
 

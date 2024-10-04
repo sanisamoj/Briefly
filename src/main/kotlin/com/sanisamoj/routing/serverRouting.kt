@@ -23,12 +23,6 @@ fun Route.serverRouting() {
             return@get call.respond(versionResponse)
         }
 
-        // Responsible for returning terms of service
-        get("/terms") {
-            val redirectLink: String = GlobalContext.TERMS_OF_SERVICE_LINK
-            return@get call.respondRedirect(redirectLink, permanent = false)
-        }
-
         // Responsible for reporting
         post("/reporting") {
             val reportingRequest: ReportingRequest = call.receive<ReportingRequest>()
