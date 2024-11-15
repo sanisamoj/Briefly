@@ -69,10 +69,8 @@ class DefaultBotRepository(
 
     override suspend fun sendMessage(messageToSend: MessageToSend) {
         try {
-            println(botId)
             botApiService.sendMessage(botId, messageToSend, "Bearer $token")
         } catch (cause: Throwable) {
-            println(cause)
             Logger.register(
                 LogFactory.throwableToLog(
                     cause = cause,
