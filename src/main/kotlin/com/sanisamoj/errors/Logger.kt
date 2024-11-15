@@ -25,6 +25,7 @@ object Logger {
         while (attempts < maxRetries) {
             try {
                 token = repository.applicationLogin(ApplicationServiceLoginRequest(applicationName, password)).token
+                println(Infos.LogTokenUpdated.description)
                 register(
                     log = LogFactory.log(
                         message = Infos.LogTokenUpdated.description,

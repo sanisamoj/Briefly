@@ -30,7 +30,6 @@ class DefaultBotRepository(
             try {
                 val loginRequest = LoginRequest(email, password)
                 token = botApiService.login(loginRequest).token
-
                 Logger.register(
                     log = LogFactory.log(
                         message = Infos.BotTokenUpdated.description,
@@ -39,9 +38,11 @@ class DefaultBotRepository(
                         additionalData = mapOf("at" to "${LocalDateTime.now()}")
                     )
                 )
+                println(Infos.BotTokenUpdated.description)
                 return
             } catch (_: Throwable) {
                 attempts++
+                println("${Errors.BotTokenNotUpdated.description} Retry in 30 seconds! Attempt $attempts/${maxRetries}")
                 Logger.register(
                     log = LogFactory.log(
                         message = "${Errors.BotTokenNotUpdated.description} Retry in 1 minute! Attempt $attempts/$maxRetries",
@@ -68,8 +69,10 @@ class DefaultBotRepository(
 
     override suspend fun sendMessage(messageToSend: MessageToSend) {
         try {
+            println(botId)
             botApiService.sendMessage(botId, messageToSend, "Bearer $token")
         } catch (cause: Throwable) {
+            println(cause)
             Logger.register(
                 LogFactory.throwableToLog(
                     cause = cause,
