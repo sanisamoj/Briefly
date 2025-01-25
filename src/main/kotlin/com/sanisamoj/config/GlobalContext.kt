@@ -27,6 +27,10 @@ object GlobalContext {
     val ACTIVATE_ACCOUNT_LINK_ROUTE = "$SELF_URL/authentication/activate"
     val MEDIA_ROUTE = "$SELF_URL/media/"
 
+    val INACTIVE_LINK_PAGE_ROUTE = "$SELF_URL/inactive/"
+    val PROTECTED_LINK_ROUTE = "$SELF_URL/protected/"
+    val NOT_FOUND_PAGE_ROUTE = "$SELF_URL/404/"
+
     const val NO_EXPIRATION_TIME = "No expiration"
     const val UNKNOWN = "Unknown"
     const val PERSONALIZED_CODE_MIN_LENGTH: Int = 5

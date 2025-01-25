@@ -1,5 +1,8 @@
 package com.sanisamoj.routing
 
+import com.sanisamoj.config.GlobalContext.INACTIVE_LINK_PAGE_ROUTE
+import com.sanisamoj.config.GlobalContext.NOT_FOUND_PAGE_ROUTE
+import com.sanisamoj.config.GlobalContext.PROTECTED_LINK_ROUTE
 import com.sanisamoj.config.GlobalContext.SELF_URL
 import com.sanisamoj.config.GlobalContext.UNKNOWN
 import com.sanisamoj.data.models.dataclass.*
@@ -86,11 +89,13 @@ fun Route.linkEntryRouting() {
 
             } catch (e: Throwable) {
                 ServerService().incrementAccess(ip, "/")
-                when(e.message) {
-                    Errors.LinkIsNotActive.description -> call.respond(HttpStatusCode.Forbidden)
-                    Errors.ProtectedLink.description -> call.respond(HttpStatusCode.Unauthorized)
-                    else -> call.respond(HttpStatusCode.NotFound)
+                val redirectionLink = when(e.message) {
+                    Errors.LinkIsNotActive.description -> INACTIVE_LINK_PAGE_ROUTE
+                    Errors.ProtectedLink.description -> PROTECTED_LINK_ROUTE + shortLink.toString()
+                    else -> NOT_FOUND_PAGE_ROUTE
                 }
+
+                return@get call.respondRedirect(redirectionLink, permanent = false)
             }
         }
 
