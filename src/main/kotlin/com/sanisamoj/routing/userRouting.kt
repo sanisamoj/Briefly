@@ -1,5 +1,7 @@
 package com.sanisamoj.routing
 
+import com.sanisamoj.config.GlobalContext.ACTIVATED_ACCOUNT_PAGE_ROUTE
+import com.sanisamoj.config.GlobalContext.EXPIRED_TOKEN_IN_ACTIVATED_ACCOUNT_PAGE_ROUTE
 import com.sanisamoj.config.GlobalContext.MAX_HEADERS_SIZE
 import com.sanisamoj.data.models.dataclass.*
 import com.sanisamoj.data.models.enums.AccountType
@@ -179,10 +181,10 @@ fun Route.userRouting() {
 
             try {
                 UserAuthenticationService().activateAccountByToken(token)
-                return@get call.respond(HttpStatusCode.OK)
+                return@get call.respondRedirect(ACTIVATED_ACCOUNT_PAGE_ROUTE, permanent = false)
 
             } catch (_: Throwable) {
-                return@get call.respond(HttpStatusCode.Unauthorized)
+                return@get call.respondRedirect(EXPIRED_TOKEN_IN_ACTIVATED_ACCOUNT_PAGE_ROUTE, permanent = false)
             }
         }
 
