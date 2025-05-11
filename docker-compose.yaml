@@ -1,0 +1,46 @@
+services:
+  backend:
+    build:
+      context: .
+    container_name: briely
+    ports:
+      - "9098:9098"
+    depends_on:
+      - mongodb
+    networks:
+      - default_network_briefly
+    volumes:
+      # Mapeia a pasta /root/images/public do host para /app/uploads no container
+      - /root/images/public:/app/uploads
+      # Mapeia a pasta /root/briefly_resources/geo do host para /app/geo no container
+      - /root/briefly_resources/geo:/app/geo
+      # Mapeia a pasta /root/briefly_resources/files do host para /app/files no container
+      - /root/briefly_resources/files:/app/files
+
+  mongodb:
+    image: mongodb/mongodb-community-server:latest
+    container_name: briefly-mongodb
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo-data:/data/dbs
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: pass
+    networks:
+      - default_network_briefly
+
+  redisdb:
+    image: redis
+    container_name: briefly-redis
+    ports:
+      - "6381:6379"
+    command: redis-server --requirepass pass
+    networks:
+      - default_network_briefly
+
+volumes:
+  mongo-data:
+
+networks:
+  default_network_briefly:

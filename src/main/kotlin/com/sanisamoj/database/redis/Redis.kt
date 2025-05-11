@@ -5,11 +5,14 @@ import com.sanisamoj.utils.analyzers.dotEnv
 import com.sanisamoj.utils.converters.ObjectConverter
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.exceptions.JedisConnectionException
+import java.net.URI
 
 object Redis {
     private val redisHost = dotEnv("REDIS_SERVER_URL")
     private val redisPort = dotEnv("REDIS_SERVER_PORT").toInt()
-    val jedisPool: JedisPool = JedisPool(redisHost, redisPort)
+    private val redisPassword = dotEnv("REDIS_SERVER_PASSWORD")
+    private val redisURI = URI("redis://:${redisPassword}@${redisHost}:${redisPort}")
+    val jedisPool: JedisPool = JedisPool(redisURI)
 
     fun set(identification: DataIdentificationRedis, value: String) {
         val key = identification.key

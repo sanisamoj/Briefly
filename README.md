@@ -68,13 +68,15 @@ Para instalar o projeto para testes, utilizaremos o Docker.
 
 ```.env
 #URL do banco de dados MONGODB
-MONGODB_SERVER_URL=mongodb://host.docker.internal:27017
+MONGODB_SERVER_URL=mongodb://<user>:<password>@localhost:27017
 #Nome do banco de dados do MONGODB
 NAME_DATABASE=Briefly
 #URL do banco de dados do REDIS
 REDIS_SERVER_URL=host.docker.internal
 #Porta do banco de dados do REDIS
 REDIS_SERVER_PORT=6379
+#Senha do redis
+REDIS_SERVER_PASSWORD=pass
 #URl no qual a aplicação será instalada / Domain
 SELF_URL=http://localhost:9098
 
@@ -134,6 +136,10 @@ Para coleta de dados como região dos IPs, estou utilizando a API GeoIp https://
 #### Execute o comando a seguir para executar a imagem criada com o Docker.
 
     docker run --name briefly -p 9098:9098 briefly:latest
+
+#### Para melhor comodidade executa com o compose:
+
+    docker-compose -p briefly up --build -d
 
 > As portas pré-definidas podem ser alteradas no arquivo *"aplication.conf"*, e devem ser refletidas na construção da imagem com o Docker.
 
